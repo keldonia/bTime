@@ -1,0 +1,88 @@
+{
+  "name": "btime",
+  "version": "1.0.0",
+  "description": "Includes structures to hold manage schedules using a biinary representation of time",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -p",
+    "prepare": "npm run build",
+    "stryker": "stryker run",
+    "test": "npm audit && npm run lint && npm run build && node . && jest --coverage"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": "Brian Lambert <keldoniaskylar@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.12.4",
+    "express": "^4.16.4",
+    "moment": "^2.24.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "binary",
+    "time",
+    "scheduling"
+  ],
+  "devDependencies": {
+    "@stryker-mutator/core": "^2.0.0",
+    "@stryker-mutator/html-reporter": "^2.0.0",
+    "@stryker-mutator/jest-runner": "^2.0.0",
+    "@stryker-mutator/typescript": "^2.0.0",
+    "@types/jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "jest-date-mock": "^1.0.7",
+    "jest-junit": "^6.4.0",
+    "stryker-cli": "^1.0.0",
+    "ts-jest": "^24.3.0",
+    "typescript": "^3.7.5"
+  },
+  "files": [
+    "build"
+  ],
+  "jest-junit": {
+    "suiteName": "Unit Test Report",
+    "outputName": "./jest_unit_tests.xml",
+    "classNameTemplate": "health-checker-unit-tests",
+    "ancestorSeparator": " ... ",
+    "usePathForSuiteName": "true"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "preset": "ts-jest/presets/js-with-ts",
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "setupFiles": [
+      "jest-date-mock"
+    ],
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/test/**/*.{ts,tsx}"
+    ],
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "test/.util.ts",
+      "test/.dependencyMocks.ts"
+    ]
+  },
+}

@@ -1,0 +1,60 @@
+{
+    "rules": {
+        "array-type": [true, "array"],
+        "ban": [true,
+            {
+                "name": "Array",
+                "message": "tsstyle#array-constructor"
+            }
+        ],
+        "ban-types": [true,
+            ["Object", "Use {} instead."],
+            ["String", "Use 'string' instead."],
+            ["Number", "Use 'number' instead."],
+            ["Boolean", "Use 'boolean' instead."]
+        ],
+        "class-name": true,
+        "curly": [true, "ignore-same-line"],
+        "file-name-casing": [true, "camel-case"],
+        "forin": true,
+        "indent": [true, "spaces", 4],
+        "jsdoc-format": true,
+        "label-position": true,
+        "linebreak-style": [true, "LF"],
+        "new-parens": true,
+        "no-angle-bracket-type-assertion": true,
+        "no-any": true,
+        "no-conditional-assignment": true,
+        "no-construct": true,
+        "no-debugger": true,
+        "no-default-export": false,
+        "no-duplicate-imports": true,
+        "no-duplicate-variable": true,
+        "no-import-side-effect": true,
+        "no-require-imports": true,
+        "no-string-throw": true,
+        "no-trailing-whitespace": true,
+        "no-var-keyword": true,
+        "object-literal-shorthand": true,
+        "only-arrow-functions": false,
+        "prefer-const": true,
+        "radix": true,
+        "semicolon": [true, "always", "ignore-interfaces"],
+        "triple-equals": true,
+        "no-console": true,
+        "variable-name": [
+            true,
+            "check-format",
+            "ban-keywords",
+            "allow-pascal-case",
+            "allow-leading-underscore",
+            "allow-trailing-underscore"
+        ]
+    },
+    "linterOptions": {
+        "exclude": ["**/*.json"]
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}
