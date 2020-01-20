@@ -84,5 +84,5 @@
       "test/.util.ts",
       "test/.dependencyMocks.ts"
     ]
-  },
+  }
 }
