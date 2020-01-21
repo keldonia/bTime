@@ -113,7 +113,7 @@ export class BinaryTimeFactory {
     scheduleBStringToModify: string,
     scheduleBStringToTest: string,
     appt: string
-  ) {
+  ): string | false {
     return this.scheduleBinaryUtil.modifyScheduleAndBooking(
       scheduleBStringToModify,
       scheduleBStringToTest,

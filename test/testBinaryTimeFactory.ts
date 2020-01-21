@@ -1,0 +1,99 @@
+import * as TestUtils from './utils/testUtils';
+import { BinaryTimeFactory } from './../src/binaryTime/index';
+import { ScheduleBinaryUtil } from '../src/binaryTime/scheduleBinaryUtil';
+import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
+import { MomentAppointment } from '../src/@types';
+
+describe('Binary Time Factory', () => {
+  describe('constructor', () => {
+    it('should throw an error if an invalid time interval is supplied', () => {
+      const timeInterval: number = 31;
+      function test() {
+        new BinaryTimeFactory(timeInterval);
+      };
+
+      expect(test).toThrow(`Invalid timeInterval entered: ${timeInterval}`);
+    });
+  });
+
+  describe('test pass-through methods', () => {
+    const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);
+    const scheduleBinaryUtil: ScheduleBinaryUtil = binaryTimeFactory['scheduleBinaryUtil'];
+    const binaryStringUtil: BinaryStringUtil = binaryTimeFactory['binaryStringUtil'];
+    
+    const mockParseBString: jest.Mock = jest.fn();
+    const mockGenerateBinaryString: jest.Mock = jest.fn();
+    const mockTestViabilityAndCompute: jest.Mock = jest.fn();
+    const mockDeleteAppointment: jest.Mock = jest.fn();
+    const mockModifyScheduleAndBooking: jest.Mock = jest.fn();
+
+    binaryStringUtil.parseBString = mockParseBString;
+    binaryStringUtil.generateBinaryString = mockGenerateBinaryString;
+    scheduleBinaryUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
+    scheduleBinaryUtil.deleteAppointment = mockDeleteAppointment;
+    scheduleBinaryUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
+
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it(`should call it's binaryStringUtil's parseBString 
+      when parseBString is called`, () => {
+      
+      const testArg1: string = '01';
+      
+      binaryTimeFactory.parseBString(testArg1);
+      
+      expect(mockParseBString).toBeCalled();
+      expect(mockParseBString).toBeCalledWith(testArg1);
+    });
+
+    it(`should call it's binaryStringUtil's generateBinaryString 
+      when generateBinaryString called`, () => {
+      
+      const testArg1: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date());
+      
+      binaryTimeFactory.generateBinaryString(testArg1);
+      
+      expect(mockGenerateBinaryString).toBeCalled();
+      expect(mockGenerateBinaryString).toBeCalledWith(testArg1);
+    });
+
+    it(`should call it's scheduleBinaryUtil's testViabilityAndCompute 
+      when testViabilityAndCompute called`, () => {
+      
+      const testArg1: number = 1;
+      const testArg2: number = 2;
+      
+      binaryTimeFactory.testViabilityAndCompute(testArg1, testArg2);
+      
+      expect(mockTestViabilityAndCompute).toBeCalled();
+      expect(mockTestViabilityAndCompute).toBeCalledWith(testArg1, testArg2);
+    });
+
+    it(`should call it's scheduleBinaryUtil's deleteAppointment 
+      when deleteAppointment called`, () => {
+      
+      const testArg1: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date());
+      const testArg2: string = '00';
+      
+      binaryTimeFactory.deleteAppointment(testArg1, testArg2);
+      
+      expect(mockDeleteAppointment).toBeCalled();
+      expect(mockDeleteAppointment).toBeCalledWith(testArg1, testArg2);
+    });
+
+    it(`should call it's scheduleBinaryUtil's modifyScheduleAndBooking 
+      when modifyScheduleAndBooking called`, () => {
+      
+      const testArg1: string = '001';
+      const testArg2: string = '111';
+      const testArg3: string = '110';
+      
+      binaryTimeFactory.modifyScheduleAndBooking(testArg1, testArg2, testArg3);
+      
+      expect(mockModifyScheduleAndBooking).toBeCalled();
+      expect(mockModifyScheduleAndBooking).toBeCalledWith(testArg1, testArg2, testArg3);
+    });
+  });
+});
