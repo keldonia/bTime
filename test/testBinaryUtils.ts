@@ -6,6 +6,17 @@ import { MomentAppointment } from '../src/@types';
 describe("Binary Utils", () => {
   const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
 
+  describe('constructor', () => {
+    it('should throw an error if an invalid time interval is supplied', () => {
+      const timeInterval: number = 31;
+      function test() {
+        new BinaryStringUtil(timeInterval);
+      };
+
+      expect(test).toThrow(`Invalid timeInterval entered: ${timeInterval}`);
+    });
+  });
+
   describe("#findBinaryPointer(), assumes 5 min interval", () => {
     const tests = [
       { args: [0, 0], expected: 0 },
