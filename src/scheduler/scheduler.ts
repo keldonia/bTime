@@ -33,7 +33,6 @@ export class Scheduler {
    *  @description Utility function to ensure all times are UTC
    *
    *  @param {MomentAppointment} appointment appointment to convert to UTC
-   *  NB: This converts all times to UTC
    *
    *  @returns {MomentAppointment} MomentAppointment
    */
