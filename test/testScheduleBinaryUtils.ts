@@ -1,12 +1,14 @@
-const TestUtils = require("./utils/testUtils.js");
-const ScheduleBinaryUtils = require("./../server/utils/scheduleBinaryUtils.js");
-const BinaryUtils = require("./../server/utils/binaryUtils.js");
-
-let assert = require("assert");
+import * as TestUtils from './utils/testUtils';
+import { ScheduleBinaryUtil } from './../src/binaryTime/scheduleBinaryUtil';
+import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
+import { MomentAppointment } from '../src/@types';
 
 describe("Schedule Binary Utils", () => {
+  const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+  const scheduleBinaryUtil: ScheduleBinaryUtil = new ScheduleBinaryUtil(binaryStringUtil);
+
   describe("#mergeScheduleBStringWithTest()", () => {
-    let tests = [
+    const tests = [
       { args: [ "000011110000", "000000000011" ], expected: "000011110011" },
       { args: [ "000000000000", "000000000011" ], expected: "000000000011" },
       { args: [ "000011110000", "000000000000" ], expected: "000011110000" },
@@ -18,10 +20,10 @@ describe("Schedule Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let appt1 = test.args[0];
-      let appt2 = test.args[1];
-      let expected = test.expected;
-      let testName = "should expect binary appts of " +
+      const appt1: string = test.args[0];
+      const appt2: string = test.args[1];
+      const expected: string | boolean = test.expected;
+      const testName: string = "should expect binary appts of " +
         appt1 +
         " & " +
         appt2 +
@@ -29,17 +31,16 @@ describe("Schedule Binary Utils", () => {
         expected;
 
       it(testName, () => {
-        assert.equal(
-          ScheduleBinaryUtils.mergeScheduleBStringWithTest(appt1, appt2),
-          expected
-        );
+        const mergedBStrings: string | false = scheduleBinaryUtil.mergeScheduleBStringWithTest(appt1, appt2);
+
+        expect(mergedBStrings).toEqual(expected);
       });
     });
   });
 
-  // Tests the loop over #mergeScheduleBStringWithTest() works appropriately
-  describe("#mergeScheduleBStringsWithTest()", () => {
-    let tests = [
+  // Tests the loop over #mergeScheduleBStringsWithTest() works appropriately
+  xdescribe("#mergeScheduleBStringsWithTest()", () => {
+    const tests = [
       { args: [1, 0, 1, 24, 0, 12, 0, 24], expected: "001110000000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [1, 0, 1, 24, 4, 12, 5, 24], expected: "000000000000111110000000000000000000000000000000001111111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: false },
@@ -47,31 +48,30 @@ describe("Schedule Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let args = test.args;
-      let appt1 = TestUtils.generateMockAppointment(
+      const args: number[] = test.args;
+      const appt1: MomentAppointment = TestUtils.generateMockAppointment(
         args[0], args[1], args[2], args[3]
       );
-      let appt2 = TestUtils.generateMockAppointment(
+      const appt2: MomentAppointment = TestUtils.generateMockAppointment(
         args[4], args[5], args[6], args[7]
       );
-      let appt2Str = BinaryUtils.generateBinaryString(appt2);
-      let expected = test.expected;
-      let testName = !!expected ?
+      const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
+      const expected: string | boolean = test.expected;
+      const testName: string = !!expected ?
         "should return schedule binary if appointments do not overlap" :
         "should return boolean false if appointments do overlap";
 
 
       it(testName, () => {
-        assert.equal(
-          ScheduleBinaryUtils.mergeScheduleBStringsWithTest(appt1, appt2Str),
-          expected
-        );
+        const mergedBString: string | false = scheduleBinaryUtil.mergeScheduleBStringsWithTest(appt1, appt2Str);
+
+        expect(mergedBString).toEqual(expected);
       });
     });
   });
 
   describe("#modifyScheduleAndBookingInterval()", () => {
-    let tests = [
+    const tests = [
       { args: [ "000011110000", "000011111111", "000000000011" ], expected: "000011110011" },
       { args: [ "000000000000", "000000000000", "000000000011" ], expected: false },
       { args: [ "000011110000", "000011110000", "000000000000" ], expected: "000011110000" },
@@ -84,11 +84,11 @@ describe("Schedule Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let base = test.args[0];
-      let testString = test.args[1];
-      let appt = test.args[2];
-      let expected = test.expected;
-      let testName = "should expect binary base of " +
+      const base: string = test.args[0];
+      const testString: string = test.args[1];
+      const appt: string = test.args[2];
+      const expected: string | boolean = test.expected;
+      const testName: string = "should expect binary base of " +
         base +
         " and test of " +
         testString +
@@ -98,16 +98,15 @@ describe("Schedule Binary Utils", () => {
         expected;
 
       it(testName, () => {
-        assert.equal(
-          ScheduleBinaryUtils.modifyScheduleAndBookingInterval(base, testString, appt),
-          expected
-        );
+        const modifiedSchedule: string | false = scheduleBinaryUtil.modifyScheduleAndBookingInterval(base, testString, appt);
+
+        expect(modifiedSchedule).toEqual(expected);
       });
     });
   });
 
   describe("#deleteAppointmentInterval()", () => {
-    let tests = [
+    const tests = [
       { args: [ "000011110011", "000000000011" ], expected: "000011110000" },
       { args: [ "000000000000", "000000000011" ], expected: "000000000011" },
       { args: [ "000011110000", "000000000000" ], expected: "000011110000" },
@@ -119,10 +118,10 @@ describe("Schedule Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let base = test.args[0];
-      let appt = test.args[1];
-      let expected = test.expected;
-      let testName = "should expect binary base of " +
+      const base: string = test.args[0];
+      const appt: string = test.args[1];
+      const expected: string = test.expected;
+      const testName: string = "should expect binary base of " +
         base +
         " and deleted appt of " +
         appt +
@@ -130,10 +129,9 @@ describe("Schedule Binary Utils", () => {
         expected;
 
       it(testName, () => {
-        assert.equal(
-          ScheduleBinaryUtils.deleteAppointmentInterval(base, appt),
-          expected
-        );
+        const deleteAppointmentSchedule: string | false = scheduleBinaryUtil.deleteAppointmentInterval(base, appt);
+
+        expect(deleteAppointmentSchedule).toEqual(expected);
       });
     });
   });

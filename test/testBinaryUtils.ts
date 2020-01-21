@@ -1,11 +1,13 @@
-const TestUtils = require("./utils/testUtils.js");
-const BinaryUtils = require("./../server/utils/binaryUtils.js");
-
-let assert = require("assert");
+import * as TestUtils from './utils/testUtils';
+import { BinaryStringUtil } from './../src/binaryTime/binaryStringUtil';
+import { Moment } from 'moment';
+import { MomentAppointment } from '../src/@types';
 
 describe("Binary Utils", () => {
+  const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+
   describe("#findBinaryPointer(), assumes 5 min interval", () => {
-    let tests = [
+    const tests = [
       { args: [0, 0], expected: 0 },
       { args: [0, 5], expected: 1 },
       { args: [1, 0], expected: 12 },
@@ -25,11 +27,11 @@ describe("Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let hour = test.args[0];
-      let minute = test.args[1];
-      let expected = test.expected;
+      const hour: number = test.args[0];
+      const minute: number = test.args[1];
+      const expected: number = test.expected;
 
-      let testName = "should return " +
+      const testName: string = "should return " +
         expected +
         " if hour = " +
         hour +
@@ -37,15 +39,16 @@ describe("Binary Utils", () => {
         minute;
 
       it(testName, () => {
-        let testMoment = TestUtils.generateMockMoment(hour, minute);
+        const testMoment: Moment = TestUtils.generateMockMoment(hour, minute) as Moment;
+        const binaryPointer: number = binaryStringUtil.findBinaryPointer(testMoment);
 
-        assert.equal(BinaryUtils.findBinaryPointer(testMoment), expected);
+        expect(binaryPointer).toEqual(expected);
       });
     });
   });
 
   describe("#generateBinaryString(), assumes 5 min interval", () => {
-    let tests = [
+    const tests = [
       { args: [4, 12, 5, 5], expected: "000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [0, 12, 0, 24], expected: "001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [1, 0, 1, 24], expected: "000000000000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
@@ -54,15 +57,17 @@ describe("Binary Utils", () => {
     ];
 
     tests.forEach(test => {
-      let args = test.args;
-      let testAppt = TestUtils.generateMockAppointment(
+      const args = test.args;
+      const testAppt: MomentAppointment = TestUtils.generateMockAppointment(
         args[0], args[1], args[2], args[3]
       );
-      let expected = test.expected;
-      let testName = "should properly construct binary representation of appointment";
+      const expected = test.expected;
+      const testName = "should properly construct binary representation of appointment";
 
       it(testName, () => {
-        assert.equal(BinaryUtils.generateBinaryString(testAppt), expected);
+        const bString: string | false = binaryStringUtil.generateBinaryString(testAppt);
+        
+        expect(bString).toEqual(expected);
       });
     });
   });

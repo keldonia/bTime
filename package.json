@@ -81,8 +81,8 @@
     ],
     "testPathIgnorePatterns": [
       "node_modules",
-      "test/.util.ts",
-      "test/.dependencyMocks.ts"
+      "test/testUtils.ts",
+      "src/index.ts"
     ]
   }
 }
