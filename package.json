@@ -81,7 +81,7 @@
     ],
     "testPathIgnorePatterns": [
       "node_modules",
-      "test/testUtils.ts",
+      "test/utils/testUtils.ts",
       "src/index.ts"
     ]
   }

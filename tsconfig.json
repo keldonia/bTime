@@ -11,7 +11,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": true,
         "noImplicitAny": true,
-        "lib": ["ES2017", "ES7", "ES6"],
+        "lib": ["ES2017", "ES7", "ES6", "dom"],
         "outDir": "./dist",
         "target": "ES5",
         "moduleResolution": "node"

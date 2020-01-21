@@ -43,8 +43,8 @@ export class BinaryStringUtil {
     this.intervalsInHour = minutesInHour / timeInterval;
 
     // Generate calulated constants
-    const bStringSplitRegexStr = ".{1," + this.intervalsInHour + "}";
-    this.bStringSplitRegex = new RegExp(bStringSplitRegexStr);
+    const bStringSplitRegexStr = "(.{1," + this.intervalsInHour + "})";
+    this.bStringSplitRegex = new RegExp(bStringSplitRegexStr, 'g');
     this.emptyHour = zeroPad.repeat(this.intervalsInHour);
     this.emptyDay = this.emptyHour.repeat(hoursInDay);
   }

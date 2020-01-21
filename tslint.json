@@ -41,7 +41,7 @@
         "radix": true,
         "semicolon": [true, "always", "ignore-interfaces"],
         "triple-equals": true,
-        "no-console": true,
+        "no-console": false,
         "variable-name": [
             true,
             "check-format",

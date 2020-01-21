@@ -63,7 +63,6 @@ describe("Schedule Binary Utils", () => {
 
 
       it(testName, () => {
-        console.log(appt2)
         const mergedBString: string | false = scheduleBinaryUtil.mergeScheduleBStringsWithTest(appt1, appt2Str);
 
         expect(mergedBString).toEqual(expected);
