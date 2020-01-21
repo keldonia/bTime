@@ -1,6 +1,6 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
 import { ScheduleBinaryUtil } from "./scheduleBinaryUtil";
-import { MomentAppointment } from "../@types";
+import { MomentAppointment, validTimeIntervals } from "../@types";
 
 /**
  * @typedef BinaryTimeFactory Manages and exposes various binary scheduling and string
@@ -26,6 +26,10 @@ export class BinaryTimeFactory {
    *  @returns {BinaryTimeFactory} binaryTimeFactory
    */
   public constructor(timeInterval: number) {
+    if (!validTimeIntervals.has(timeInterval)) {
+      throw new Error(`Invalid timeInterval entered: ${timeInterval}`);
+    }
+
     this.timeInterval = timeInterval;
     this.binaryStringUtil = new BinaryStringUtil(this.timeInterval);
     this.scheduleBinaryUtil = new ScheduleBinaryUtil(this.binaryStringUtil);

@@ -1,4 +1,5 @@
-import { minutesInHour, binaryBase, hoursInDay, MomentAppointment } from "../@types";
+import { 
+  minutesInHour, binaryBase, hoursInDay, MomentAppointment, validTimeIntervals } from "../@types";
 import { Moment } from 'moment';
 
 const zeroPad: string = "0";
@@ -35,14 +36,17 @@ export class BinaryStringUtil {
    * @returns {BinaryStringUtil} BinaryStringUtil
    */
   public constructor(timeInterval: number) {
-      this.timeInterval = timeInterval;
-      this.intervalsInHour = minutesInHour / timeInterval;
+    if (!validTimeIntervals.has(timeInterval)) {
+      throw new Error(`Invalid timeInterval entered: ${timeInterval}`);
+    }
+    this.timeInterval = timeInterval;
+    this.intervalsInHour = minutesInHour / timeInterval;
 
-      // Generate calulated constants
-      const bStringSplitRegexStr = ".{1," + this.intervalsInHour + "}";
-      this.bStringSplitRegex = new RegExp(bStringSplitRegexStr);
-      this.emptyHour = zeroPad.repeat(this.intervalsInHour);
-      this.emptyDay = this.emptyHour.repeat(hoursInDay);
+    // Generate calulated constants
+    const bStringSplitRegexStr = ".{1," + this.intervalsInHour + "}";
+    this.bStringSplitRegex = new RegExp(bStringSplitRegexStr);
+    this.emptyHour = zeroPad.repeat(this.intervalsInHour);
+    this.emptyDay = this.emptyHour.repeat(hoursInDay);
   }
 
   /**
