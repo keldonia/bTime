@@ -51,15 +51,15 @@ export class Scheduler {
   /**
    *  @description Tests a propsoed schedule update and updates the schedule, if the
    *  update is valid or false if the update is not valid
-   * 
-   *  @param {Schedule} proposedSchedule 
-   *  @param {Schedule} schedule 
+   *
+   *  @param {Schedule} proposedSchedule
+   *  @param {Schedule} schedule
    *
    *  @returns {Schedule | false} Schedule | false
    */
   updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule | false {
 
-    for (var i = 0; i < daysInWeek; i++) {
+    for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
       const flippedBookings: number = ~this.binaryTimeFactory.parseBString(schedule.bookings[i]);
       const proposed: string = proposedSchedule.schedule[i];
@@ -81,15 +81,15 @@ export class Scheduler {
   /**
    *  @description Takes an appointment and update type and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
-   * 
-   *  @param {Schedule} proposedSchedule 
-   *  @param {Schedule} schedule 
+   *
+   *  @param {Schedule} proposedSchedule
+   *  @param {Schedule} schedule
    *
    *  @returns {Schedule | false} Schedule | false
    */
   processAppointment(
-    appointment: MomentAppointment, 
-    schedule: Schedule, 
+    appointment: MomentAppointment,
+    schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
     const crosssesDayBoundary: boolean = this.crosssesDayBoundary(appointment);
@@ -123,16 +123,16 @@ export class Scheduler {
   /**
    *  @description Takes an appointment and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
-   * 
-   *  @param {Schedule} proposedSchedule 
-   *  @param {Schedule} schedule 
+   *
+   *  @param {Schedule} proposedSchedule
+   *  @param {Schedule} schedule
    *  @param {MomentAppointment?} firstAppt
    *
    *  @returns {Schedule | false} Schedule | false
    */
   handleBookingUpdate(
-    appointment: MomentAppointment, 
-    schedule: Schedule, 
+    appointment: MomentAppointment,
+    schedule: Schedule,
     firstAppt?: MomentAppointment
   ): Schedule | false {
     const startDay = appointment.startTime.day();
@@ -182,9 +182,9 @@ export class Scheduler {
   /**
    *  @description Takes an appointment and update type and tests if the appointment delete
    *  is valid, if not it returns false, if it is the schedule is updated to reflect the deletion
-   * 
-   *  @param {Schedule} proposedSchedule 
-   *  @param {Schedule} schedule 
+   *
+   *  @param {Schedule} proposedSchedule
+   *  @param {Schedule} schedule
    *  @param {MomentAppointment?} firstAppt
    *
    *  @returns {Schedule | false} Schedule | false
@@ -210,14 +210,14 @@ export class Scheduler {
 
   /**
    *  @description Takes an appointment and checks if the appoint crosses a day boundry
-   * 
+   *
    *  NB: We assume that at most appts cross 1 day boundary
-   * 
-   *  @param {MomentAppointment} appt 
+   *
+   *  @param {MomentAppointment} appt
    *
    *  @returns {boolean} boolean
    */
   crosssesDayBoundary(appt: MomentAppointment): boolean {
     return (moment.duration(appt.startTime.diff(appt.endTime)).asDays() !== 0);
   }
-};
+}

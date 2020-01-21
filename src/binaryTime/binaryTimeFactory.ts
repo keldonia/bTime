@@ -40,7 +40,7 @@ export class BinaryTimeFactory {
    * into a number for calculation purposes
    *
    * NB: This is a passthrough to the configured binaryStringUtil
-   * 
+   *
    * @param {string} bString binary string to be converted into a number
    *
    * @returns {number} number
@@ -53,7 +53,7 @@ export class BinaryTimeFactory {
    * @description Generates a binary string representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
    * it return false
-   * 
+   *
    * NB: This is a passthrough to the configured binaryStringUtil
    *
    * @param {MomentAppointment} appt the appointment to converted
@@ -66,7 +66,7 @@ export class BinaryTimeFactory {
 
   /**
    *  @description Tests that two time intervals do not overlap
-   * 
+   *
    *  NB: This is a passthrough to the configured scheduleBinaryUtil
    *
    *  @param {number} binary1 first time interval
@@ -81,7 +81,7 @@ export class BinaryTimeFactory {
   /**
    *  @description Tests removal a give time slot from a given time interval
    *  and if valid removes it
-   *  
+   *
    *  NB: This is also used for calculating remaining availability
    *  NB: This is a passthrough to the configured scheduleBinaryUtil
    *

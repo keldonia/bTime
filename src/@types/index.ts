@@ -25,16 +25,16 @@ export enum ScheduleActions {
 }
 
 export const validTimeIntervals: Set<number> = new Set([
-  1, 
-  2, 
-  3, 
-  4, 
-  5, 
-  6, 
-  10, 
-  12, 
-  15, 
-  20, 
-  30, 
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  10,
+  12,
+  15,
+  20,
+  30,
   60
 ]);

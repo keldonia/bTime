@@ -4,4 +4,4 @@ import { BinaryTimeFactory } from "./binaryTime";
 export {
   Scheduler,
   BinaryTimeFactory
-}
+};

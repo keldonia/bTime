@@ -1,4 +1,4 @@
-import { 
+import {
   minutesInHour, binaryBase, hoursInDay, MomentAppointment, validTimeIntervals } from "../@types";
 import { Moment } from 'moment';
 
