@@ -169,7 +169,7 @@ export class ScheduleBinaryUtil {
     const update: number | false = this.testViabilityAndCompute(parsedApptBString, parsedToModify);
 
     // Test if change invalid to update value
-    if (!update || !this.booleanViabilityCheck(update)) {
+    if (!update && update !== 0) {
       return false;
     }
 
