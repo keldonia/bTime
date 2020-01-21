@@ -6,6 +6,15 @@ import { MomentAppointment } from '../src/@types';
 
 describe('Binary Time Factory', () => {
   describe('constructor', () => {
+    it('should throw an error if an valid time interval is supplied', () => {
+      const timeInterval: number = 3;
+      function test() {
+        new BinaryTimeFactory(timeInterval);
+      };
+
+      expect(test).not.toThrow();
+    });
+
     it('should throw an error if an invalid time interval is supplied', () => {
       const timeInterval: number = 31;
       function test() {
