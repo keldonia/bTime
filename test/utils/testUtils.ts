@@ -1,10 +1,12 @@
 import { MomentAppointment } from './../../src/@types/index';
 import moment = require('moment');
 
-export function generateMockMoment(hour: number, minute: number) {
+export function generateMockMoment(hour: number, minute: number, day: number = 1) {
   return ({
     hour: () => hour,
-    minute: () => minute
+    minute: () => minute,
+    day: () => day,
+    toString: () => `${hour}:${minute} on ${day}`
   });
 }
 
@@ -12,11 +14,14 @@ export function generateMockAppointment(
   hour1: number, 
   minute1: number, 
   hour2: number, 
-  minute2: number
+  minute2: number,
+  day1: number = 1,
+  day2: number = 1
 ): MomentAppointment {
   return ({
-    startTime: this.generateMockMoment(hour1, minute1),
-    endTime: this.generateMockMoment(hour2, minute2)
+    startTime: this.generateMockMoment(hour1, minute1, day1),
+    endTime: this.generateMockMoment(hour2, minute2, day2),
+    toString: () => `start: ${hour1}:${minute1} on ${day1} :: end: ${hour2}:${minute2} on ${day2}`
   }) as MomentAppointment;
 }
 

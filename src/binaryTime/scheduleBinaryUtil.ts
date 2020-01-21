@@ -220,14 +220,13 @@ export class ScheduleBinaryUtil {
     const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
-      throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete}`);
+      throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
     }
 
     const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
       apptToDeleteBString
     );
-    const appointmentDay: number = timeSlotToDelete.startTime.day();
-    const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot[appointmentDay]);
+    const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot);
 
     return splitBookings.map((bookingInterval, idx) => {
       return this.deleteAppointmentInterval(
