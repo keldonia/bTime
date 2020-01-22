@@ -10,7 +10,8 @@ export function generateMockMoment(hour: number, minute: number, day: number = 0
     minute: () => minute,
     day: () => day,
     toString: () => `${hour}:${minute} on ${day}`,
-    diff: (moment2: moment.Moment) => day - moment2.day()
+    diff: (moment2: moment.Moment) => day - moment2.day(),
+    isBefore: (moment2: moment.Moment) => day !== moment2.day()
   }) as moment.Moment;
 }
 
@@ -32,7 +33,7 @@ export function generateMockAppointment(
 // NB: We are converting all times to UTC
 export function generateSimpleMomentAppointment(appointmentStart: Date): MomentAppointment {
   const apptStartUtc: moment.Moment = moment(appointmentStart).utc();
-  const appEndUtc: moment.Moment = moment(apptStartUtc.add(1, 'h'));
+  const appEndUtc: moment.Moment = moment(apptStartUtc.clone().add(1, 'h'));
   const apptObj: MomentAppointment = {
     startTime: apptStartUtc,
     endTime: appEndUtc

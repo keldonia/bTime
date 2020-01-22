@@ -20,8 +20,8 @@ export interface Schedule {
 }
 
 export enum ScheduleActions {
-  DELETE_APPT,
-  BOOKING_UPDATE
+  'DELETE_APPT',
+  'BOOKING_UPDATE'
 }
 
 export const validTimeIntervals: Set<number> = new Set([

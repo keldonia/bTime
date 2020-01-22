@@ -1,9 +1,91 @@
 import { Scheduler } from './../src';
 import * as TestUtils from './utils/testUtils';
-import { MomentAppointment, Schedule } from '../src/@types';
+import { MomentAppointment, Schedule, ScheduleActions } from '../src/@types';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
+import moment = require('moment');
 
 describe('Test Scheduler', () => {
+
+  describe('#processAppointment', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const mockDeleteAppointment: jest.Mock = jest.fn();
+    const mockHandleBookingUpdate: jest.Mock = jest.fn();
+
+    scheduler.deleteAppointment = mockDeleteAppointment;
+    scheduler.handleBookingUpdate = mockHandleBookingUpdate;
+
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should call delete appointment with only one appointment if the appointment does not cross the day boundary', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10,0, 11, 0, 1, 1);
+
+      const actionType: ScheduleActions = ScheduleActions.DELETE_APPT;
+
+      scheduler.processAppointment(apptToBook, schedule, actionType);
+
+      expect(mockDeleteAppointment).toBeCalledWith(apptToBook, schedule, undefined);
+    });
+
+    xit('should call delete appointment with two appointments if the appointment crosses the day boundary', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: MomentAppointment = {
+        startTime: moment('2011-10-10T23:30:00Z'),
+        endTime: moment('2011-10-11T00:30:00Z')
+      };
+      const actionType: ScheduleActions = ScheduleActions.DELETE_APPT;
+
+      const expectedAppt: MomentAppointment = {
+        startTime: moment(apptToBook.startTime).clone(),
+        endTime: moment(apptToBook.startTime).clone().hour(23).minute(59)
+      };
+      const expectedSecondAppt: MomentAppointment = {
+        startTime: moment(apptToBook.endTime).clone().hour(0).minute(0),
+        endTime: moment(apptToBook.endTime).clone()
+      };
+
+      scheduler.processAppointment(apptToBook, schedule, actionType);
+
+      expect(mockDeleteAppointment).toBeCalledWith(expectedAppt, schedule, expectedSecondAppt);
+    });
+
+    it('should return false if passed an invalid action type', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10, 0, 11, 0, 1, 1);
+      // This is a deliberate cast to break the type
+      const actionType: ScheduleActions = 'NOT_A_SCHEDULE_ACTION' as unknown as ScheduleActions;
+
+      const computedSchedule: Schedule | false = scheduler.processAppointment(apptToBook, schedule, actionType);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+  });
 
   describe('#handleBookingUpdate',  () => {
     const scheduler: Scheduler = new Scheduler(5);
@@ -20,7 +102,7 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
-      const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10,0, 11, 0, 1, 1);
+      const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10, 0, 11, 0, 1, 1);
 
       const dayOneExpectedBookings: MomentAppointment = TestUtils.generateMockAppointment(10, 0, 17, 0, 1, 1);
       const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
@@ -78,7 +160,7 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
-      const firstApptToBook: MomentAppointment = TestUtils.generateMockAppointment(23,0, 23, 59, 0, 0);
+      const firstApptToBook: MomentAppointment = TestUtils.generateMockAppointment(23, 0, 23, 59, 0, 0);
       const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(0, 0, 1, 0, 1, 1);
 
       const dayZeroExpectedBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 23, 59, 0, 0);
@@ -193,7 +275,7 @@ describe('Test Scheduler', () => {
     it('returns false if an appointment does not cross the day boundary', () => {
       const mommentAppt: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date('2011-10-10T10:48:00Z'));
       const crossesDayBoundary: boolean = scheduler.crosssesDayBoundary(mommentAppt);
-
+     
       expect(crossesDayBoundary).toBeFalsy();
     });
 
@@ -201,7 +283,7 @@ describe('Test Scheduler', () => {
       const mommentAppt: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date('2011-10-10T23:48:00Z'));
       const crossesDayBoundary: boolean = scheduler.crosssesDayBoundary(mommentAppt);
 
-      expect(crossesDayBoundary).toBeFalsy();
+      expect(crossesDayBoundary).toBeTruthy();
     });
   });
 });

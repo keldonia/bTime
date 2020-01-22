@@ -97,12 +97,12 @@ export class Scheduler {
 
     if (crosssesDayBoundary) {
       // Clone Appt
-      firstAppt = ({
+      firstAppt = {
         startTime: appointment.startTime,
-        endTime: moment(appointment.startTime).hour(23).minute(59)
-      });
+        endTime: moment(appointment.startTime).clone().hour(23).minute(59)
+      };
 
-      appointment.startTime = moment(appointment.endTime).hour(0).minute(0);
+      appointment.startTime = moment(appointment.endTime).clone().hour(0).minute(0);
     }
 
     if (actionType === ScheduleActions.DELETE_APPT) {
@@ -220,6 +220,6 @@ export class Scheduler {
    *  @returns {boolean} boolean
    */
   crosssesDayBoundary(appt: MomentAppointment): boolean {
-    return (moment.duration(appt.startTime.diff(appt.endTime)).asDays() !== 0);
+    return appt.startTime.isBefore(appt.endTime, 'D');
   }
 }
