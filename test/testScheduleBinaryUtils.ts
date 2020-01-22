@@ -207,7 +207,7 @@ describe("Schedule Binary Utils", () => {
         scheduleBinaryUtil.deleteAppointment(invalidAppt, appt2Str);
       }
       
-      expect(test).toThrow('Invalid appt passed to delete appointment: start: 12:20 on 1 :: end: 11:40 on 1');
+      expect(test).toThrow('Invalid appt passed to delete appointment: start: 12:20 on 0 :: end: 11:40 on 0');
     });
   });
 

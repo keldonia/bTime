@@ -187,13 +187,14 @@ export class Scheduler {
    *  @param {Schedule} schedule
    *  @param {MomentAppointment?} firstAppt
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @returns {Schedule} Schedule
    */
-  deleteAppointment(appointment: MomentAppointment, schedule: Schedule, firstAppt?: MomentAppointment) {
-    const startDay = appointment.startTime.day();
+  deleteAppointment(appointment: MomentAppointment, schedule: Schedule, firstAppt?: MomentAppointment): Schedule {
+    let startDay = appointment.startTime.day();
     const endDay = appointment.endTime.day();
 
     if (firstAppt) {
+      startDay = firstAppt.startTime.day();
       schedule.bookings[startDay] = this.binaryTimeFactory.deleteAppointment(
         firstAppt,
         schedule.bookings[startDay]

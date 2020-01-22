@@ -1,7 +1,10 @@
 import { MomentAppointment, Schedule } from './../../src/@types/index';
+import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 import * as moment from 'moment';
 
-export function generateMockMoment(hour: number, minute: number, day: number = 1) {
+const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+
+export function generateMockMoment(hour: number, minute: number, day: number = 0): moment.Moment {
   return ({
     hour: () => hour,
     minute: () => minute,
@@ -16,8 +19,8 @@ export function generateMockAppointment(
   minute1: number, 
   hour2: number, 
   minute2: number,
-  day1: number = 1,
-  day2: number = 1
+  day1: number = 0,
+  day2: number = 0
 ): MomentAppointment {
   return ({
     startTime: this.generateMockMoment(hour1, minute1, day1),
@@ -38,12 +41,56 @@ export function generateSimpleMomentAppointment(appointmentStart: Date): MomentA
   return apptObj;
 }
 
-export function generateSchedule(): Schedule {
-  const schedule: Schedule = {
-    schedule: [],
-    bookings: [],
-    weekStart: this.generateMockMoment(0, 1, 1);
+export function generateSchedule(
+  schedule: string[], 
+  bookings: string[], 
+  weekStart: moment.Moment = generateMockMoment(0, 1, 0)
+): Schedule {
+  return {
+    schedule: schedule,
+    bookings: bookings,
+    weekStart: weekStart
   };
+}
 
-  return schedule;
+// TODO: Should this be made a general utility, or extended further...
+export function generateTimeSet(
+  dayZero: MomentAppointment,
+  dayOne: MomentAppointment,
+  dayTwo?: MomentAppointment,
+  dayThree?: MomentAppointment,
+  dayFour?: MomentAppointment,
+  dayFive?: MomentAppointment,
+  daySix?: MomentAppointment
+): string[] {
+  const dayZeroString: string = binaryStringUtil.generateBinaryString(dayZero) as string;
+  const dayOneString: string = binaryStringUtil.generateBinaryString(dayOne) as string;
+  const scheduleSlots: string[] = [ dayZeroString, dayOneString ];
+  
+  if (dayTwo) {
+    const dayTwoString: string = binaryStringUtil.generateBinaryString(dayTwo) as string;
+    scheduleSlots.push(dayTwoString);
+  }
+
+  if (dayThree) {
+    const dayThreeString: string = binaryStringUtil.generateBinaryString(dayThree) as string;
+    scheduleSlots.push(dayThreeString);
+  }
+
+  if (dayFour) {
+    const dayFourString: string = binaryStringUtil.generateBinaryString(dayFour) as string;
+    scheduleSlots.push(dayFourString);
+  }
+
+  if (dayFive) {
+    const dayFiveString: string = binaryStringUtil.generateBinaryString(dayFive) as string;
+    scheduleSlots.push(dayFiveString);
+  }
+
+  if (daySix) {
+    const daySixString: string = binaryStringUtil.generateBinaryString(daySix) as string;
+    scheduleSlots.push(daySixString);
+  }
+
+  return scheduleSlots;
 }
