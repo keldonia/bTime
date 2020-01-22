@@ -135,10 +135,11 @@ export class Scheduler {
     schedule: Schedule,
     firstAppt?: MomentAppointment
   ): Schedule | false {
-    const startDay = appointment.startTime.day();
+    let startDay = appointment.startTime.day();
     const endDay = appointment.endTime.day();
 
     if (firstAppt) {
+      startDay = firstAppt.startTime.day();
       const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryString(firstAppt);
 
       if (!firstApptBString) {
