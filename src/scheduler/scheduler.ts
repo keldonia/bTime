@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { MomentAppointment, Schedule, daysInWeek, ScheduleActions } from '../@types';
+import { MomentAppointment, Schedule, daysInWeek, ScheduleActions, MomentAppointmentDuo } from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -45,6 +45,21 @@ export class Scheduler {
     };
 
     return apptObj;
+  }
+
+  composeAppointments(appointment: MomentAppointment): MomentAppointmentDuo {
+    // Clone Appt
+    const initialAppointment = {
+      startTime: appointment.startTime.clone(),
+      endTime: appointment.startTime.clone().hour(23).minute(59)
+    };
+
+    appointment.startTime = appointment.endTime.clone().hour(0).minute(0);
+
+    return {
+      initialAppointment,
+      secondAppointment: appointment
+    };
   }
 
   /**
@@ -96,13 +111,10 @@ export class Scheduler {
     let firstAppt: MomentAppointment;
 
     if (crosssesDayBoundary) {
-      // Clone Appt
-      firstAppt = {
-        startTime: appointment.startTime,
-        endTime: moment(appointment.startTime).clone().hour(23).minute(59)
-      };
+      const appointmentDuo: MomentAppointmentDuo = this.composeAppointments(appointment);
 
-      appointment.startTime = moment(appointment.endTime).clone().hour(0).minute(0);
+      firstAppt = appointmentDuo.secondAppointment;
+      appointment = appointmentDuo.initialAppointment;
     }
 
     if (actionType === ScheduleActions.DELETE_APPT) {
@@ -220,6 +232,6 @@ export class Scheduler {
    *  @returns {boolean} boolean
    */
   crosssesDayBoundary(appt: MomentAppointment): boolean {
-    return appt.startTime.isBefore(appt.endTime, 'D');
+    return appt.startTime.utc().day() !== appt.endTime.utc().day();
   }
 }

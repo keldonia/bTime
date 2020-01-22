@@ -30,6 +30,55 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10,0, 11, 0, 1, 1);
 
+      const actionType: ScheduleActions = ScheduleActions.BOOKING_UPDATE;
+
+      scheduler.processAppointment(apptToBook, schedule, actionType);
+
+      expect(mockHandleBookingUpdate).toBeCalledWith(apptToBook, schedule, undefined);
+    });
+
+    it('should call handleBookingUpdate with two appointments if the appointment crosses the day boundary', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: MomentAppointment = {
+        startTime: moment('2011-10-10T23:30:00Z'),
+        endTime: moment('2011-10-11T00:30:00Z')
+      };
+      const actionType: ScheduleActions = ScheduleActions.BOOKING_UPDATE;
+
+      const expectedAppt: MomentAppointment = {
+        startTime: moment(apptToBook.startTime).clone().utc(),
+        endTime: moment(apptToBook.startTime).clone().utc().hour(23).minute(59)
+      };
+      const expectedSecondAppt: MomentAppointment = {
+        startTime: moment(apptToBook.endTime).clone().utc().hour(0).minute(0),
+        endTime: moment(apptToBook.endTime).clone().utc()
+      };
+
+      scheduler.processAppointment(apptToBook, schedule, actionType);
+
+      expect(mockHandleBookingUpdate).toBeCalledWith(expectedAppt, schedule, expectedSecondAppt);
+    });
+
+    it('should call handleBookingUpdate with only one appointment if the appointment does not cross the day boundary', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: MomentAppointment = TestUtils.generateMockAppointment(10,0, 11, 0, 1, 1);
+
       const actionType: ScheduleActions = ScheduleActions.DELETE_APPT;
 
       scheduler.processAppointment(apptToBook, schedule, actionType);
@@ -37,7 +86,7 @@ describe('Test Scheduler', () => {
       expect(mockDeleteAppointment).toBeCalledWith(apptToBook, schedule, undefined);
     });
 
-    xit('should call delete appointment with two appointments if the appointment crosses the day boundary', () => {
+    it('should call delete appointment with two appointments if the appointment crosses the day boundary', () => {
       const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -54,12 +103,12 @@ describe('Test Scheduler', () => {
       const actionType: ScheduleActions = ScheduleActions.DELETE_APPT;
 
       const expectedAppt: MomentAppointment = {
-        startTime: moment(apptToBook.startTime).clone(),
-        endTime: moment(apptToBook.startTime).clone().hour(23).minute(59)
+        startTime: moment(apptToBook.startTime).clone().utc(),
+        endTime: moment(apptToBook.startTime).clone().utc().hour(23).minute(59)
       };
       const expectedSecondAppt: MomentAppointment = {
-        startTime: moment(apptToBook.endTime).clone().hour(0).minute(0),
-        endTime: moment(apptToBook.endTime).clone()
+        startTime: moment(apptToBook.endTime).clone().utc().hour(0).minute(0),
+        endTime: moment(apptToBook.endTime).clone().utc()
       };
 
       scheduler.processAppointment(apptToBook, schedule, actionType);

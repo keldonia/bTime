@@ -11,7 +11,7 @@ export function generateMockMoment(hour: number, minute: number, day: number = 0
     day: () => day,
     toString: () => `${hour}:${minute} on ${day}`,
     diff: (moment2: moment.Moment) => day - moment2.day(),
-    isBefore: (moment2: moment.Moment) => day !== moment2.day()
+    utc: () => generateMockMoment(hour, minute, day)
   }) as moment.Moment;
 }
 
