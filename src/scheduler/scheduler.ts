@@ -36,7 +36,7 @@ export class Scheduler {
    *
    *  @returns {MomentAppointment} MomentAppointment
    */
-  generateMomentAppointment(appointment: MomentAppointment): MomentAppointment {
+  enforceUTC(appointment: MomentAppointment): MomentAppointment {
     const apptStartUtc: moment.Moment = moment(appointment.startTime).utc();
     const appEndUtc: moment.Moment = moment(appointment.endTime).utc();
     const apptObj: MomentAppointment = {
@@ -81,8 +81,9 @@ export class Scheduler {
    *  @description Takes an appointment and update type and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
-   *  @param {Schedule} proposedSchedule
+   *  @param {MomentAppointment} appointment
    *  @param {Schedule} schedule
+   *  @param {ScheduleActions} actionType
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -123,7 +124,7 @@ export class Scheduler {
    *  @description Takes an appointment and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
-   *  @param {Schedule} proposedSchedule
+   *  @param {MomentAppointment} appointment
    *  @param {Schedule} schedule
    *  @param {MomentAppointment?} firstAppt
    *
@@ -182,7 +183,7 @@ export class Scheduler {
    *  @description Takes an appointment and update type and tests if the appointment delete
    *  is valid, if not it returns false, if it is the schedule is updated to reflect the deletion
    *
-   *  @param {Schedule} proposedSchedule
+   *  @param {MomentAppointment} appointment
    *  @param {Schedule} schedule
    *  @param {MomentAppointment?} firstAppt
    *

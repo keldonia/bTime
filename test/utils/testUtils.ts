@@ -1,13 +1,14 @@
-import { MomentAppointment } from './../../src/@types/index';
-import moment = require('moment');
+import { MomentAppointment, Schedule } from './../../src/@types/index';
+import * as moment from 'moment';
 
 export function generateMockMoment(hour: number, minute: number, day: number = 1) {
   return ({
     hour: () => hour,
     minute: () => minute,
     day: () => day,
-    toString: () => `${hour}:${minute} on ${day}`
-  });
+    toString: () => `${hour}:${minute} on ${day}`,
+    diff: (moment2: moment.Moment) => day - moment2.day()
+  }) as moment.Moment;
 }
 
 export function generateMockAppointment(
@@ -28,11 +29,21 @@ export function generateMockAppointment(
 // NB: We are converting all times to UTC
 export function generateSimpleMomentAppointment(appointmentStart: Date): MomentAppointment {
   const apptStartUtc: moment.Moment = moment(appointmentStart).utc();
-  const appEndUtc: moment.Moment = moment(appointmentStart).utc().add(1, "h");
+  const appEndUtc: moment.Moment = moment(apptStartUtc.add(1, 'h'));
   const apptObj: MomentAppointment = {
     startTime: apptStartUtc,
     endTime: appEndUtc
   };
 
   return apptObj;
+}
+
+export function generateSchedule(): Schedule {
+  const schedule: Schedule = {
+    schedule: [],
+    bookings: [],
+    weekStart: this.generateMockMoment(0, 1, 1);
+  };
+
+  return schedule;
 }
