@@ -52,7 +52,7 @@
     ]
   },
   "linterOptions": {
-      "exclude": ["**/*.json"]
+    "exclude": ["**/*.json"]
   },
   "include": [
     "src/**/*.ts"
