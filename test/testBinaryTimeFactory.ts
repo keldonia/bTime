@@ -35,9 +35,11 @@ describe('Binary Time Factory', () => {
     const mockTestViabilityAndCompute: jest.Mock = jest.fn();
     const mockDeleteAppointment: jest.Mock = jest.fn();
     const mockModifyScheduleAndBooking: jest.Mock = jest.fn();
+    const mockTimeStringSplit: jest.Mock = jest.fn();
 
     binaryStringUtil.parseBString = mockParseBString;
     binaryStringUtil.generateBinaryString = mockGenerateBinaryString;
+    binaryStringUtil.timeStringSplit = mockTimeStringSplit;
     scheduleBinaryUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
     scheduleBinaryUtil.deleteAppointment = mockDeleteAppointment;
     scheduleBinaryUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
@@ -66,6 +68,14 @@ describe('Binary Time Factory', () => {
       
       expect(mockGenerateBinaryString).toBeCalled();
       expect(mockGenerateBinaryString).toBeCalledWith(testArg1);
+    });
+
+    it(`should call it's binaryStringUtil's timeStringSplit 
+      when timeStringSplit called`, () => {
+      binaryTimeFactory.timeStringSplit(TestUtils.emptyDay());
+      
+      expect(mockTimeStringSplit).toBeCalled();
+      expect(mockTimeStringSplit).toBeCalledWith(TestUtils.emptyDay());
     });
 
     it(`should call it's scheduleBinaryUtil's testViabilityAndCompute 
