@@ -65,6 +65,20 @@ export class BinaryTimeFactory {
   }
 
   /**
+   * @description Splits each schedule BString into a string of length
+   * defined in the regex
+   *
+   * NB: This is a passthrough to the configured binaryStringUtil
+   *
+   * @param {string} scheduleString binary schedule string to be split
+   *
+   * @returns {string[]} string[]
+   */
+  public timeStringSplit(scheduleString: string): string[] {
+    return this.binaryStringUtil.timeStringSplit(scheduleString);
+  }
+
+  /**
    *  @description Tests that two time intervals do not overlap
    *
    *  NB: This is a passthrough to the configured scheduleBinaryUtil

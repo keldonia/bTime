@@ -31,7 +31,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string | false} string | false
    */
-  mergeScheduleBStringsWithTest(timeSlot: MomentAppointment, schedule: string): string | false {
+  public mergeScheduleBStringsWithTest(timeSlot: MomentAppointment, schedule: string): string | false {
     const apptBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlot);
 
     if (!apptBString) {
@@ -73,7 +73,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string | false} string | false
    */
-  mergeScheduleBStringWithTest(timeSlotBString: string, schedule: string): string | false {
+  public mergeScheduleBStringWithTest(timeSlotBString: string, schedule: string): string | false {
     const parsedSchedule: number = this.binaryStringUtil.parseBString(schedule);
     const parsedApptBString: number = this.binaryStringUtil.parseBString(timeSlotBString);
     // Performs a XOR on the schedule and the proposed schedule
@@ -103,7 +103,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string | false} string | false
    */
-  modifyScheduleAndBooking(
+  public modifyScheduleAndBooking(
     scheduleBStringToModify: string,
     scheduleBStringToTest: string,
     appt: string
@@ -149,7 +149,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string | false} string | false
    */
-  modifyScheduleAndBookingInterval(
+  public modifyScheduleAndBookingInterval(
     scheduleBStringToModify: string,
     scheduleBStringToTest: string,
     appt: string
@@ -184,7 +184,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {number | false} number | false
    */
-  testViabilityAndCompute(binary1: number, binary2: number): number | false {
+  public testViabilityAndCompute(binary1: number, binary2: number): number | false {
     const modified: number = binary1 ^ binary2;
     const test: number = binary1 | binary2;
 
@@ -202,7 +202,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {boolean} boolean
    */
-  booleanViabilityCheck(binaryDec: number | boolean): boolean {
+  public booleanViabilityCheck(binaryDec: number | boolean): boolean {
     return binaryDec && binaryDec !== 0;
   }
 
@@ -216,7 +216,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string} string of modified time interval
    */
-  deleteAppointment(timeSlotToDelete: MomentAppointment, scheduleSlot: string): string {
+  public deleteAppointment(timeSlotToDelete: MomentAppointment, scheduleSlot: string): string {
     const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
@@ -248,7 +248,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string} string of modified time interval
    */
-  deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string {
+  public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string {
     const parsedSchedule: number = this.binaryStringUtil.parseBString(scheduleInterval);
     const parsedApptBString: number = this.binaryStringUtil.parseBString(timeSlotBString);
     // Performs a XOR on the schedule and the proposed schedule

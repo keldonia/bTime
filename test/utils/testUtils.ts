@@ -54,6 +54,16 @@ export function generateSchedule(
   };
 }
 
+// Exposing for certain tests
+export function emptyDay(): string {
+  return binaryStringUtil['emptyDay'].slice();
+};
+
+export function emptyWeek(): string[] {
+  return new Array(7).fill(emptyDay());
+};
+
+
 // TODO: Should this be made a general utility, or extended further...
 export function generateTimeSet(
   dayZero: MomentAppointment,
@@ -71,26 +81,36 @@ export function generateTimeSet(
   if (dayTwo) {
     const dayTwoString: string = binaryStringUtil.generateBinaryString(dayTwo) as string;
     scheduleSlots.push(dayTwoString);
+  } else {
+    scheduleSlots.push(emptyDay());
   }
 
   if (dayThree) {
     const dayThreeString: string = binaryStringUtil.generateBinaryString(dayThree) as string;
     scheduleSlots.push(dayThreeString);
+  } else {
+    scheduleSlots.push(emptyDay());
   }
 
   if (dayFour) {
     const dayFourString: string = binaryStringUtil.generateBinaryString(dayFour) as string;
     scheduleSlots.push(dayFourString);
+  } else {
+    scheduleSlots.push(emptyDay());
   }
 
   if (dayFive) {
     const dayFiveString: string = binaryStringUtil.generateBinaryString(dayFive) as string;
     scheduleSlots.push(dayFiveString);
+  } else {
+    scheduleSlots.push(emptyDay());
   }
 
   if (daySix) {
     const daySixString: string = binaryStringUtil.generateBinaryString(daySix) as string;
     scheduleSlots.push(daySixString);
+  } else {
+    scheduleSlots.push(emptyDay());
   }
 
   return scheduleSlots;

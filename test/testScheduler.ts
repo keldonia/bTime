@@ -6,6 +6,134 @@ import moment = require('moment');
 
 describe('Test Scheduler', () => {
 
+  describe('#updateSchedule', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const emptyBookings: string[] = TestUtils.emptyWeek();
+
+    it('should return the modified schedule if the current bookings are contained within the proposed availability', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(
+        dayZeroBookings, 
+        dayOneBookings
+      );
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const proposedDayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 20, 0, 0, 0);
+      const proposedDayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 18, 0, 0, 0);
+      const proposedAvailability: string[] = TestUtils.generateTimeSet(
+        proposedDayZeroSchedule, 
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule
+      );
+
+      const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
+      
+      const expectedSchedule: Schedule = {
+        schedule: proposedAvailability,
+        bookings: bookings,
+        weekStart: schedule.weekStart
+      };
+
+      const computedSchedule: Schedule = scheduler.updateSchedule(proposedSchedule, schedule) as Schedule;
+
+      expect(computedSchedule).toMatchObject(expectedSchedule);
+    });
+
+    it('should return false if the current bookings are not contained within the proposed availability, empty hour', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const proposedDayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(12, 0, 18, 0, 0, 0);
+      const proposedDayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 18, 0, 0, 0);
+      const proposedAvailability: string[] = TestUtils.generateTimeSet(
+        proposedDayZeroSchedule, 
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule
+      );
+      
+      const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
+
+      const computedSchedule: Schedule | boolean = scheduler.updateSchedule(proposedSchedule, schedule);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it('should return false if the current bookings are not contained within the proposed availability, non-empty hour', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(12, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const proposedDayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(12, 30, 18, 0, 0, 0);
+      const proposedDayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 18, 0, 0, 0);
+      const proposedAvailability: string[] = TestUtils.generateTimeSet(
+        proposedDayZeroSchedule, 
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule
+      );
+      
+      const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
+
+      const computedSchedule: Schedule | boolean = scheduler.updateSchedule(proposedSchedule, schedule);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+  });
+
   describe('#processAppointment', () => {
     const scheduler: Scheduler = new Scheduler(5);
     const mockDeleteAppointment: jest.Mock = jest.fn();

@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { MomentAppointment, Schedule, daysInWeek, ScheduleActions, MomentAppointmentDuo } from '../@types';
+import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo } from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -36,9 +36,9 @@ export class Scheduler {
    *
    *  @returns {MomentAppointment} MomentAppointment
    */
-  enforceUTC(appointment: MomentAppointment): MomentAppointment {
-    const apptStartUtc: moment.Moment = moment(appointment.startTime).utc();
-    const appEndUtc: moment.Moment = moment(appointment.endTime).utc();
+  public enforceUTC(appointment: MomentAppointment): MomentAppointment {
+    const apptStartUtc: moment.Moment = appointment.startTime.clone().utc();
+    const appEndUtc: moment.Moment = appointment.endTime.clone().utc();
     const apptObj: MomentAppointment = {
       startTime: apptStartUtc,
       endTime: appEndUtc
@@ -47,7 +47,14 @@ export class Scheduler {
     return apptObj;
   }
 
-  composeAppointments(appointment: MomentAppointment): MomentAppointmentDuo {
+  /**
+   *  @description Utility function to split appointments over day boundary
+   *
+   *  @param {MomentAppointment} appointment appointment to split
+   *
+   *  @returns {MomentAppointmentDuo} MomentAppointmentDuo
+   */
+  public composeAppointments(appointment: MomentAppointment): MomentAppointmentDuo {
     // Clone Appt
     const initialAppointment = {
       startTime: appointment.startTime.clone(),
@@ -71,23 +78,36 @@ export class Scheduler {
    *
    *  @returns {Schedule | false} Schedule | false
    */
-  updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule | false {
-
-    for (let i = 0; i < daysInWeek; i++) {
+  public updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule | false {
+    // for (let i = 0; i < daysInWeek; i++) {
+    for (let i = 0; i < 1; i++) {
       // We test that no bookings fall outside of the scheduled availability
-      const flippedBookings: number = ~this.binaryTimeFactory.parseBString(schedule.bookings[i]);
       const proposed: string = proposedSchedule.schedule[i];
-      const viabile: number | false = this.binaryTimeFactory.testViabilityAndCompute(
-        this.binaryTimeFactory.parseBString(proposed),
-        flippedBookings
-      );
+      const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
+      const splitproposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
 
-      if (!viabile) {
-        return false;
+      for (let j = 0; j < splitBookings.length; j++) {
+        const proposedInterval: number = this.binaryTimeFactory.parseBString(splitproposed[j]);
+        const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
+
+        if (proposedInterval === 0 && bBookingInterval !== proposedInterval) {
+          return false;
+        }
+
+        const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitproposed[j]);
+
+        const viabile: number | false = this.binaryTimeFactory.testViabilityAndCompute(
+          flippedProposedInterval,
+          bBookingInterval
+        );
+
+        if (!viabile) {
+          return false;
+        }
       }
-
-      schedule.schedule[i] = proposed;
     }
+
+    schedule.schedule = proposedSchedule.schedule;
 
     return schedule;
   }
@@ -102,7 +122,7 @@ export class Scheduler {
    *
    *  @returns {Schedule | false} Schedule | false
    */
-  processAppointment(
+  public processAppointment(
     appointment: MomentAppointment,
     schedule: Schedule,
     actionType: ScheduleActions
@@ -142,7 +162,7 @@ export class Scheduler {
    *
    *  @returns {Schedule | false} Schedule | false
    */
-  handleBookingUpdate(
+  public handleBookingUpdate(
     appointment: MomentAppointment,
     schedule: Schedule,
     firstAppt?: MomentAppointment
@@ -202,7 +222,7 @@ export class Scheduler {
    *
    *  @returns {Schedule} Schedule
    */
-  deleteAppointment(appointment: MomentAppointment, schedule: Schedule, firstAppt?: MomentAppointment): Schedule {
+  public deleteAppointment(appointment: MomentAppointment, schedule: Schedule, firstAppt?: MomentAppointment): Schedule {
     let startDay = appointment.startTime.day();
     const endDay = appointment.endTime.day();
 
@@ -231,7 +251,7 @@ export class Scheduler {
    *
    *  @returns {boolean} boolean
    */
-  crosssesDayBoundary(appt: MomentAppointment): boolean {
+  public crosssesDayBoundary(appt: MomentAppointment): boolean {
     return appt.startTime.utc().day() !== appt.endTime.utc().day();
   }
 }
