@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo } from '../@types';
+import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo, daysInWeek } from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -79,8 +79,7 @@ export class Scheduler {
    *  @returns {Schedule | false} Schedule | false
    */
   public updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule | false {
-    // for (let i = 0; i < daysInWeek; i++) {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
       const proposed: string = proposedSchedule.schedule[i];
       const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
