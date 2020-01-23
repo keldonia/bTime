@@ -1,7 +1,7 @@
 {
   "name": "btime",
   "version": "1.0.0",
-  "description": "Includes structures to hold manage schedules using a biinary representation of time",
+  "description": "Includes structures to hold manage schedules using a binary representation of time",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -17,10 +17,6 @@
   "author": "Brian Lambert <keldoniaskylar@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^7.0.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.12.4",
-    "express": "^4.16.4",
     "moment": "^2.24.0"
   },
   "directories": {
@@ -37,6 +33,8 @@
     "@stryker-mutator/jest-runner": "^2.0.0",
     "@stryker-mutator/typescript": "^2.0.0",
     "@types/jest": "^24.9.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.12.4",
     "jest": "^24.9.0",
     "jest-date-mock": "^1.0.7",
     "jest-junit": "^6.4.0",
