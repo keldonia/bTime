@@ -1,10 +1,55 @@
 import { Scheduler } from './../src';
 import * as TestUtils from './utils/testUtils';
-import { MomentAppointment, Schedule, ScheduleActions } from '../src/@types';
+import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo } from '../src/@types';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
 import moment = require('moment');
 
 describe('Test Scheduler', () => {
+
+  describe('#enforceUTC', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+
+    it('should properly convert times to utc', () => {
+      const apptToBook: MomentAppointment = {
+        startTime: moment('2011-10-10T23:30:00Z'),
+        endTime: moment('2011-10-11T00:30:00Z')
+      };
+      const expectedAppt: MomentAppointment = {
+        startTime: apptToBook.startTime.clone().utc(),
+        endTime: apptToBook.endTime.clone().utc()
+      };
+
+      const computedUtcAppt: MomentAppointment = scheduler.enforceUTC(apptToBook);
+      
+      expect(computedUtcAppt).toMatchObject(expectedAppt);
+    });
+  });
+
+  describe('#composeAppointments', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+
+    it('should properly create the appointmentDuo splitting the appt on the day boundary', () => {
+      const apptToBook: MomentAppointment = {
+        startTime: moment('2011-10-10T23:30:00Z'),
+        endTime: moment('2011-10-11T00:30:00Z')
+      };
+      const expectedAppt: MomentAppointment = {
+        startTime: apptToBook.startTime.clone().utc(),
+        endTime: apptToBook.startTime.clone().utc().hour(23).minute(59)
+      };
+      const expectedSecondAppt: MomentAppointment = {
+        startTime: apptToBook.endTime.clone().utc().hour(0).minute(0),
+        endTime: apptToBook.endTime.clone().utc()
+      };
+
+      const appointmentDuo: MomentAppointmentDuo = scheduler.composeAppointments(apptToBook);
+
+      expect(appointmentDuo.initialAppointment.startTime.utc().isSame(expectedAppt.startTime.utc())).toBeTruthy();
+      expect(appointmentDuo.initialAppointment.endTime.utc().isSame(expectedAppt.endTime.utc())).toBeTruthy();
+      expect(appointmentDuo.secondAppointment.startTime.utc().isSame(expectedSecondAppt.startTime.utc())).toBeTruthy();
+      expect(appointmentDuo.secondAppointment.endTime.utc().isSame(expectedSecondAppt.endTime.utc())).toBeTruthy();
+    });
+  });
 
   describe('#updateSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);

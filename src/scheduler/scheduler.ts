@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo, daysInWeek } from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
@@ -37,14 +36,10 @@ export class Scheduler {
    *  @returns {MomentAppointment} MomentAppointment
    */
   public enforceUTC(appointment: MomentAppointment): MomentAppointment {
-    const apptStartUtc: moment.Moment = appointment.startTime.clone().utc();
-    const appEndUtc: moment.Moment = appointment.endTime.clone().utc();
-    const apptObj: MomentAppointment = {
-      startTime: apptStartUtc,
-      endTime: appEndUtc
+    return {
+      startTime: appointment.startTime.clone().utc(),
+      endTime:  appointment.endTime.clone().utc()
     };
-
-    return apptObj;
   }
 
   /**
@@ -58,10 +53,10 @@ export class Scheduler {
     // Clone Appt
     const initialAppointment = {
       startTime: appointment.startTime.clone(),
-      endTime: appointment.startTime.clone().hour(23).minute(59)
+      endTime: appointment.startTime.clone().utc().hour(23).minute(59)
     };
 
-    appointment.startTime = appointment.endTime.clone().hour(0).minute(0);
+    appointment.startTime = appointment.endTime.clone().utc().hour(0).minute(0);
 
     return {
       initialAppointment,
