@@ -66,7 +66,7 @@ export class Scheduler {
 
   /**
    *  @description Tests a propsoed schedule update and updates the schedule, if the
-   *  update is valid or false if the update is not valid
+   *  update is valid or returns false if the update is not valid
    *
    *  @param {Schedule} proposedSchedule
    *  @param {Schedule} schedule
