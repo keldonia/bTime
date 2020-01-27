@@ -46,7 +46,7 @@ Further, information on these two classes can be found here:
 1. Retrieve current availability
 1. Convert back from bTimes to moment appointments
 1. Allow for the conversion of multiple appointments in one go
-1. Number only mode (don't store as strings)
+1. Number only mode (don't store as strings), optional parameter
 1. Remove moment dependendency
 
 ## Assumptions
