@@ -50,6 +50,18 @@ The `#timeStringSplit` splits a binary string into intervals dependent upon the 
   const splitBStriing: string[] = bTimeFactory.timeStringSplit(string);
 ```
 
+## `#decimalToBinaryString`
+
+The `#decimalToBinaryString` converts number into a binaryString representation with the given scheduling interval
+
+```typescript
+  // If using the scheduler
+  // Instantiates a new Scheduler with a time interval of 5 min.
+  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+
+  const splitBStriing: string[] = bTimeFactory.decimalToBinaryString(string);
+```
+
 ## `#testViabilityAndCompute`
 
 The `#testViabilityAndCompute` tests that two time intervals do not overlap, either returning the result of a bitwise OR function performed on the two numbers, or false if value returned from bitwise OR isn't equal to bitwise XOR.
