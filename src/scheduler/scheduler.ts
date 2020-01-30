@@ -65,6 +65,47 @@ export class Scheduler {
   }
 
   /**
+   *  @description Takes a valid schedule and computes the remaining availability based
+   *  on the total availability and current bookings, returns false if an invalid scehdule
+   *  is passed
+   *
+   *  @param {Schedule} schedule
+   *
+   *  @returns {string[] | false} string[] | false
+   */
+  public getCurrentAvailability(schedule: Schedule): string[] | false {
+    const totalRemainingAvailability: string[] = [];
+    for (let i = 0; i < daysInWeek; i++) {
+      // We test that no bookings fall outside of the scheduled availability
+      const availability: string = schedule.schedule[i];
+      const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
+      const splitAvailability: string[] = this.binaryTimeFactory.timeStringSplit(availability);
+      const calculatedAvailability: string[] = [];
+
+      for (let j = 0; j < splitBookings.length; j++) {
+        const flippedBAvailabiltyInterval: number = ~this.binaryTimeFactory.parseBString(splitAvailability[j]);
+        const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
+        const remainingAvailabilityMask: number | false = this.binaryTimeFactory.testViabilityAndCompute(
+          flippedBAvailabiltyInterval,
+          bBookingInterval
+        );
+
+        if (!remainingAvailabilityMask) {
+          return false;
+        }
+
+        const remainingAvailability: number = ~remainingAvailabilityMask;
+
+        calculatedAvailability.push(this.binaryTimeFactory.decimalToBinaryString(remainingAvailability));
+      }
+
+      totalRemainingAvailability.push(calculatedAvailability.join(''));
+    }
+
+    return totalRemainingAvailability;
+  }
+
+  /**
    *  @description Tests a propsoed schedule update and updates the schedule, if the
    *  update is valid or returns false if the update is not valid
    *

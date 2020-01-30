@@ -26,6 +26,9 @@
   // Instantiates a new Scheduler with a time interval of 5 min.
   const scheduler: Scheduler = new Scheduler(5); 
 
+  // To get remaining availability
+  const remainingAvailabiltiy: stringp[] = scheduler.getCurrentAvailability(schedule);
+
   // To update a schedule
   const updatedSchedule: Schedule | false = scheduler.updateSchedule(proposedSchedule, currentSchedule);
 
@@ -43,7 +46,6 @@ Further, information on these two classes can be found here:
 
 ## Coming Features
 
-1. Retrieve current availability
 1. Convert back from bTimes to moment appointments
 1. Allow for the conversion of multiple appointments in one go
 1. Number only mode (don't store as strings), optional parameter

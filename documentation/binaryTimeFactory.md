@@ -52,7 +52,7 @@ The `#timeStringSplit` splits a binary string into intervals dependent upon the 
 
 ## `#decimalToBinaryString`
 
-The `#decimalToBinaryString` converts number into a binaryString representation with the given scheduling interval
+The `#decimalToBinaryString` converts number into a binaryString representation with the given scheduling interval.
 
 ```typescript
   // If using the scheduler

@@ -51,6 +51,118 @@ describe('Test Scheduler', () => {
     });
   });
 
+  describe('#getCurrentAvailability', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const emptyBookings: string[] = TestUtils.emptyWeek();
+
+    it('should return the no remaining availability, if there is no availabilty or bookings', () => {
+      const scheduledAvailability: string[] = emptyBookings;
+      const bookings: string[] = emptyBookings;
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const computedAvailability: string[] = scheduler.getCurrentAvailability(schedule) as string[];
+
+      expect(computedAvailability).toMatchObject(emptyBookings);
+    });
+
+    it('should return the original availability if there are no bookings', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+      const bookings: string[] = emptyBookings;
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      
+      const computedAvailability: string[] = scheduler.getCurrentAvailability(schedule) as string[];
+
+      expect(computedAvailability).toMatchObject(scheduledAvailability);
+    });
+
+    it('should return no remaining availity, if the availabiltiy and bookings exactly match', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, scheduledAvailability);
+
+      const computedAvailability: string[] = scheduler.getCurrentAvailability(schedule) as string[];
+
+      expect(computedAvailability).toMatchObject(emptyBookings);
+    });
+
+    it('should return the expected availabiltiy if there is availability and bookings', () => {
+      const dayZeroSchedule: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 17, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(
+        dayZeroBookings, 
+        dayOneBookings
+      );
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const expectedDayOne: MomentAppointment = TestUtils.generateMockAppointment(17, 0, 18, 0, 0, 0);
+      const expectedDayTwo: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 11, 0, 1, 1);
+      const expectedTimeSet: string[] = TestUtils.generateTimeSet(
+        expectedDayOne,
+        expectedDayTwo,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const computedAvailability: string[] = scheduler.getCurrentAvailability(schedule) as string[];
+
+      expect(computedAvailability).toMatchObject(expectedTimeSet);
+    });
+
+    it('should return false if an invalid schedule is passed', () => {
+      const scheduledAvailability: string[] = emptyBookings;
+      const dayZeroBookings: MomentAppointment = TestUtils.generateMockAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: MomentAppointment = TestUtils.generateMockAppointment(9, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(
+        dayZeroBookings, 
+        dayOneBookings, 
+        dayOneBookings, 
+        dayOneBookings,
+        dayOneBookings,
+        dayOneBookings,
+        dayOneBookings
+      );
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      
+      const computedAvailability: string[] | false = scheduler.getCurrentAvailability(schedule);
+
+      expect(computedAvailability).toBeFalsy();
+    });
+  });
+
   describe('#updateSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
     const emptyBookings: string[] = TestUtils.emptyWeek();

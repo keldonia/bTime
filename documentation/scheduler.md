@@ -14,6 +14,19 @@
 
 **NB**: Each schedule group, ie all appointments for a given person, should have the same time interval
 
+## `#getCurrentAvailability`
+
+The `#getCurrentAvailability` Takes a valid schedule and computes the remaining availability based on the total availability and current bookings, returns false if an invalid scehdule is passed.
+
+```typescript
+  // If using the scheduler
+  // Instantiates a new Scheduler with a time interval of 5 min.
+  const scheduler: Scheduler = new Scheduler(5); 
+
+  // To get remaining availabiltiy in a schedule
+  const remainingAvailability: Schedule | false = scheduler.getCurrentAvailability(schedule);
+```
+
 ## `#updateSchedule`
 
 The `#updateSchedule` method takes two arguments, the proposed schedule and the current schedule.  These schedules must adhere to the Schedule interface.  It will compare the proposed schedule against the bookings of the current schedule and will either return the updated schedule complete with the current bookings, in the case that current bookings work with the updated schedule or false if they do not.
