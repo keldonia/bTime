@@ -79,6 +79,20 @@ export class BinaryTimeFactory {
   }
 
   /**
+   * @description Converts number into a binaryString representation with
+   * the given scheduling interval
+   *
+   * NB: This is a passthrough to the configured binaryStringUtil
+   *
+   * @param {number} decimal number to be converted into a binary string
+   *
+   * @returns {string} string
+   */
+  public decimalToBinaryString(decimal: number): string {
+    return this.binaryStringUtil.decimalToBinaryString(decimal);
+  }
+
+  /**
    *  @description Tests that two time intervals do not overlap
    *
    *  NB: This is a passthrough to the configured scheduleBinaryUtil

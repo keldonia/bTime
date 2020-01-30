@@ -32,14 +32,16 @@ describe('Binary Time Factory', () => {
     
     const mockParseBString: jest.Mock = jest.fn();
     const mockGenerateBinaryString: jest.Mock = jest.fn();
+    const mockTimeStringSplit: jest.Mock = jest.fn();
+    const mockDecimalToBinaryString: jest.Mock = jest.fn();
     const mockTestViabilityAndCompute: jest.Mock = jest.fn();
     const mockDeleteAppointment: jest.Mock = jest.fn();
     const mockModifyScheduleAndBooking: jest.Mock = jest.fn();
-    const mockTimeStringSplit: jest.Mock = jest.fn();
 
     binaryStringUtil.parseBString = mockParseBString;
     binaryStringUtil.generateBinaryString = mockGenerateBinaryString;
     binaryStringUtil.timeStringSplit = mockTimeStringSplit;
+    binaryStringUtil.decimalToBinaryString = mockDecimalToBinaryString;
     scheduleBinaryUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
     scheduleBinaryUtil.deleteAppointment = mockDeleteAppointment;
     scheduleBinaryUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
@@ -76,6 +78,15 @@ describe('Binary Time Factory', () => {
       
       expect(mockTimeStringSplit).toBeCalled();
       expect(mockTimeStringSplit).toBeCalledWith(TestUtils.emptyDay());
+    });
+
+    it(`should call it's binaryStringUtil's decimalToBinaryString 
+      when decimalToBinaryString called`, () => {
+      const testNumber: number = 1;
+      binaryTimeFactory.decimalToBinaryString(testNumber);
+      
+      expect(mockDecimalToBinaryString).toBeCalled();
+      expect(mockDecimalToBinaryString).toBeCalledWith(testNumber);
     });
 
     it(`should call it's scheduleBinaryUtil's testViabilityAndCompute 
