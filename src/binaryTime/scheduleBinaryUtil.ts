@@ -1,5 +1,5 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
-import { MomentAppointment } from "../@types";
+import { MomentAppointment, Appointment } from "../@types";
 
 /**
  *  @typedef ScheduleBinaryUtil is responsible for handling scheduling use bit manipulations
@@ -33,6 +33,48 @@ export class ScheduleBinaryUtil {
    */
   public mergeScheduleBStringsWithTest(timeSlot: MomentAppointment, schedule: string): string | false {
     const apptBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlot);
+
+    if (!apptBString) {
+      return false;
+    }
+
+    const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
+      apptBString
+    );
+    const splitSchedule: string[] = this.binaryStringUtil.timeStringSplit(schedule);
+    const mergedSchedule: string[] = [];
+
+    /*
+    *  NB: Iterate over each section of the schedule & appt to
+    *  generate a combined schedule, it returns early if the merged
+    *  schedule and appt BStrings conflict
+    */
+    for (let i: number = 0; i < splitSchedule.length; i++) {
+      const mergeReturn: string | false = this.mergeScheduleBStringWithTest(
+        splitSchedule[i],
+        apptMask[i]
+      );
+
+      if (!mergeReturn) {
+        return false;
+      }
+      mergedSchedule.push(mergeReturn);
+    }
+
+    return mergedSchedule.join("");
+  }
+
+  /**
+   *  @description Tests that an appointment does not overlap with another appointment, if it
+   *  does not overlap, the appointment is added to the bookings, else return false
+   *
+   *  @param {Appointment} timeSlot timeSlot to modify schedule
+   *  @param {string} schedule schedule to modify
+   *
+   *  @returns {string | false} string | false
+   */
+  public mergeScheduleDateBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
+    const apptBString: string | false = this.binaryStringUtil.generateBinaryStringFromAppointment(timeSlot);
 
     if (!apptBString) {
       return false;
@@ -218,6 +260,36 @@ export class ScheduleBinaryUtil {
    */
   public deleteAppointment(timeSlotToDelete: MomentAppointment, scheduleSlot: string): string {
     const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlotToDelete);
+
+    if (!apptToDeleteBString) {
+      throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
+    }
+
+    const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
+      apptToDeleteBString
+    );
+    const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot);
+
+    return splitBookings.map((bookingInterval, idx) => {
+      return this.deleteAppointmentInterval(
+        apptMask[idx],
+        bookingInterval
+      );
+    }).join("");
+  }
+
+  /**
+   *  @description Tests removal a give time slot from a given time interval
+   *  and if valid removes it
+   *  NB: This is also used for calculating remaining availability
+   *
+   *  @param {Appointment} timeSlotToDelete timeSlot to delete
+   *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
+   *
+   *  @returns {string} string of modified time interval
+   */
+  public deleteDateAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
+    const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryStringFromAppointment(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
       throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
