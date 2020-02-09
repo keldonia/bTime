@@ -27,7 +27,7 @@
   const scheduler: Scheduler = new Scheduler(5); 
 
   // To get remaining availability
-  const remainingAvailabiltiy: stringp[] = scheduler.getCurrentAvailability(schedule);
+  const remainingAvailabiltiy: string[] = scheduler.getCurrentAvailability(schedule);
 
   // To update a schedule
   const updatedSchedule: Schedule | false = scheduler.updateSchedule(proposedSchedule, currentSchedule);
@@ -46,10 +46,12 @@ Further, information on these two classes can be found here:
 
 ## Coming Features
 
-1. Convert back from bTimes to moment appointments
+1. Remove moment dependendency
+1. Convert back from bTimes to appointments
 1. Allow for the conversion of multiple appointments in one go
 1. Number only mode (don't store as strings), optional parameter
-1. Remove moment dependendency
+1. Throw Exceptions for cleaning stack tracing & surround with catches
+1. Add an example use case
 
 ## Assumptions
 

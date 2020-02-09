@@ -18,6 +18,16 @@ export interface MomentAppointmentDuo {
   secondAppointment: MomentAppointment
 }
 
+export interface Appointment {
+  startTime: Date,
+  endTime: Date
+}
+
+export interface AppointmentDuo {
+  initialAppointment: Appointment,
+  secondAppointment: Appointment
+}
+
 export interface Schedule {
   schedule: string[], // This indexes 0-6, starting (0) with Sunday
   bookings: string[], // This indexes 0-6, starting (0) with Sunday

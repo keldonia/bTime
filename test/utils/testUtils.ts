@@ -1,4 +1,4 @@
-import { MomentAppointment, Schedule } from './../../src/@types/index';
+import { MomentAppointment, Schedule, Appointment } from './../../src/@types/index';
 import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 import * as moment from 'moment';
 
@@ -15,6 +15,14 @@ export function generateMockMoment(hour: number, minute: number, day: number = 0
   }) as moment.Moment;
 }
 
+export function generateMockUTCDate(hour: number, minute: number, day: number = 0): Date {
+  return ({
+    getUTCHours: () => hour,
+    getUTCMinutes: () => minute,
+    getUTCDay: () => day
+  }) as Date;
+}
+
 export function generateMockAppointment(
   hour1: number, 
   minute1: number, 
@@ -28,6 +36,21 @@ export function generateMockAppointment(
     endTime: this.generateMockMoment(hour2, minute2, day2),
     toString: () => `start: ${hour1}:${minute1} on ${day1} :: end: ${hour2}:${minute2} on ${day2}`
   }) as MomentAppointment;
+}
+
+export function generateMockDateAppointment(
+  hour1: number, 
+  minute1: number, 
+  hour2: number, 
+  minute2: number,
+  day1: number = 0,
+  day2: number = 0
+): Appointment {
+  return ({
+    startTime: this.generateMockUTCDate(hour1, minute1, day1),
+    endTime: this.generateMockUTCDate(hour2, minute2, day2),
+    toString: () => `start: ${hour1}:${minute1} on ${day1} :: end: ${hour2}:${minute2} on ${day2}`
+  }) as Appointment;
 }
 
 // NB: We are converting all times to UTC
