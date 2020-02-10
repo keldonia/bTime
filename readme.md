@@ -1,6 +1,6 @@
 # bTime
 
-**bTime** is a small lightweight library, with a single dependency, designed to help manage schedules using bit manipulation.  It is particularly suited to working with dense schedules with discreet time intervals, e.g. 5 minutes.
+**bTime** is a small lightweight library, with no dependencies, designed to help manage schedules using bit manipulation.  It is particularly suited to working with dense schedules with discreet time intervals, e.g. 5 minutes.
 
 ## Getting Started
 
@@ -46,7 +46,6 @@ Further, information on these two classes can be found here:
 
 ## Coming Features
 
-1. Remove moment dependendency
 1. Convert back from bTimes to appointments
 1. Allow for the conversion of multiple appointments in one go
 1. Number only mode (don't store as strings), optional parameter
@@ -56,6 +55,6 @@ Further, information on these two classes can be found here:
 
 ## Assumptions
 
-1. Weeks start on Sunday (same as moment)
+1. Weeks start on Sunday
 1. Times are expected to be in UTC
 1. Using 2016 * 2 digits (as a string, once for the schedule, once for bookings) to store the time for the week is ok for 5 min intervals, note this adjusts as time interval size changes.  The efficiency is greater for denser schedules.
