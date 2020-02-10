@@ -16,9 +16,7 @@
   },
   "author": "Brian Lambert <keldoniaskylar@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "moment": "^2.24.0"
-  },
+  "dependencies": {},
   "directories": {
     "test": "test"
   },
