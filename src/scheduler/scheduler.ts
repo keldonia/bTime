@@ -33,7 +33,7 @@ export class Scheduler {
    *
    *  @param {Appointment} appointment appointment to convert to UTC
    *
-   *  @returns {Appointment} MomentAppointment
+   *  @returns {Appointment} Appointment
    */
   public enforceUTC(appointment: Appointment): Appointment {
     const appointmentStart: Date = appointment.startTime;
@@ -251,7 +251,7 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryStringFromAppointment(firstAppt);
+      const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryString(firstAppt);
 
       if (!firstApptBString) {
         return false;
@@ -270,7 +270,7 @@ export class Scheduler {
       schedule.bookings[startDay] = tempBookings;
     }
 
-    const apptBString: string | false = this.binaryTimeFactory.generateBinaryStringFromAppointment(appointment);
+    const apptBString: string | false = this.binaryTimeFactory.generateBinaryString(appointment);
 
     if (!apptBString) {
       return false;
@@ -307,13 +307,13 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      schedule.bookings[startDay] = this.binaryTimeFactory.deleteDateAppointment(
+      schedule.bookings[startDay] = this.binaryTimeFactory.deleteAppointment(
         firstAppt,
         schedule.bookings[startDay]
       );
     }
 
-    schedule.bookings[endDay] = this.binaryTimeFactory.deleteDateAppointment(
+    schedule.bookings[endDay] = this.binaryTimeFactory.deleteAppointment(
       appointment,
       schedule.bookings[endDay]
     );

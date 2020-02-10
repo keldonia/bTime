@@ -1,6 +1,5 @@
 import {
-  minutesInHour, binaryBase, hoursInDay, MomentAppointment, validTimeIntervals, Appointment } from "../@types";
-import { Moment } from 'moment';
+  minutesInHour, binaryBase, hoursInDay, validTimeIntervals, Appointment } from "../@types";
 
 const zeroPad: string = "0";
 
@@ -54,11 +53,11 @@ export class BinaryStringUtil {
    * appointment, assuming it is valid.  If the appointment is invalid,
    * it return false
    *
-   * @param {MomentAppointment} appt the appointment to converted
+   * @param {Appointment} appt the appointment to converted
    *
    * @returns {string | false} string | false
    */
-  public generateBinaryString(appt: MomentAppointment): string | false {
+  public generateBinaryString(appt: Appointment): string | false {
     const startPointer = this.findBinaryPointer(appt.startTime);
     const endPointer = this.findBinaryPointer(appt.endTime);
     const timeBlock = endPointer - startPointer;
@@ -73,44 +72,6 @@ export class BinaryStringUtil {
   }
 
   /**
-   * @description Generates a binary string representation of a given
-   * appointment, assuming it is valid.  If the appointment is invalid,
-   * it return false
-   *
-   * @param {Appointment} appt the appointment to converted
-   *
-   * @returns {string | false} string | false
-   */
-  public generateBinaryStringFromAppointment(appt: Appointment): string | false {
-    const startPointer = this.findBinaryPointerFromDate(appt.startTime);
-    const endPointer = this.findBinaryPointerFromDate(appt.endTime);
-    const timeBlock = endPointer - startPointer;
-
-    if (timeBlock < 0) {
-      return false;
-    }
-
-    return (this.emptyDay.substring(0, startPointer) +
-      "1".repeat(timeBlock) +
-      this.emptyDay.substring(endPointer));
-  }
-
-  /**
-   * @description Finds a the pointer for a given moment in time
-   * based on the instatiated time interval
-   *
-   * @param {Moment} time the time to retrieve the pointer
-   *
-   * @returns {number} number
-   */
-  public findBinaryPointer(time: Moment): number{
-    const hourPointer: number = time.hour() * this.intervalsInHour;
-    const minutePointer: number = Math.round(time.minute() / this.timeInterval);
-
-    return hourPointer + minutePointer;
-  }
-
-  /**
    * @description Finds a the pointer for a given date in time
    * based on the instatiated time interval
    *
@@ -118,7 +79,7 @@ export class BinaryStringUtil {
    *
    * @returns {number} number
    */
-  public findBinaryPointerFromDate(time: Date): number{
+  public findBinaryPointer(time: Date): number{
     const hourPointer: number = time.getUTCHours() * this.intervalsInHour;
     const minutePointer: number = Math.round(time.getUTCMinutes() / this.timeInterval);
 

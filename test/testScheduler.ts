@@ -499,7 +499,7 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(10, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayOneExpectedBookings) as string;
+      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdate(apptToBook, schedule) as Schedule;
 
@@ -558,10 +558,10 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 1, 0, 1, 1);
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook) as Schedule;
 
@@ -627,7 +627,7 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11,0, 12, 0, 1, 1);
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayOneExpectedBookings) as string;
+      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointment(apptToDelete, schedule);
 
@@ -650,10 +650,10 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(0, 0, 1, 0, 1, 1);
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 0, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryStringFromAppointment(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointment(apptToDelete, schedule, firstApptToDelete);
 

@@ -1,7 +1,7 @@
 import * as TestUtils from './utils/testUtils';
 import { ScheduleBinaryUtil } from './../src/binaryTime/scheduleBinaryUtil';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
-import { MomentAppointment, Appointment } from '../src/@types';
+import { Appointment } from '../src/@types';
 
 describe("Schedule Binary Utils", () => {
   const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -50,10 +50,10 @@ describe("Schedule Binary Utils", () => {
 
     tests.forEach(test => {
       const args: number[] = test.args;
-      const appt1: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt1: Appointment = TestUtils.generateMockDateAppointment(
         args[0], args[1], args[2], args[3]
       );
-      const appt2: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
       const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
@@ -88,14 +88,14 @@ describe("Schedule Binary Utils", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
-      const appt2Str: string = binaryStringUtil.generateBinaryStringFromAppointment(appt2) as string;
+      const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
       const expected: string | boolean = test.expected;
       const testName: string = !!expected ?
         "should return schedule binary if appointments do not overlap" :
         "should return boolean false if appointments do overlap";
 
       it(testName, () => {
-        const mergedBString: string | false = scheduleBinaryUtil.mergeScheduleDateBStringsWithTest(appt1, appt2Str);
+        const mergedBString: string | false = scheduleBinaryUtil.mergeScheduleBStringsWithTest(appt1, appt2Str);
 
         expect(mergedBString).toEqual(expected);
       });
@@ -139,16 +139,16 @@ describe("Schedule Binary Utils", () => {
     });
 
     it('should process multiple intervals', () => {
-      const scheduleToModify: MomentAppointment = TestUtils.generateMockAppointment(
+      const scheduleToModify: Appointment = TestUtils.generateMockDateAppointment(
         12, 40, 17, 40
       );
-      const baseAvailability: MomentAppointment = TestUtils.generateMockAppointment(
+      const baseAvailability: Appointment = TestUtils.generateMockDateAppointment(
         12, 20, 19, 24
       );
-      const appt: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt: Appointment = TestUtils.generateMockDateAppointment(
         12, 20, 12, 40
       );
-      const expected: MomentAppointment = TestUtils.generateMockAppointment(
+      const expected: Appointment = TestUtils.generateMockDateAppointment(
         12, 20, 17, 40
       );
       const scheduleToModifyStr: string = binaryStringUtil.generateBinaryString(scheduleToModify) as string;
@@ -214,7 +214,7 @@ describe("Schedule Binary Utils", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
-      const appt2Str: string = binaryStringUtil.generateBinaryStringFromAppointment(appt2) as string;
+      const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
       const expected: string | boolean = test.expected;
       const testName: string = !!expected ?
         "should return schedule binary if appointments do not overlap" :
@@ -222,7 +222,7 @@ describe("Schedule Binary Utils", () => {
 
 
       it(testName, () => {
-        const mergedBString: string | false = scheduleBinaryUtil.deleteDateAppointment(appt1, appt2Str);
+        const mergedBString: string | false = scheduleBinaryUtil.deleteAppointment(appt1, appt2Str);
         expect(mergedBString).toEqual(expected);
       });
     });
@@ -234,9 +234,9 @@ describe("Schedule Binary Utils", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         13, 12, 15, 24
       );
-      const appt2Str: string = binaryStringUtil.generateBinaryStringFromAppointment(appt2) as string;
+      const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
       function test() {
-        scheduleBinaryUtil.deleteDateAppointment(invalidAppt, appt2Str);
+        scheduleBinaryUtil.deleteAppointment(invalidAppt, appt2Str);
       }
       
       expect(test).toThrow('Invalid appt passed to delete appointment: start: 12:20 on 0 :: end: 11:40 on 0');
@@ -254,10 +254,10 @@ describe("Schedule Binary Utils", () => {
 
     tests.forEach(test => {
       const args: number[] = test.args;
-      const appt1: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt1: Appointment = TestUtils.generateMockDateAppointment(
         args[0], args[1], args[2], args[3]
       );
-      const appt2: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
       const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;
@@ -274,10 +274,10 @@ describe("Schedule Binary Utils", () => {
     });
 
     it('should through an error when passed an invalid appointment to delete', () => {
-      const invalidAppt: MomentAppointment = TestUtils.generateMockAppointment(
+      const invalidAppt: Appointment = TestUtils.generateMockDateAppointment(
         12, 20, 11, 40
       );
-      const appt2: MomentAppointment = TestUtils.generateMockAppointment(
+      const appt2: Appointment = TestUtils.generateMockDateAppointment(
         13, 12, 15, 24
       );
       const appt2Str: string = binaryStringUtil.generateBinaryString(appt2) as string;

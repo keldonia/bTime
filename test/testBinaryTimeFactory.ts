@@ -2,7 +2,7 @@ import * as TestUtils from './utils/testUtils';
 import { BinaryTimeFactory } from './../src/binaryTime/index';
 import { ScheduleBinaryUtil } from '../src/binaryTime/scheduleBinaryUtil';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
-import { MomentAppointment } from '../src/@types';
+import { Appointment } from '../src/@types';
 
 describe('Binary Time Factory', () => {
   describe('constructor', () => {
@@ -64,7 +64,7 @@ describe('Binary Time Factory', () => {
     it(`should call it's binaryStringUtil's generateBinaryString 
       when generateBinaryString called`, () => {
       
-      const testArg1: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date());
+      const testArg1: Appointment = TestUtils.generateSimpleDateAppointment(new Date());
       
       binaryTimeFactory.generateBinaryString(testArg1);
       
@@ -104,7 +104,7 @@ describe('Binary Time Factory', () => {
     it(`should call it's scheduleBinaryUtil's deleteAppointment 
       when deleteAppointment called`, () => {
       
-      const testArg1: MomentAppointment = TestUtils.generateSimpleMomentAppointment(new Date());
+      const testArg1: Appointment = TestUtils.generateSimpleDateAppointment(new Date());
       const testArg2: string = '00';
       
       binaryTimeFactory.deleteAppointment(testArg1, testArg2);
