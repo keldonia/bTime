@@ -1,4 +1,4 @@
-import { MomentAppointment, Schedule, Appointment } from './../../src/@types/index';
+import { MomentAppointment, Schedule, Appointment} from './../../src/@types/index';
 import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 import * as moment from 'moment';
 
@@ -65,10 +65,40 @@ export function generateSimpleMomentAppointment(appointmentStart: Date): MomentA
   return apptObj;
 }
 
+// NB: We are converting all times to UTC
+export function generateSimpleDateAppointment(appointmentStart: Date): Appointment {
+  const apptStartUtc: Date = new Date(Date.UTC(
+    appointmentStart.getUTCFullYear(), 
+    appointmentStart.getUTCMonth(), 
+    appointmentStart.getUTCDate(),
+    appointmentStart.getUTCHours(),
+    appointmentStart.getUTCMinutes()
+  ));
+
+  /** 
+   * NB: If a parameter is outside of the expected range, the UTC() method updates 
+   * the other parameters to accommodate the value. For example, if 15 is used for month, 
+   * the year will be incremented by 1 (year + 1) and 3 will be used for the month. 
+   * */ 
+  const appEndUtc: Date = new Date(Date.UTC(
+    appointmentStart.getUTCFullYear(), 
+    appointmentStart.getUTCMonth(), 
+    appointmentStart.getUTCDate(),
+    appointmentStart.getUTCHours() + 1,
+    appointmentStart.getUTCMinutes()
+  ));
+  const apptObj: Appointment = {
+    startTime: apptStartUtc,
+    endTime: appEndUtc
+  };
+
+  return apptObj;
+}
+
 export function generateSchedule(
   schedule: string[], 
   bookings: string[], 
-  weekStart: moment.Moment = generateMockMoment(0, 1, 0)
+  weekStart: Date = generateMockUTCDate(0, 1, 0)
 ): Schedule {
   return {
     schedule: schedule,
@@ -89,48 +119,48 @@ export function emptyWeek(): string[] {
 
 // TODO: Should this be made a general utility, or extended further...
 export function generateTimeSet(
-  dayZero: MomentAppointment,
-  dayOne: MomentAppointment,
-  dayTwo?: MomentAppointment,
-  dayThree?: MomentAppointment,
-  dayFour?: MomentAppointment,
-  dayFive?: MomentAppointment,
-  daySix?: MomentAppointment
+  dayZero: Appointment,
+  dayOne: Appointment,
+  dayTwo?: Appointment,
+  dayThree?: Appointment,
+  dayFour?: Appointment,
+  dayFive?: Appointment,
+  daySix?: Appointment
 ): string[] {
-  const dayZeroString: string = binaryStringUtil.generateBinaryString(dayZero) as string;
-  const dayOneString: string = binaryStringUtil.generateBinaryString(dayOne) as string;
+  const dayZeroString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayZero) as string;
+  const dayOneString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayOne) as string;
   const scheduleSlots: string[] = [ dayZeroString, dayOneString ];
   
   if (dayTwo) {
-    const dayTwoString: string = binaryStringUtil.generateBinaryString(dayTwo) as string;
+    const dayTwoString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayTwo) as string;
     scheduleSlots.push(dayTwoString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayThree) {
-    const dayThreeString: string = binaryStringUtil.generateBinaryString(dayThree) as string;
+    const dayThreeString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayThree) as string;
     scheduleSlots.push(dayThreeString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayFour) {
-    const dayFourString: string = binaryStringUtil.generateBinaryString(dayFour) as string;
+    const dayFourString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayFour) as string;
     scheduleSlots.push(dayFourString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayFive) {
-    const dayFiveString: string = binaryStringUtil.generateBinaryString(dayFive) as string;
+    const dayFiveString: string = binaryStringUtil.generateBinaryStringFromAppointment(dayFive) as string;
     scheduleSlots.push(dayFiveString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (daySix) {
-    const daySixString: string = binaryStringUtil.generateBinaryString(daySix) as string;
+    const daySixString: string = binaryStringUtil.generateBinaryStringFromAppointment(daySix) as string;
     scheduleSlots.push(daySixString);
   } else {
     scheduleSlots.push(emptyDay());

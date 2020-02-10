@@ -1,4 +1,4 @@
-import { MomentAppointment, Schedule, ScheduleActions, MomentAppointmentDuo, daysInWeek } from '../@types';
+import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo} from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -31,36 +31,80 @@ export class Scheduler {
   /**
    *  @description Utility function to ensure all times are UTC
    *
-   *  @param {MomentAppointment} appointment appointment to convert to UTC
+   *  @param {Appointment} appointment appointment to convert to UTC
    *
-   *  @returns {MomentAppointment} MomentAppointment
+   *  @returns {Appointment} MomentAppointment
    */
-  public enforceUTC(appointment: MomentAppointment): MomentAppointment {
+  public enforceUTC(appointment: Appointment): Appointment {
+    const appointmentStart: Date = appointment.startTime;
+    const startTime: Date = new Date(
+      Date.UTC(
+        appointmentStart.getUTCFullYear(),
+        appointmentStart.getUTCMonth(),
+        appointmentStart.getUTCDate(),
+        appointmentStart.getUTCHours(),
+        appointmentStart.getUTCMinutes()
+      )
+    );
+    const appointmentEnd: Date = appointment.endTime;
+    const endTime: Date = new Date(
+      Date.UTC(
+        appointmentEnd.getUTCFullYear(),
+        appointmentEnd.getUTCMonth(),
+        appointmentEnd.getUTCDate(),
+        appointmentEnd.getUTCHours(),
+        appointmentEnd.getUTCMinutes()
+      )
+    );
+
     return {
-      startTime: appointment.startTime.clone().utc(),
-      endTime:  appointment.endTime.clone().utc()
+      startTime,
+      endTime
     };
   }
 
   /**
    *  @description Utility function to split appointments over day boundary
    *
-   *  @param {MomentAppointment} appointment appointment to split
+   *  @param {Appointment} appointment appointment to split
    *
-   *  @returns {MomentAppointmentDuo} MomentAppointmentDuo
+   *  @returns {AppointmentDuo} AppointmentDuo
    */
-  public composeAppointments(appointment: MomentAppointment): MomentAppointmentDuo {
+  public composeAppointments(appointment: Appointment): AppointmentDuo {
+    const utcAppt: Appointment = this.enforceUTC(appointment);
+    const utcStartTime: Date = utcAppt.startTime;
+    const utcEndTime: Date = utcAppt.endTime;
+
     // Clone Appt
-    const initialAppointment = {
-      startTime: appointment.startTime.clone(),
-      endTime: appointment.startTime.clone().utc().hour(23).minute(59)
+    const initialAppointment: Appointment = {
+      startTime: utcStartTime,
+      endTime: new Date(
+        Date.UTC(
+          utcStartTime.getUTCFullYear(),
+          utcStartTime.getUTCMonth(),
+          utcStartTime.getUTCDate(),
+          23,
+          59
+        )
+      )
     };
 
-    appointment.startTime = appointment.endTime.clone().utc().hour(0).minute(0);
+    const secondAppointment: Appointment = {
+      startTime: new Date(
+        Date.UTC(
+          utcEndTime.getUTCFullYear(),
+          utcEndTime.getUTCMonth(),
+          utcEndTime.getUTCDate(),
+          0,
+          0
+        )
+      ),
+      endTime: utcEndTime
+    };
 
     return {
       initialAppointment,
-      secondAppointment: appointment
+      secondAppointment
     };
   }
 
@@ -151,22 +195,22 @@ export class Scheduler {
    *  @description Takes an appointment and update type and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
-   *  @param {MomentAppointment} appointment
+   *  @param {Appointment} appointment
    *  @param {Schedule} schedule
    *  @param {ScheduleActions} actionType
    *
    *  @returns {Schedule | false} Schedule | false
    */
   public processAppointment(
-    appointment: MomentAppointment,
+    appointment: Appointment,
     schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
     const crosssesDayBoundary: boolean = this.crosssesDayBoundary(appointment);
-    let firstAppt: MomentAppointment;
+    let firstAppt: Appointment;
 
     if (crosssesDayBoundary) {
-      const appointmentDuo: MomentAppointmentDuo = this.composeAppointments(appointment);
+      const appointmentDuo: AppointmentDuo = this.composeAppointments(appointment);
 
       firstAppt = appointmentDuo.secondAppointment;
       appointment = appointmentDuo.initialAppointment;
@@ -191,23 +235,23 @@ export class Scheduler {
    *  @description Takes an appointment and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
-   *  @param {MomentAppointment} appointment
+   *  @param {Appointment} appointment
    *  @param {Schedule} schedule
-   *  @param {MomentAppointment?} firstAppt
+   *  @param {Appointment?} firstAppt
    *
    *  @returns {Schedule | false} Schedule | false
    */
   public handleBookingUpdate(
-    appointment: MomentAppointment,
+    appointment: Appointment,
     schedule: Schedule,
-    firstAppt?: MomentAppointment
+    firstAppt?: Appointment
   ): Schedule | false {
-    let startDay = appointment.startTime.day();
-    const endDay = appointment.endTime.day();
+    let startDay = appointment.startTime.getUTCDay();
+    const endDay = appointment.endTime.getUTCDay();
 
     if (firstAppt) {
-      startDay = firstAppt.startTime.day();
-      const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryString(firstAppt);
+      startDay = firstAppt.startTime.getUTCDay();
+      const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryStringFromAppointment(firstAppt);
 
       if (!firstApptBString) {
         return false;
@@ -226,7 +270,7 @@ export class Scheduler {
       schedule.bookings[startDay] = tempBookings;
     }
 
-    const apptBString: string | false = this.binaryTimeFactory.generateBinaryString(appointment);
+    const apptBString: string | false = this.binaryTimeFactory.generateBinaryStringFromAppointment(appointment);
 
     if (!apptBString) {
       return false;
@@ -251,25 +295,25 @@ export class Scheduler {
    *  @description Takes an appointment and update type and tests if the appointment delete
    *  is valid, if not it returns false, if it is the schedule is updated to reflect the deletion
    *
-   *  @param {MomentAppointment} appointment
+   *  @param {Appointment} appointment
    *  @param {Schedule} schedule
-   *  @param {MomentAppointment?} firstAppt
+   *  @param {Appointment?} firstAppt
    *
    *  @returns {Schedule} Schedule
    */
-  public deleteAppointment(appointment: MomentAppointment, schedule: Schedule, firstAppt?: MomentAppointment): Schedule {
-    let startDay = appointment.startTime.day();
-    const endDay = appointment.endTime.day();
+  public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule {
+    let startDay = appointment.startTime.getUTCDay();
+    const endDay = appointment.endTime.getUTCDay();
 
     if (firstAppt) {
-      startDay = firstAppt.startTime.day();
-      schedule.bookings[startDay] = this.binaryTimeFactory.deleteAppointment(
+      startDay = firstAppt.startTime.getUTCDay();
+      schedule.bookings[startDay] = this.binaryTimeFactory.deleteDateAppointment(
         firstAppt,
         schedule.bookings[startDay]
       );
     }
 
-    schedule.bookings[endDay] = this.binaryTimeFactory.deleteAppointment(
+    schedule.bookings[endDay] = this.binaryTimeFactory.deleteDateAppointment(
       appointment,
       schedule.bookings[endDay]
     );
@@ -282,11 +326,11 @@ export class Scheduler {
    *
    *  NB: We assume that at most appts cross 1 day boundary
    *
-   *  @param {MomentAppointment} appt
+   *  @param {Appointment} appt
    *
    *  @returns {boolean} boolean
    */
-  public crosssesDayBoundary(appt: MomentAppointment): boolean {
-    return appt.startTime.utc().day() !== appt.endTime.utc().day();
+  public crosssesDayBoundary(appt: Appointment): boolean {
+    return appt.startTime.getUTCDay() !== appt.endTime.getUTCDay();
   }
 }

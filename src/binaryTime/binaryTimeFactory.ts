@@ -1,6 +1,6 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
 import { ScheduleBinaryUtil } from "./scheduleBinaryUtil";
-import { MomentAppointment, validTimeIntervals } from "../@types";
+import { MomentAppointment, validTimeIntervals, Appointment } from "../@types";
 
 /**
  * @typedef BinaryTimeFactory Manages and exposes various binary scheduling and string
@@ -64,6 +64,22 @@ export class BinaryTimeFactory {
     return this.binaryStringUtil.generateBinaryString(appt);
   }
 
+
+  /**
+   * @description Generates a binary string representation of a given
+   * appointment, assuming it is valid.  If the appointment is invalid,
+   * it return false
+   *
+   * NB: This is a passthrough to the configured binaryStringUtil
+   *
+   * @param {Appointment} appt the appointment to converted
+   *
+   * @returns {string | false} string | false
+   */
+  public generateBinaryStringFromAppointment(appt: Appointment): string | false {
+    return this.binaryStringUtil.generateBinaryStringFromAppointment(appt);
+  }
+
   /**
    * @description Splits each schedule BString into a string of length
    * defined in the regex
@@ -120,6 +136,23 @@ export class BinaryTimeFactory {
    */
   public deleteAppointment(timeSlotToDelete: MomentAppointment, scheduleSlot: string): string {
     return this.scheduleBinaryUtil.deleteAppointment(timeSlotToDelete, scheduleSlot);
+  }
+
+
+  /**
+   *  @description Tests removal a give time slot from a given time interval
+   *  and if valid removes it
+   *
+   *  NB: This is also used for calculating remaining availability
+   *  NB: This is a passthrough to the configured scheduleBinaryUtil
+   *
+   *  @param {Appointment} timeSlotToDelete timeSlot to delete
+   *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
+   *
+   *  @returns {string} string of modified time interval
+   */
+  public deleteDateAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
+    return this.scheduleBinaryUtil.deleteDateAppointment(timeSlotToDelete, scheduleSlot);
   }
 
   /**

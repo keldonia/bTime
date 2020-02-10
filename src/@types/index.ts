@@ -31,7 +31,7 @@ export interface AppointmentDuo {
 export interface Schedule {
   schedule: string[], // This indexes 0-6, starting (0) with Sunday
   bookings: string[], // This indexes 0-6, starting (0) with Sunday
-  weekStart: Moment
+  weekStart: Date
 }
 
 export enum ScheduleActions {
