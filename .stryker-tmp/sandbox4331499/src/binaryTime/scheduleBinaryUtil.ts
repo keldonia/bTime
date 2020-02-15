@@ -14,33 +14,12 @@ export class ScheduleBinaryUtil {
   /**
    *  @description ScheduleBinaryUtil is responsible for handling scheduling use bit manipulations
    *
-   *  @param {BinaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
+   *  @param {binaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
    *
    *  @returns {ScheduleBinaryUtil} scheduleBinaryUtil
    */
   constructor(binaryStringUtil: BinaryStringUtil) {
     this.binaryStringUtil = binaryStringUtil;
-  }
-
-  /**
-   *  @description Takes in a date and gets the UTC date and returns the UTC date that began the
-   *   week that date is in.
-   *
-   *  @param {Date} Date date to find the beginning of the week
-   *
-   *  @returns {Date} Date
-   */
-  public getFirstDayOfWeekFromDate(date: Date): Date {
-    const modifiedDate = date.getUTCDate() - date.getUTCDay();
-    return new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        modifiedDate,
-        0,
-        0
-      )
-    );
   }
 
   /**

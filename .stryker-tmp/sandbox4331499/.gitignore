@@ -1,0 +1,8 @@
+# ignore node modules and dist
+/node_modules/**
+/dist/**
+
+# remove test coverage
+/coverage/**
+/output/**
+junit.xml

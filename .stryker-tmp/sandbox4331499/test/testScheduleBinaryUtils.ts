@@ -7,32 +7,6 @@ describe("Schedule Binary Utils", () => {
   const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
   const scheduleBinaryUtil: ScheduleBinaryUtil = new ScheduleBinaryUtil(binaryStringUtil);
 
-  describe("#getFirstDayOfWeekFromDate", () => {
-    const tests = [
-      { input: new Date('2020-02-12T00:00:00Z'), expected: new Date('2020-02-09T00:00:00Z') },
-      { input: new Date('2020-02-09T00:00:00Z'), expected: new Date('2020-02-09T00:00:00Z') },
-      { input: new Date('2020-02-15T00:00:00Z'), expected: new Date('2020-02-09T00:00:00Z') },
-      { input: new Date('2020-02-11T00:00:00Z'), expected: new Date('2020-02-09T00:00:00Z') },
-      { input: new Date('2020-04-01T00:00:00Z'), expected: new Date('2020-03-29T00:00:00Z') },
-      { input: new Date('2020-04-04T00:00:00Z'), expected: new Date('2020-03-29T00:00:00Z') },
-      { input: new Date('2020-03-29T00:00:00Z'), expected: new Date('2020-03-29T00:00:00Z') },
-      { input: new Date('2019-12-30T00:00:00Z'), expected: new Date('2019-12-29T00:00:00Z') },
-      { input: new Date('2020-01-01T00:00:00Z'), expected: new Date('2019-12-29T00:00:00Z') },
-      { input: new Date('2020-01-03T00:00:00Z'), expected: new Date('2019-12-29T00:00:00Z') }
-    ];
-
-    tests.forEach(test => {
-      const testName: string = `Date of ${test.input.toUTCString()} should return
-        a start week date of ${test.expected.toUTCString()}`;
-
-      it(testName, () => {
-        const computedStartOfWeek: Date = scheduleBinaryUtil.getFirstDayOfWeekFromDate(test.input);
-
-        expect(computedStartOfWeek.valueOf()).toEqual(test.expected.valueOf());
-      });
-    });
-  });
-
   describe("#mergeScheduleBStringWithTest()", () => {
     const tests = [
       { args: [ "000011110000", "000000000011" ], expected: "000011110011" },
