@@ -1,4 +1,4 @@
-import { Schedule, Appointment} from './../../src/@types/index';
+import { Schedule, Appointment, hoursInDay} from './../../src/@types/index';
 import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 
 const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -72,6 +72,10 @@ export function generateSchedule(
 export function emptyDay(): string {
   return binaryStringUtil['emptyDay'].slice();
 };
+
+export function fullDay(): string {
+  return '1'.repeat(binaryStringUtil['intervalsInHour'] * hoursInDay);
+}
 
 export function emptyWeek(): string[] {
   return new Array(7).fill(emptyDay());

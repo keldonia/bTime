@@ -4,5 +4,6 @@
 
 # remove test coverage
 /coverage/**
+/.stryker-tmp/**
 /output/**
 junit.xml

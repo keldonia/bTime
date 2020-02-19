@@ -72,7 +72,7 @@ describe("Binary Utils", () => {
         args[0], args[1], args[2], args[3]
       );
       const expected = test.expected;
-      const testName = "should properly construct binary representation of appointment";
+      const testName = `should properly construct binary representation of appointment start: ${args[0]}:${args[1]} `;
 
       it(testName, () => {
         const bString: string | false = binaryStringUtil.generateBinaryString(testAppt);

@@ -9,7 +9,8 @@
     "lint": "tslint -p .",
     "prepare": "npm run build",
     "stryker": "stryker run",
-    "test": "npm audit && npm run lint && npm run build && node . && jest --coverage"
+    "test": "npm audit && npm run lint && npm run build && node . && jest --coverage",
+    "test:watch": "npm audit && npm run lint && npm run build && node . && jest --coverage --watch"
   },
   "repository": {
     "type": "git"
