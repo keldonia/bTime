@@ -1,6 +1,7 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
 import { ScheduleBinaryUtil } from "./scheduleBinaryUtil";
-import { validTimeIntervals, Appointment } from "../@types";
+import { validTimeIntervals, Appointment, Schedule, AppointmentSchedule } from "../@types";
+import { BinaryConversionUtil } from "./binaryConversionUtil";
 
 /**
  * @typedef BinaryTimeFactory Manages and exposes various binary scheduling and string
@@ -16,6 +17,7 @@ export class BinaryTimeFactory {
   private timeInterval?: number;
   private binaryStringUtil?: BinaryStringUtil;
   private scheduleBinaryUtil?: ScheduleBinaryUtil;
+  private binaryConversionUtil?: BinaryConversionUtil;
 
   /**
    * @description BinaryTimeFactory Manages and exposes various binary scheduling and string
@@ -33,6 +35,7 @@ export class BinaryTimeFactory {
     this.timeInterval = timeInterval;
     this.binaryStringUtil = new BinaryStringUtil(this.timeInterval);
     this.scheduleBinaryUtil = new ScheduleBinaryUtil(this.binaryStringUtil);
+    this.binaryConversionUtil = new BinaryConversionUtil(this.timeInterval);
   }
 
   /**
@@ -147,5 +150,19 @@ export class BinaryTimeFactory {
       scheduleBStringToTest,
       appt
     );
+  }
+
+  /**
+   *  @description Takes a schedule and converts into an array of appointments for each date
+   *
+   *  NB: This is a passthrough to the configured BinaryConversionUtil
+   *
+   *  @param {Schedule} Schedule schedule to generate base Date objects
+   *  @param {string[]} string[] remaining availability for a given schedule
+   *
+   *  @returns {AppointmentSchedule} AppointmentSchedule
+   */
+  public convertScheduleToAppointmentSchedule(schedule: Schedule, availability: string[]): AppointmentSchedule {
+    return this.binaryConversionUtil.convertScheduleToAppointmentSchedule(schedule, availability);
   }
 }

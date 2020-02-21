@@ -23,6 +23,24 @@ describe('binaryConversionUtil', () => {
 
       expect(binaryConversionUtil['intervalsInDay']).toEqual(expectedIntervals);
     });
+
+    it('should not throw an error if an valid time interval is supplied: 5', () => {
+      const timeInterval: number = 5;
+      function test() {
+        new BinaryConversionUtil(timeInterval);
+      };
+
+      expect(test).not.toThrow();
+    });
+
+    it('should throw an error if an invalid time interval is supplied: 7', () => {
+      const timeInterval: number = 7;
+      function test() {
+        new BinaryConversionUtil(timeInterval);
+      };
+
+      expect(test).toThrow(`Invalid timeInterval entered for BinaryConversionUtil: ${timeInterval}`);
+    });
   });
 
   describe('getDatesFromFromStartDate', () => {

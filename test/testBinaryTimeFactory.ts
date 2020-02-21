@@ -2,11 +2,12 @@ import * as TestUtils from './utils/testUtils';
 import { BinaryTimeFactory } from './../src/binaryTime/index';
 import { ScheduleBinaryUtil } from '../src/binaryTime/scheduleBinaryUtil';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
-import { Appointment } from '../src/@types';
+import { Appointment, Schedule } from '../src/@types';
+import { BinaryConversionUtil } from '../src/binaryTime/binaryConversionUtil';
 
 describe('Binary Time Factory', () => {
   describe('constructor', () => {
-    it('should throw an error if an valid time interval is supplied: 3', () => {
+    it('should not throw an error if an valid time interval is supplied: 3', () => {
       const timeInterval: number = 3;
       function test() {
         new BinaryTimeFactory(timeInterval);
@@ -15,7 +16,7 @@ describe('Binary Time Factory', () => {
       expect(test).not.toThrow();
     });
 
-    it('should throw an error if an valid time interval is supplied: 5', () => {
+    it('should not throw an error if an valid time interval is supplied: 5', () => {
       const timeInterval: number = 5;
       function test() {
         new BinaryTimeFactory(timeInterval);
@@ -38,6 +39,7 @@ describe('Binary Time Factory', () => {
     const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);
     const scheduleBinaryUtil: ScheduleBinaryUtil = binaryTimeFactory['scheduleBinaryUtil'];
     const binaryStringUtil: BinaryStringUtil = binaryTimeFactory['binaryStringUtil'];
+    const binaryConversionUtil: BinaryConversionUtil = binaryTimeFactory['binaryConversionUtil'];
     
     const mockParseBString: jest.Mock = jest.fn();
     const mockGenerateBinaryString: jest.Mock = jest.fn();
@@ -46,6 +48,7 @@ describe('Binary Time Factory', () => {
     const mockTestViabilityAndCompute: jest.Mock = jest.fn();
     const mockDeleteAppointment: jest.Mock = jest.fn();
     const mockModifyScheduleAndBooking: jest.Mock = jest.fn();
+    const mockConvertScheduleToAppointmentSchedule: jest.Mock = jest.fn();
 
     binaryStringUtil.parseBString = mockParseBString;
     binaryStringUtil.generateBinaryString = mockGenerateBinaryString;
@@ -54,6 +57,7 @@ describe('Binary Time Factory', () => {
     scheduleBinaryUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
     scheduleBinaryUtil.deleteAppointment = mockDeleteAppointment;
     scheduleBinaryUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
+    binaryConversionUtil.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
 
     beforeEach(() => {
       jest.resetAllMocks();
@@ -133,6 +137,22 @@ describe('Binary Time Factory', () => {
       
       expect(mockModifyScheduleAndBooking).toBeCalled();
       expect(mockModifyScheduleAndBooking).toBeCalledWith(testArg1, testArg2, testArg3);
+    });
+
+    it(`should call it's binaryConversionUtils's convertScheduleToAppointmentSchedule 
+      when convertScheduleToAppointmentSchedule called`, () => {
+        const baseDate: Date = new Date('2020-02-09T00:00:00Z');
+        const schedule: Schedule = TestUtils.generateSchedule(
+          TestUtils.emptyWeek(),
+          TestUtils.emptyWeek(),
+          baseDate
+        );
+        const emptyAvail: string[] = TestUtils.emptyWeek();
+      
+      binaryTimeFactory.convertScheduleToAppointmentSchedule(schedule, emptyAvail);
+      
+      expect(mockConvertScheduleToAppointmentSchedule).toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).toBeCalledWith(schedule, emptyAvail);
     });
   });
 });

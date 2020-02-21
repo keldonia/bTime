@@ -1,4 +1,4 @@
-import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay } from "../@types";
+import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay, validTimeIntervals } from "../@types";
 
 /**
  *  @typedef BinaryConversionUtil is responsible for handling the conversion of schedules
@@ -22,6 +22,10 @@ export class BinaryConversionUtil {
    *  @returns {BinaryConversionUtil} binaryConversionUtil
    */
   constructor(timeInterval: number) {
+    if (!validTimeIntervals.has(timeInterval)) {
+      throw new Error(`Invalid timeInterval entered for BinaryConversionUtil: ${timeInterval}`);
+    }
+
     this.timeInterval = timeInterval;
     this.intervalsInHour = minutesInHour / timeInterval;
     this.intervalsInDay = this.intervalsInHour * hoursInDay;
