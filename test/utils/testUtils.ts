@@ -81,6 +81,9 @@ export function emptyWeek(): string[] {
   return new Array(7).fill(emptyDay());
 };
 
+export function emptyAppointmentWeek(): Appointment[][] {
+  return new Array(7).fill(new Array());
+}
 
 // TODO: Should this be made a general utility, or extended further...
 export function generateTimeSet(

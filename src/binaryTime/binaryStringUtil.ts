@@ -36,7 +36,7 @@ export class BinaryStringUtil {
    */
   public constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
-      throw new Error(`Invalid timeInterval entered: ${timeInterval}`);
+      throw new Error(`Invalid timeInterval entered for BinaryStringUtil: ${timeInterval}`);
     }
     this.timeInterval = timeInterval;
     this.intervalsInHour = minutesInHour / timeInterval;
@@ -67,7 +67,7 @@ export class BinaryStringUtil {
     }
 
     return (this.emptyDay.substring(0, startPointer) +
-      "1".repeat(timeBlock) +
+      "1".repeat(timeBlock || 1) +
       this.emptyDay.substring(endPointer));
   }
 

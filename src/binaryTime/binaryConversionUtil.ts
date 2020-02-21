@@ -1,37 +1,30 @@
-import { BinaryStringUtil } from "./binaryStringUtil";
-import { ScheduleBinaryUtil } from "./scheduleBinaryUtil";
-import { minutesInHour, Appointment } from "../@types";
-// import { Schedule, AppointmentSchedule, Appointment, minutesInHour } from "../@types";
+import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay } from "../@types";
 
 /**
  *  @typedef BinaryConversionUtil is responsible for handling the conversion of schedules
  *  to Appointments
  *
- *  @param {binaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
- *  @param {ScheduleBinaryUtil} ScheduleBinaryUtil scheduleBinaryUtil for manipulating schedules
+ *  @param {number} number timeInterval the smallest discrete time interval
  *
  *  @returns {BinaryConversionUtil} binaryConversionUtil
  */
 export class BinaryConversionUtil {
-  // private binaryStringUtil?: BinaryStringUtil;
-  // private scheduleBinaryUtil?: ScheduleBinaryUtil;
   private timeInterval?: number;
   private intervalsInHour?: number;
+  private intervalsInDay?: number;
 
   /**
    *  @description BinaryConversionUtil is responsible for handling the conversion of schedules
    *  to Appointments
    *
-   *  @param {binaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
-   *  @param {ScheduleBinaryUtil} ScheduleBinaryUtil scheduleBinaryUtil for manipulating schedules
+   *  @param {number} number timeInterval the smallest discrete time interval
    *
    *  @returns {BinaryConversionUtil} binaryConversionUtil
    */
-  constructor(binaryStringUtil: BinaryStringUtil, scheduleBinaryUtil: ScheduleBinaryUtil, timeInterval: number) {
-    // this.binaryStringUtil = binaryStringUtil;
-    // this.scheduleBinaryUtil = scheduleBinaryUtil;
+  constructor(timeInterval: number) {
     this.timeInterval = timeInterval;
     this.intervalsInHour = minutesInHour / timeInterval;
+    this.intervalsInDay = this.intervalsInHour * hoursInDay;
   }
 
   /**
@@ -68,16 +61,33 @@ export class BinaryConversionUtil {
     return returnDates;
   }
 
-  // /**
-  //  *  @description Takes a schedule and converts into an array of appointments for each date
-  //  *
-  //  *  @param {Schedule} Schedule schedule to generate base Date objects
-  //  *
-  //  *  @returns {AppointmentSchedule} AppointmentSchedule
-  //  */
-  // public convertScheduleToAppointmentSchedule(schedule: Schedule): AppointmentSchedule {
+  /**
+   *  @description Takes a schedule and converts into an array of appointments for each date
+   *
+   *  @param {Schedule} Schedule schedule to generate base Date objects
+   *  @param {string[]} string[] remaining availability for a given schedule
+   *
+   *  @returns {AppointmentSchedule} AppointmentSchedule
+   */
+  public convertScheduleToAppointmentSchedule(schedule: Schedule, availability: string[]): AppointmentSchedule {
+    const days: Date[] = this.getDatesFromFromStartDate(schedule.weekStart);
+    const appointmentAvailability: Appointment[][] = availability.map((avail, idx) => {
+      return this.convertTimeSlotsStringToAppointments(avail, days[idx]);
+    });
+    const appointmentBookings: Appointment[][] = schedule.bookings.map((bookingSet, idx) => {
+      return this.convertTimeSlotsStringToAppointments(bookingSet, days[idx]);
+    });
+    const appointmentBaseSchedule: Appointment[][] = schedule.schedule.map((dayBaseSchedule, idx) => {
+      return this.convertTimeSlotsStringToAppointments(dayBaseSchedule, days[idx]);
+    });
 
-  // }
+    return {
+      weekStart: schedule.weekStart,
+      bookings: appointmentBookings,
+      availability: appointmentAvailability,
+      schedule: appointmentBaseSchedule
+    };
+  }
 
   /**
    *  @description Takes a set of timeslots and the date on which they occurred
@@ -90,43 +100,39 @@ export class BinaryConversionUtil {
    */
   public convertTimeSlotsStringToAppointments(timeSlots: string, date: Date): Appointment[] {
     const appointments: Appointment[] = [];
-    let apptStart: boolean = true;
     let currentStart: Date | undefined;
 
-    for (let i = 0; i < timeSlots.length; i++) {
+    for (let i = 0; i < this.intervalsInDay; i++) {
       if (timeSlots.charAt(i) === "1" && !currentStart) {
-        currentStart = this.calculateDate(i, date, apptStart);
-        apptStart = !apptStart;
+        currentStart = this.calculateDate(i, date);
       }
       if (currentStart && timeSlots.charAt(i) === "0" ) {
-        const currentEnd: Date = this.calculateDate(i, date, apptStart);
+        const currentEnd: Date = this.calculateDate(i, date);
         const appointment: Appointment = {
           startTime: currentStart,
           endTime: currentEnd
         };
         appointments.push(appointment);
-        apptStart = !apptStart;
         currentStart = undefined;
       }
-      if (currentStart && i === timeSlots.length - 1) {
-        const currentEnd: Date = new Date(
-          Date.UTC(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            23,
-            59,
-            59
-          )
-        );
-        const appointment: Appointment = {
-          startTime: currentStart,
-          endTime: currentEnd
-        };
-        appointments.push(appointment);
-        apptStart = !apptStart;
-        currentStart = undefined;
-      }
+    }
+
+    if (currentStart) {
+      const currentEnd: Date = new Date(
+        Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate(),
+          23,
+          59,
+          59
+        )
+      );
+      const appointment: Appointment = {
+        startTime: currentStart,
+        endTime: currentEnd
+      };
+      appointments.push(appointment);
     }
 
     return appointments;
@@ -142,7 +148,7 @@ export class BinaryConversionUtil {
    *
    *  @returns {Date} calculated date
    */
-  public calculateDate(timePointerIndex: number, baseDate: Date, beginning: boolean): Date {
+  public calculateDate(timePointerIndex: number, baseDate: Date): Date {
     const hours = Math.floor(timePointerIndex / this.intervalsInHour);
     const minutes = timePointerIndex % this.intervalsInHour * this.timeInterval;
 

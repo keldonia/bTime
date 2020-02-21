@@ -27,7 +27,7 @@ export class BinaryTimeFactory {
    */
   public constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
-      throw new Error(`Invalid timeInterval entered: ${timeInterval}`);
+      throw new Error(`Invalid timeInterval entered for BinaryTimeFactory: ${timeInterval}`);
     }
 
     this.timeInterval = timeInterval;

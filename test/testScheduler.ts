@@ -461,7 +461,7 @@ describe('Test Scheduler', () => {
       expect(mockDeleteAppointment).toBeCalledWith(expectedAppt, schedule, expectedSecondAppt);
     });
 
-    it('should return false if passed an invalid action type', () => {
+    it('should return false if passed an unknown action type', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -472,12 +472,13 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
-      // This is a deliberate cast to break the type
-      const actionType: ScheduleActions = 'NOT_A_SCHEDULE_ACTION' as unknown as ScheduleActions;
+      const actionType: ScheduleActions = ScheduleActions.UNKOWN;
 
       const computedSchedule: Schedule | false = scheduler.processAppointment(apptToBook, schedule, actionType);
 
       expect(computedSchedule).toBeFalsy();
+      expect(mockDeleteAppointment).not.toBeCalled();
+      expect(mockHandleBookingUpdate).not.toBeCalled();
     });
   });
 

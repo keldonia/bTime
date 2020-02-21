@@ -23,15 +23,16 @@ export interface Schedule {
 }
 
 export interface AppointmentSchedule {
-  schedule: Appointment[], // This indexes 0-6, starting (0) with Sunday
-  bookings: Appointment[], // This indexes 0-6, starting (0) with Sunday
-  availability: Appointment[], // This indexes 0-6, starting (0) with Sunday
+  schedule: Appointment[][], // This indexes 0-6, starting (0) with Sunday
+  bookings: Appointment[][], // This indexes 0-6, starting (0) with Sunday
+  availability: Appointment[][], // This indexes 0-6, starting (0) with Sunday
   weekStart: Date
 }
 
 export enum ScheduleActions {
   'DELETE_APPT',
-  'BOOKING_UPDATE'
+  'BOOKING_UPDATE',
+  'UNKOWN'
 }
 
 export const validTimeIntervals: Set<number> = new Set([

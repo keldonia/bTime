@@ -166,13 +166,7 @@ export class Scheduler {
       const splitproposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
 
       for (let j = 0; j < splitBookings.length; j++) {
-        const proposedInterval: number = this.binaryTimeFactory.parseBString(splitproposed[j]);
         const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
-
-        if (proposedInterval === 0 && bBookingInterval !== proposedInterval) {
-          return false;
-        }
-
         const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitproposed[j]);
 
         const viabile: number | false = this.binaryTimeFactory.testViabilityAndCompute(

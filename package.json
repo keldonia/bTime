@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "tslint -p .",
+    "lint:fix": "tslint -p . --fix",
     "prepare": "npm run build",
     "stryker": "stryker run",
     "test": "npm audit && npm run lint && npm run build && node . && jest --coverage",

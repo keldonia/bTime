@@ -1,16 +1,32 @@
 import { BinaryConversionUtil } from "../src/binaryTime/binaryConversionUtil";
-import { ScheduleBinaryUtil } from "../src/binaryTime/scheduleBinaryUtil";
 import { BinaryStringUtil } from "../src/binaryTime/binaryStringUtil";
 import * as TestUtils from './utils/testUtils';
-import { Appointment } from "../src/@types";
+import { Appointment, Schedule, AppointmentSchedule, minutesInHour, hoursInDay } from "../src/@types";
 
 
 describe('binaryConversionUtil', () => {
   const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
-  const scheduleBinaryUtil: ScheduleBinaryUtil = new ScheduleBinaryUtil(binaryStringUtil);
+
+  describe('constructor', () => {
+    it('should properly set the number of intervals in an hour', () => {
+      const timeInterval: number = 5;
+      const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
+      const expectedIntervals: number = minutesInHour / timeInterval; // 60
+
+      expect(binaryConversionUtil['intervalsInHour']).toEqual(expectedIntervals);
+    });
+
+    it('should properly set the number of intervals in a dat', () => {
+      const timeInterval: number = 5;
+      const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
+      const expectedIntervals: number = minutesInHour / timeInterval * hoursInDay; // 288
+
+      expect(binaryConversionUtil['intervalsInDay']).toEqual(expectedIntervals);
+    });
+  });
 
   describe('getDatesFromFromStartDate', () => {
-    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(binaryStringUtil, scheduleBinaryUtil, 5);
+    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(5);
 
     it('should properly create a weeks worth of Dates from a schedule, contained within a month', () => {
       const startDate: Date = new Date('2020-02-09T00:00:00Z');
@@ -85,17 +101,40 @@ describe('binaryConversionUtil', () => {
     });
   });
 
+  describe('convertScheduleToAppointmentSchedule', () => {
+    const timeInterval: number = 5;
+    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
+    const baseDate: Date = new Date('2020-02-09T00:00:00Z');
+
+    it('should return an empty week if passed an empty week', () => {
+      const schedule: Schedule = TestUtils.generateSchedule(
+        TestUtils.emptyWeek(),
+        TestUtils.emptyWeek(),
+        baseDate
+      );
+      const emptyAvail: string[] = TestUtils.emptyWeek();
+      const expectedAppointmentSchedule: AppointmentSchedule = {
+        schedule: TestUtils.emptyAppointmentWeek(),
+        bookings: TestUtils.emptyAppointmentWeek(),
+        availability: TestUtils.emptyAppointmentWeek(),
+        weekStart: baseDate
+      };
+      const computedAppointmentSchedule: AppointmentSchedule = binaryConversionUtil.convertScheduleToAppointmentSchedule(schedule, emptyAvail);
+
+      expect(computedAppointmentSchedule).toEqual(expectedAppointmentSchedule);
+    });
+  });
+
   describe('calculateDate', () => {
     const timeInterval: number = 5;
-    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(binaryStringUtil, scheduleBinaryUtil, timeInterval);
+    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
     const baseDate: Date = new Date('2019-12-29T00:00:00Z');
 
     it('should properly calculate a datetime that is at the beginning of the day, and is the beginning of an appointment', () => {
       const baseDate: Date = new Date('2019-12-29T00:00:00Z');
       const timePointer: number = 0;
-      const beginning: boolean = true;
       const expectedDate: Date = new Date('2019-12-29T00:00:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
@@ -103,45 +142,40 @@ describe('binaryConversionUtil', () => {
     it('should properly calculate a datetime that is at the beginning of the day, and is the end of an appointment', () => {
       const baseDate: Date = new Date('2019-12-29T00:00:00Z');
       const timePointer: number = 0;
-      const beginning: boolean = false;
       const expectedDate: Date = new Date('2019-12-29T00:00:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
 
     it('should properly calculate a datetime that is at the end of the day, and is the beginning of an appointment', () => {
       const timePointer: number = 287;
-      const beginning: boolean = true;
       const expectedDate: Date = new Date('2019-12-29T23:55:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
 
     it('should properly calculate a datetime that is at the end of the day, and is the end of an appointment', () => {
       const timePointer: number = 287;
-      const beginning: boolean = false;
       const expectedDate: Date = new Date('2019-12-29T23:55:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
 
     it('should properly calculate a datetime that is at the middle of the day, and is the beginning of an appointment', () => {
       const timePointer: number = 144;
-      const beginning: boolean = true;
       const expectedDate: Date = new Date('2019-12-29T12:00:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
 
     it('should properly calculate a datetime that is at the middle of the day, and is the end of an appointment', () => {
       const timePointer: number = 144;
-      const beginning: boolean = false;
       const expectedDate: Date = new Date('2019-12-29T12:00:00Z');
-      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate, beginning);
+      const computedDate: Date = binaryConversionUtil.calculateDate(timePointer, baseDate);
       
       expect(computedDate).toEqual(expectedDate);
     });
@@ -149,7 +183,7 @@ describe('binaryConversionUtil', () => {
 
   describe('convertTimeSlotsStringToAppointments', () => {
     const timeInterval: number = 5;
-    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(binaryStringUtil, scheduleBinaryUtil, timeInterval);
+    const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
     const baseDate: Date = new Date('2019-12-29T00:00:00Z');
 
     it('should return an empty appointment array, if there were no time slots', () => {
@@ -226,6 +260,19 @@ describe('binaryConversionUtil', () => {
         endTime: new Date('2019-12-29T23:55:00Z')
       }
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      const expectedAppointments: Appointment[] = [simpleAppointment];
+      const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
+
+      expect(computedAppointments).toEqual(expectedAppointments);
+    });
+
+    it('should return an appointment array with one appointment, if there was one contigous segment close to the end of the day', () => {
+      const simpleAppointment: Appointment = {
+        startTime: new Date('2019-12-29T13:00:00Z'),
+        endTime: new Date('2019-12-29T23:58:00Z')
+      }
+      const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      simpleAppointment.endTime = new Date('2019-12-29T23:59:59Z');
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 

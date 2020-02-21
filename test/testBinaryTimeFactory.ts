@@ -6,7 +6,7 @@ import { Appointment } from '../src/@types';
 
 describe('Binary Time Factory', () => {
   describe('constructor', () => {
-    it('should throw an error if an valid time interval is supplied', () => {
+    it('should throw an error if an valid time interval is supplied: 3', () => {
       const timeInterval: number = 3;
       function test() {
         new BinaryTimeFactory(timeInterval);
@@ -15,13 +15,22 @@ describe('Binary Time Factory', () => {
       expect(test).not.toThrow();
     });
 
-    it('should throw an error if an invalid time interval is supplied', () => {
-      const timeInterval: number = 31;
+    it('should throw an error if an valid time interval is supplied: 5', () => {
+      const timeInterval: number = 5;
       function test() {
         new BinaryTimeFactory(timeInterval);
       };
 
-      expect(test).toThrow(`Invalid timeInterval entered: ${timeInterval}`);
+      expect(test).not.toThrow();
+    });
+
+    it('should throw an error if an invalid time interval is supplied: 7', () => {
+      const timeInterval: number = 7;
+      function test() {
+        new BinaryTimeFactory(timeInterval);
+      };
+
+      expect(test).toThrow(`Invalid timeInterval entered for BinaryTimeFactory: ${timeInterval}`);
     });
   });
 
