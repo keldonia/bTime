@@ -1,4 +1,4 @@
-import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo} from '../@types';
+import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay} from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -165,7 +165,7 @@ export class Scheduler {
       const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
       const splitproposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
 
-      for (let j = 0; j < splitBookings.length; j++) {
+      for (let j = 0; j < hoursInDay; j++) {
         const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
         const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitproposed[j]);
 
