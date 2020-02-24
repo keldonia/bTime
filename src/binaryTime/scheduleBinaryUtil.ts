@@ -1,5 +1,5 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
-import { Appointment } from "../@types";
+import { Appointment, hoursInDay } from "../@types";
 
 /**
  *  @typedef ScheduleBinaryUtil is responsible for handling scheduling use bit manipulations
@@ -237,7 +237,7 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
+  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
     const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
@@ -248,13 +248,22 @@ export class ScheduleBinaryUtil {
       apptToDeleteBString
     );
     const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot);
+    const returnAppointment: string[] = [];
 
-    return splitBookings.map((bookingInterval, idx) => {
-      return this.deleteAppointmentInterval(
-        apptMask[idx],
-        bookingInterval
+    for (let i = 0; i < hoursInDay; i++) {
+      const currentInterval: string | false = this.deleteAppointmentInterval(
+        apptMask[i],
+        splitBookings[i]
       );
-    }).join("");
+
+      if (!currentInterval) {
+        return false;
+      }
+
+      returnAppointment.push(currentInterval);
+    }
+
+    return returnAppointment.join("");
   }
 
   /**
@@ -269,12 +278,30 @@ export class ScheduleBinaryUtil {
    *
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string {
+  public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string | false {
     const parsedSchedule: number = this.binaryStringUtil.parseBString(scheduleInterval);
     const parsedApptBString: number = this.binaryStringUtil.parseBString(timeSlotBString);
+
+    if (!this.validDeletion(parsedSchedule, parsedApptBString)) {
+      return false;
+    }
     // Performs a XOR on the schedule and the proposed schedule
     const modified: number = parsedSchedule ^ parsedApptBString;
 
     return this.binaryStringUtil.decimalToBinaryString(modified);
+  }
+
+  /**
+   *  @description Tests removal a give time slot from a given time interval
+   *
+   *  @param {number} baseNumber timeSlot to delete
+   *  @param {number} toDeleteNumber time interval to remove timeSlotToDelete
+   *
+   *  @returns {boolean} valid deletion
+   */
+  public validDeletion(baseNumber: number, toDeleteNumber: number): boolean {
+    const orTest: number = baseNumber | toDeleteNumber;
+
+    return orTest === baseNumber;
   }
 }

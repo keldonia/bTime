@@ -316,22 +316,32 @@ export class Scheduler {
    *
    *  @returns {Schedule} Schedule
    */
-  public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule {
+  public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule | false {
     let startDay = appointment.startTime.getUTCDay();
     const endDay = appointment.endTime.getUTCDay();
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      schedule.bookings[startDay] = this.binaryTimeFactory.deleteAppointment(
+      const firstApptCaluculated: string | false = this.binaryTimeFactory.deleteAppointment(
         firstAppt,
         schedule.bookings[startDay]
       );
+      if (!firstApptCaluculated) {
+        return false;
+      }
+      schedule.bookings[startDay] = firstApptCaluculated;
     }
 
-    schedule.bookings[endDay] = this.binaryTimeFactory.deleteAppointment(
+    const mainCalculated: string | false = this.binaryTimeFactory.deleteAppointment(
       appointment,
       schedule.bookings[endDay]
     );
+
+    if (!mainCalculated) {
+      return false;
+    }
+
+    schedule.bookings[endDay] = mainCalculated;
 
     return schedule;
   }

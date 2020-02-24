@@ -121,7 +121,7 @@ export class BinaryTimeFactory {
    *
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
+  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
     return this.scheduleBinaryUtil.deleteAppointment(timeSlotToDelete, scheduleSlot);
   }
 
