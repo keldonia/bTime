@@ -111,7 +111,7 @@ export class BinaryConversionUtil {
         currentStart = this.calculateDate(i, date);
       }
       if (currentStart && timeSlots.charAt(i) === "0" ) {
-        const currentEnd: Date = this.calculateDate(i, date);
+        const currentEnd: Date = this.calculateDate(i - 1, date, true);
         const appointment: Appointment = {
           startTime: currentStart,
           endTime: currentEnd
@@ -152,9 +152,13 @@ export class BinaryConversionUtil {
    *
    *  @returns {Date} calculated date
    */
-  public calculateDate(timePointerIndex: number, baseDate: Date): Date {
+  public calculateDate(timePointerIndex: number, baseDate: Date, end: boolean = false): Date {
     const hours = Math.floor(timePointerIndex / this.intervalsInHour);
-    const minutes = timePointerIndex % this.intervalsInHour * this.timeInterval;
+    let minutes = timePointerIndex % this.intervalsInHour * this.timeInterval;
+
+    if (end) {
+      minutes += this.timeInterval;
+    }
 
     return new Date(
       Date.UTC(
@@ -162,7 +166,8 @@ export class BinaryConversionUtil {
         baseDate.getUTCMonth(),
         baseDate.getUTCDate(),
         hours,
-        minutes
+        minutes,
+        end ? -1 : 0
       )
     );
   }

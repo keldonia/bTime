@@ -230,6 +230,7 @@ describe('binaryConversionUtil', () => {
         endTime: new Date('2019-12-29T14:45:00Z')
       }
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -242,6 +243,7 @@ describe('binaryConversionUtil', () => {
         endTime: new Date('2019-12-29T14:45:00Z')
       }
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -254,6 +256,7 @@ describe('binaryConversionUtil', () => {
         endTime: new Date('2019-12-29T14:45:00Z')
       }
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -275,9 +278,10 @@ describe('binaryConversionUtil', () => {
     it('should return an appointment array with one appointment, if there was one contigous segment close to the end of the day', () => {
       const simpleAppointment: Appointment = {
         startTime: new Date('2019-12-29T13:00:00Z'),
-        endTime: new Date('2019-12-29T23:55:00Z')
+        endTime: new Date('2019-12-29T23:54:00Z')
       }
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
+      simpleAppointment.endTime = new Date('2019-12-29T23:54:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -305,20 +309,21 @@ describe('binaryConversionUtil', () => {
       const timeSlots: string = binaryStringUtil.generateBinaryString(simpleAppointment) as string;
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
-
       expect(computedAppointments).toEqual(expectedAppointments);
     });
 
     it('should return an appointment array with two appointment, if there were two segments', () => {
       const appointmentOne: Appointment = {
         startTime: new Date('2019-12-29T10:00:00Z'),
-        endTime: new Date('2019-12-29T12:00:00Z')
+        endTime: new Date('2019-12-29T11:59:00Z')
       }
       const appointmentTwo: Appointment = {
         startTime: new Date('2019-12-29T13:00:00Z'),
-        endTime: new Date('2019-12-29T15:00:00Z')
+        endTime: new Date('2019-12-29T14:57:00Z')
       }
       const timeSlots: string = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111111111111000000000000111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+      appointmentOne.endTime = new Date('2019-12-29T11:59:59Z');
+      appointmentTwo.endTime = new Date('2019-12-29T14:59:59Z');
       const expectedAppointments: Appointment[] = [appointmentOne, appointmentTwo];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -328,18 +333,20 @@ describe('binaryConversionUtil', () => {
     it('should return an appointment array with three appointment, if there were three segments', () => {
       const appointmentOne: Appointment = {
         startTime: new Date('2019-12-29T10:00:00Z'),
-        endTime: new Date('2019-12-29T12:00:00Z')
+        endTime: new Date('2019-12-29T11:57:00Z')
       }
       const appointmentTwo: Appointment = {
         startTime: new Date('2019-12-29T13:00:00Z'),
-        endTime: new Date('2019-12-29T15:00:00Z')
+        endTime: new Date('2019-12-29T14:58:00Z')
       }
       const appointmentThree: Appointment = {
         startTime: new Date('2019-12-29T16:00:00Z'),
-        endTime: new Date('2019-12-29T17:00:00Z')
+        endTime: new Date('2019-12-29T16:59:00Z')
       }
       const timeSlots: string = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111111111111000000000000111111111111111111111111000000000000111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-
+      appointmentOne.endTime = new Date('2019-12-29T11:59:59Z');
+      appointmentTwo.endTime = new Date('2019-12-29T14:59:59Z');
+      appointmentThree.endTime = new Date('2019-12-29T16:59:59Z');
       const expectedAppointments: Appointment[] = [appointmentOne, appointmentTwo, appointmentThree];
       const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
