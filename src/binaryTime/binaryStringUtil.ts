@@ -60,15 +60,15 @@ export class BinaryStringUtil {
   public generateBinaryString(appt: Appointment): string | false {
     const startPointer = this.findBinaryPointer(appt.startTime);
     const endPointer = this.findBinaryPointer(appt.endTime);
-    const timeBlock = endPointer - startPointer;
+    const timeBlock = endPointer - startPointer + 1;
 
     if (timeBlock < 0) {
       return false;
     }
 
     return (this.emptyDay.substring(0, startPointer) +
-      "1".repeat(timeBlock || 1) +
-      this.emptyDay.substring(endPointer));
+      "1".repeat(timeBlock) +
+      this.emptyDay.substring(endPointer + 1));
   }
 
   /**
@@ -81,7 +81,7 @@ export class BinaryStringUtil {
    */
   public findBinaryPointer(time: Date): number{
     const hourPointer: number = time.getUTCHours() * this.intervalsInHour;
-    const minutePointer: number = Math.round(time.getUTCMinutes() / this.timeInterval);
+    const minutePointer: number = Math.floor(time.getUTCMinutes() / this.timeInterval);
 
     return hourPointer + minutePointer;
   }
