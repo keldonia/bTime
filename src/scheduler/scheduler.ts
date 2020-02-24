@@ -1,4 +1,4 @@
-import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay} from '../@types';
+import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay, AppointmentSchedule} from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -61,6 +61,27 @@ export class Scheduler {
       startTime,
       endTime
     };
+  }
+
+  /**
+   *  @description Takes a schedule and converts into an array of appointments for each date
+   *
+   *  NB: This is a passthrough to the configured BinaryTimeFactory
+   *
+   *  @param {Schedule} Schedule schedule to generate base Date objects
+   *
+   *  @returns {AppointmentSchedule} AppointmentSchedule
+   */
+  public convertScheduleToAppointmentSchedule(schedule: Schedule): AppointmentSchedule {
+    const availability: string[] | false = this.getCurrentAvailability(schedule);
+
+    // NB: This should only be triggered by a malformed schedule
+    if (!availability) {
+      throw new Error(`Was unable to convert schedule to appointment schedule,
+      as the bookings do not fit in the schedule`);
+    }
+
+    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(schedule, availability);
   }
 
   /**

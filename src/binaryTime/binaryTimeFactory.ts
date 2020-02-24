@@ -153,7 +153,7 @@ export class BinaryTimeFactory {
   }
 
   /**
-   *  @description Takes a schedule and converts into an array of appointments for each date
+   *  @description Takes a schedule and availabilty converting them into an array of appointments for each date
    *
    *  NB: This is a passthrough to the configured BinaryConversionUtil
    *

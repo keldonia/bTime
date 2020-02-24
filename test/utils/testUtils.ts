@@ -7,7 +7,10 @@ export function generateMockUTCDate(hour: number, minute: number, day: number = 
   return ({
     getUTCHours: () => hour,
     getUTCMinutes: () => minute,
-    getUTCDay: () => day
+    getUTCDay: () => day,
+    getUTCDate: () => day,
+    getUTCFullYear: () => 2020,
+    getUTCMonth: () => 2
   }) as Date;
 }
 

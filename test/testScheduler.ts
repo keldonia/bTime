@@ -1,6 +1,6 @@
 import { Scheduler } from './../src';
 import * as TestUtils from './utils/testUtils';
-import { Schedule, ScheduleActions, Appointment, AppointmentDuo } from '../src/@types';
+import { Schedule, ScheduleActions, Appointment, AppointmentDuo, AppointmentSchedule } from '../src/@types';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
 
 describe('Test Scheduler', () => {
@@ -192,6 +192,55 @@ describe('Test Scheduler', () => {
       const computedAvailability: string[] | false = scheduler.getCurrentAvailability(schedule);
 
       expect(computedAvailability).toBeFalsy();
+    });
+  });
+
+  describe('#convertScheduleToAppointmentSchedule', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const baseDate: Date = new Date('2020-02-09T00:00:00Z');
+
+    it('should throw an error if the bookings do not fit in the schedule', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(12, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      function test() {
+        scheduler.convertScheduleToAppointmentSchedule(schedule);
+      }
+
+      expect(test).toThrow(`Was unable to convert schedule to appointment schedule,
+      as the bookings do not fit in the schedule`);
+    });
+
+    it('should return the appropriate appointment schedule', () => {
+      const schedule: Schedule = TestUtils.generateSchedule(
+        TestUtils.emptyWeek(),
+        TestUtils.emptyWeek(),
+        baseDate
+      );
+      const expectedAppointmentSchedule: AppointmentSchedule = {
+        schedule: TestUtils.emptyAppointmentWeek(),
+        bookings: TestUtils.emptyAppointmentWeek(),
+        availability: TestUtils.emptyAppointmentWeek(),
+        weekStart: baseDate
+      };
+      const computedSchedule: AppointmentSchedule = scheduler.convertScheduleToAppointmentSchedule(schedule);
+      
+      expect(computedSchedule).toEqual(expectedAppointmentSchedule);
     });
   });
 
