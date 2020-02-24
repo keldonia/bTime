@@ -53,6 +53,20 @@ The `#processAppointment` method takes three agruments, the proposed appointment
   const processedSchedule: Schedule | false = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE); 
 ```
 
+## `#convertScheduleToAppointmentSchedule`
+
+`#convertScheduleToAppointmentSchedule` takes a schedule and converts it into an array of appointments for each date
+
+```typescript
+  // If using the scheduler
+  // Instantiates a new Scheduler with a time interval of 5 min.
+  const scheduler: Scheduler = new Scheduler(5); 
+
+  const appointmentSchedule: AppointmentSchedule = scheduler.convertScheduleToAppointmentSchedule(
+    schedule
+  );
+```
+
 ## Additional Information
 
 Additional information for each method and class is available in the form of JSDocs.
