@@ -49,7 +49,6 @@ Further, information on these two classes can be found here:
 
 ## Coming Features
 
-1. Edit round \-\> floor for bStrings
 1. Allow for the conversion of multiple appointments in one go
 1. Number only mode (don't store as strings), optional parameter
 1. Throw Exceptions for cleaning stack tracing & surround with catches
