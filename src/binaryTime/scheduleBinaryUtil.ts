@@ -224,7 +224,7 @@ export class ScheduleBinaryUtil {
    *  @returns {boolean} boolean
    */
   public booleanViabilityCheck(binaryDec: number | boolean): boolean {
-    return binaryDec && binaryDec !== 0;
+    return !!binaryDec;
   }
 
   /**
