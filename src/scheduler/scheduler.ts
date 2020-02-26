@@ -77,8 +77,7 @@ export class Scheduler {
 
     // NB: This should only be triggered by a malformed schedule
     if (!availability) {
-      throw new Error(`Was unable to convert schedule to appointment schedule,
-      as the bookings do not fit in the schedule`);
+      throw new Error(`Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`);
     }
 
     return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(schedule, availability);

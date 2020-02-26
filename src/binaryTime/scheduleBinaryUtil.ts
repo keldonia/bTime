@@ -115,7 +115,7 @@ export class ScheduleBinaryUtil {
     // Performs an OR on the schedule and the proposed schedule
     const test: number = parsedSchedule | parsedApptBString;
 
-    // IFF OR === XOR then there is not a schedule conflict
+    // IFF OR === XOR, there is not a schedule conflict
     if (modified === test) {
       return this.binaryStringUtil.decimalToBinaryString(modified);
     }

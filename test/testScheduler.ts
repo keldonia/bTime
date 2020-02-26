@@ -222,8 +222,7 @@ describe('Test Scheduler', () => {
         scheduler.convertScheduleToAppointmentSchedule(schedule);
       }
 
-      expect(test).toThrow(`Was unable to convert schedule to appointment schedule,
-      as the bookings do not fit in the schedule`);
+      expect(test).toThrow(`Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`);
     });
 
     it('should return the appropriate appointment schedule', () => {
