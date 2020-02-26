@@ -51,20 +51,20 @@ export class BinaryStringUtil {
   /**
    * @description Generates a binary string representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
-   * it return false
+   * it return false, ie it ends before it begins
    *
    * @param {Appointment} appt the appointment to converted
    *
    * @returns {string | false} string | false
    */
   public generateBinaryString(appt: Appointment): string | false {
+    if (appt.endTime.valueOf() < appt.startTime.valueOf()) {
+      return false;
+    }
+
     const startPointer = this.findBinaryPointer(appt.startTime);
     const endPointer = this.findBinaryPointer(appt.endTime);
     const timeBlock = endPointer - startPointer + 1;
-
-    if (timeBlock < 0) {
-      return false;
-    }
 
     return (this.emptyDay.substring(0, startPointer) +
       "1".repeat(timeBlock) +
@@ -73,7 +73,33 @@ export class BinaryStringUtil {
 
   /**
    * @description Finds a the pointer for a given date in time
-   * based on the instatiated time interval
+   * based on the instatiated time interval, including day of the week
+   *
+   * @param {Date} time the time to retrieve the pointer
+   *
+   * @returns {number} number
+   */
+  public findBinaryPointerIncludingDay(time: Date): number {
+    const hourAndMinutePointer: number = this.findBinaryPointer(time);
+    const dayModifer: number = this.findBinaryPointerModiferForDayOfWeek(time);
+
+    return dayModifer + hourAndMinutePointer;
+  }
+
+  /**
+   * @description Finds the modifer to correct for the day of the week
+   *
+   * @param {Date} time the time to retrieve the pointer
+   *
+   * @returns {number} number
+   */
+  public findBinaryPointerModiferForDayOfWeek(time: Date): number {
+    return time.getUTCDay() * this.intervalsInHour * hoursInDay;
+  }
+
+  /**
+   * @description Finds a the pointer for a given date in time
+   * based on the instatiated time interval within a given day
    *
    * @param {Date} time the time to retrieve the pointer
    *

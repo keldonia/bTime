@@ -2,6 +2,9 @@ import { Schedule, Appointment, hoursInDay} from './../../src/@types/index';
 import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 
 const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+const millisecondsInMinute: number = 60000;
+const millisecondsInHour: number = millisecondsInMinute * 60;
+const millisecondsInDay: number = millisecondsInHour * hoursInDay;
 
 export function generateMockUTCDate(hour: number, minute: number, day: number = 0): Date {
   return ({
@@ -10,7 +13,9 @@ export function generateMockUTCDate(hour: number, minute: number, day: number = 
     getUTCDay: () => day,
     getUTCDate: () => day,
     getUTCFullYear: () => 2020,
-    getUTCMonth: () => 2
+    getUTCMonth: () => 2,
+    toUTCString: () => `${day}/${2}/${2020}T${hour}:${minute}`,
+    valueOf: () => (day * millisecondsInDay) + (hour * millisecondsInHour) + (minute * millisecondsInMinute)
   }) as Date;
 }
 
