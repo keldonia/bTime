@@ -59,6 +59,19 @@ export class ScheduleBinaryUtil {
       return false;
     }
 
+    return this.mergeScheduleBStringsWithTestBase(apptBString, schedule);
+  }
+
+  /**
+   *  @description Tests that an appointment does not overlap with another appointment, if it
+   *  does not overlap, the appointment is added to the bookings, else return false
+   *
+   *  @param {string} apptBString timeSlot bString to modify schedule
+   *  @param {string} schedule schedule to modify
+   *
+   *  @returns {string | false} string | false
+   */
+  public mergeScheduleBStringsWithTestBase(apptBString: string, schedule: string): string | false {
     const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
       apptBString
     );
@@ -244,8 +257,22 @@ export class ScheduleBinaryUtil {
       throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
     }
 
+    return this.deleteAppointmentBString(apptToDeleteBString, scheduleSlot);
+  }
+
+  /**
+   *  @description Tests removal a give time slot from a given time interval
+   *  and if valid removes it
+   *  NB: This is also used for calculating remaining availability
+   *
+   *  @param {string} bStringToDelete timeSlot to delete
+   *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
+   *
+   *  @returns {string} string of modified time interval
+   */
+  public deleteAppointmentBString(bStringToDelete: string, scheduleSlot: string): string | false {
     const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
-      apptToDeleteBString
+      bStringToDelete
     );
     const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot);
     const returnAppointment: string[] = [];
