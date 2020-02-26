@@ -84,7 +84,7 @@ export class BinaryStringUtil {
    * it return false, ie it ends before it begins
    *
    * NB: This method generates a representation of the entire week
-   * NB: Assumes appointments in array don't overlap, or at least overlaps don't matter
+   * NB: Assumes appointments in array don't overlap
    *
    * @param {Appointment[]} appointments the appointment to converted
    *
@@ -103,6 +103,11 @@ export class BinaryStringUtil {
       const startPointer = this.findBinaryPointerIncludingDay(appt.startTime);
       const endPointer = this.findBinaryPointerIncludingDay(appt.endTime);
       const timeBlock = endPointer - startPointer + 1;
+
+      // If an appt begins before the previous ends, it is invalid
+      if (startPointer < composedBString.length) {
+        return false;
+      }
 
       // Adds padding between appointments
       const addedZeros: string = "0".repeat(startPointer - composedBString.length);
