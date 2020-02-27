@@ -60,7 +60,7 @@ export class BinaryStringUtil {
    * appointment, assuming it is valid.  If the appointment is invalid,
    * it return false, ie it ends before it begins
    *
-   * @param {Appointment} appt the appointment to converted
+   * @param {Appointment} appt the appointment to be converted
    *
    * @returns {string | false} string | false
    */
@@ -86,7 +86,7 @@ export class BinaryStringUtil {
    * NB: This method generates a representation of the entire week
    * NB: Assumes appointments in array don't overlap
    *
-   * @param {Appointment[]} appointments the appointment to converted
+   * @param {Appointment[]} appointments the appointments to be converted
    *
    * @returns {string[] | false} string[] | false
    */

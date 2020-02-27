@@ -59,12 +59,29 @@ export class BinaryTimeFactory {
    *
    * NB: This is a passthrough to the configured binaryStringUtil
    *
-   * @param {Appointment} appt the appointment to converted
+   * @param {Appointment} appt the appointment to be converted
    *
    * @returns {string | false} string | false
    */
   public generateBinaryString(appt: Appointment): string | false {
     return this.binaryStringUtil.generateBinaryString(appt);
+  }
+
+  /**
+   * @description Generates a binary string representation of a given
+   * array of appointments, assuming it is valid.  If the appointment is invalid,
+   * it return false, ie it ends before it begins
+   *
+   * NB: This method generates a representation of the entire week
+   * NB: Assumes appointments in array don't overlap
+   * NB: This is a passthrough to the configured binaryStringUtil
+   *
+   * @param {Appointment[]} appointments the appointments to be converted
+   *
+   * @returns {string[] | false} string[] | false
+   */
+  public generateBinaryStringFromAppointments(appointments: Appointment[]): string[] | false {
+    return this.binaryStringUtil.generateBinaryStringFromAppointments(appointments);
   }
 
   /**
@@ -123,6 +140,22 @@ export class BinaryTimeFactory {
    */
   public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
     return this.scheduleBinaryUtil.deleteAppointment(timeSlotToDelete, scheduleSlot);
+  }
+
+  /**
+   *  @description Tests removal a give time slot from a given time interval
+   *  and if valid removes it
+   *
+   *  NB: This is also used for calculating remaining availability
+   *  NB: This is a passthrough to the configured scheduleBinaryUtil
+   *
+   *  @param {string} bStringToDelete timeSlot to delete
+   *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
+   *
+   *  @returns {string} string of modified time interval
+   */
+  public deleteAppointmentBString(timeSlotToDelete: string, scheduleSlot: string): string | false {
+    return this.scheduleBinaryUtil.deleteAppointmentBString(timeSlotToDelete, scheduleSlot);
   }
 
   /**
