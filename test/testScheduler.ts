@@ -244,6 +244,7 @@ describe('Test Scheduler', () => {
 
   describe('#updateSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
+    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
     const emptyBookings: string[] = TestUtils.emptyWeek();
 
     it('should return the modified schedule if the current bookings are contained within the proposed availability', () => {
@@ -258,6 +259,54 @@ describe('Test Scheduler', () => {
         dayOneSchedule,
         dayOneSchedule
       );
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(
+        dayZeroBookings, 
+        dayOneBookings
+      );
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const proposedDayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 20, 0, 0, 0);
+      const proposedDayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 18, 0, 0, 0);
+      const proposedAvailability: string[] = TestUtils.generateTimeSet(
+        proposedDayZeroSchedule, 
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule
+      );
+
+      const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
+      
+      const expectedSchedule: Schedule = {
+        schedule: proposedAvailability,
+        bookings: bookings,
+        weekStart: schedule.weekStart
+      };
+
+      const computedSchedule: Schedule = scheduler.updateSchedule(proposedSchedule, schedule) as Schedule;
+
+      expect(computedSchedule).toMatchObject(expectedSchedule);
+    });
+
+    it('should return the modified schedule if the current bookings are contained within the proposed availability, ignoring if the schedule has additional days', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+      scheduledAvailability.push(binaryStringUtil.generateBinaryString(dayOneSchedule) as string);
 
       const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);

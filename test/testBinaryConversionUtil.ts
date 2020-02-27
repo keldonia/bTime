@@ -16,7 +16,7 @@ describe('binaryConversionUtil', () => {
       expect(binaryConversionUtil['intervalsInHour']).toEqual(expectedIntervals);
     });
 
-    it('should properly set the number of intervals in a dat', () => {
+    it('should properly set the number of intervals in a date', () => {
       const timeInterval: number = 5;
       const binaryConversionUtil: BinaryConversionUtil = new BinaryConversionUtil(timeInterval);
       const expectedIntervals: number = minutesInHour / timeInterval * hoursInDay; // 288
@@ -344,6 +344,29 @@ describe('binaryConversionUtil', () => {
         endTime: new Date('2019-12-29T16:59:00Z')
       }
       const timeSlots: string = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111111111111000000000000111111111111111111111111000000000000111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+      appointmentOne.endTime = new Date('2019-12-29T11:59:59Z');
+      appointmentTwo.endTime = new Date('2019-12-29T14:59:59Z');
+      appointmentThree.endTime = new Date('2019-12-29T16:59:59Z');
+      const expectedAppointments: Appointment[] = [appointmentOne, appointmentTwo, appointmentThree];
+      const computedAppointments: Appointment[] = binaryConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
+
+      expect(computedAppointments).toEqual(expectedAppointments);
+    });
+
+    it('should return an appointment array with three appointment, if there were three segments, should ignore excess intervals', () => {
+      const appointmentOne: Appointment = {
+        startTime: new Date('2019-12-29T10:00:00Z'),
+        endTime: new Date('2019-12-29T11:57:00Z')
+      }
+      const appointmentTwo: Appointment = {
+        startTime: new Date('2019-12-29T13:00:00Z'),
+        endTime: new Date('2019-12-29T14:58:00Z')
+      }
+      const appointmentThree: Appointment = {
+        startTime: new Date('2019-12-29T16:00:00Z'),
+        endTime: new Date('2019-12-29T16:59:00Z')
+      }
+      const timeSlots: string = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111111111111000000000000111111111111111111111111000000000000111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111";
       appointmentOne.endTime = new Date('2019-12-29T11:59:59Z');
       appointmentTwo.endTime = new Date('2019-12-29T14:59:59Z');
       appointmentThree.endTime = new Date('2019-12-29T16:59:59Z');
