@@ -82,7 +82,6 @@ describe('Test Scheduler', () => {
     });
   });
 
-
   describe('#getCurrentAvailability', () => {
     const scheduler: Scheduler = new Scheduler(5);
     const emptyBookings: string[] = TestUtils.emptyWeek();
@@ -530,6 +529,118 @@ describe('Test Scheduler', () => {
     });
   });
 
+  describe('#processAppointments', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const binaryStringUtil: BinaryStringUtil = scheduler['binaryTimeFactory']['binaryStringUtil'];
+    const mockDeleteAppointments: jest.Mock = jest.fn();
+    const mockHandleBookingUpdateBString: jest.Mock = jest.fn();
+
+    scheduler.deleteAppointments = mockDeleteAppointments;
+    scheduler.handleBookingUpdateBString = mockHandleBookingUpdateBString;
+
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should return false if an appointment is invalid', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 9, 0, 1, 1);
+
+      const computedSchedule: Schedule | false = scheduler.processAppointments([apptToBook], schedule, ScheduleActions.BOOKING_UPDATE);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it('should return false if the appointment array is invalid', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 12, 0, 1, 1);
+      const apptToBookTwo: Appointment = TestUtils.generateMockDateAppointment(11, 0, 13, 0, 1, 1);
+      const appointments: Appointment[] = [ apptToBook, apptToBookTwo ];
+
+      const computedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it('should return false if passed an unknown action type', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
+      const actionType: ScheduleActions = ScheduleActions.UNKOWN;
+
+      const computedSchedule: Schedule | false = scheduler.processAppointments([apptToBook], schedule, actionType);
+
+      expect(computedSchedule).toBeFalsy();
+      expect(mockDeleteAppointments).not.toBeCalled();
+      expect(mockHandleBookingUpdateBString).not.toBeCalled();
+    });
+
+    it('should call deleteAppointments if the appropriate action type is passed', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
+      const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
+      const appointments: Appointment[] = [ apptToDelete, apptToDeleteTwo ];
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
+
+      scheduler.processAppointments(appointments, schedule, ScheduleActions.DELETE_APPT);
+
+      expect(mockDeleteAppointments).toBeCalledWith(apptBStrings, schedule);
+    });
+
+    it('should call handleBookingUpdateBString if the appropriate action type is passed', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
+      const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
+      const appointments: Appointment[] = [ apptToDelete, apptToDeleteTwo ];
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
+
+      scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
+
+      expect(mockHandleBookingUpdateBString).toBeCalledWith(apptBStrings, schedule);
+    });
+  });
+
   describe('#handleBookingUpdate',  () => {
     const scheduler: Scheduler = new Scheduler(5);
     const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -658,6 +769,127 @@ describe('Test Scheduler', () => {
     });
   });
 
+  describe('#handleBookingUpdateBString', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+
+    it(`should handle an appointment that doesn't cross the day boundary`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 10, 55, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(10, 0, 17, 0, 1, 1);
+      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate day was correctly modified
+      expect(computedSchedule.bookings[1]).toEqual(expectedBookings);
+    });
+
+    it('should return false if the appointment passed does not fit in the schedule', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 2, 0, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+
+      const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it(`should handle an appointment that does cross the day boundary`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 22, 55, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+
+      const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate days were correctly modified
+      expect(computedSchedule.bookings[0]).toEqual(expectedDayZeroBookings);
+      expect(computedSchedule.bookings[1]).toEqual(expectedDayOneBookings);
+    });
+
+    it('should return false if a firstAppt passed does not fit in the schedule', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 1, 0, 0, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+
+      const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
+
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it('should handle multiple appointments', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 18, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 22, 55, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
+      const apptToBookTwo: Appointment = TestUtils.generateMockDateAppointment(17, 5, 18, 0, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook, apptToBookTwo]) as string[];
+
+      const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 18, 0, 1, 1);
+      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate days were correctly modified
+      expect(computedSchedule.bookings[0]).toEqual(expectedDayZeroBookings);
+      expect(computedSchedule.bookings[1]).toEqual(expectedDayOneBookings);
+    });
+  });
+
   describe('#deleteAppointment', () => {
     const scheduler: Scheduler = new Scheduler(5);
     const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -748,6 +980,125 @@ describe('Test Scheduler', () => {
 
       // Only needs to test that the bookings on the appropriate day was correctly modified
       expect(computedSchedule).toBeFalsy();
+    });
+  });
+
+  describe('#deleteAppointments', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+
+    it(`should handle an appointment that doesn't cross the day boundary`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 17, 0, 1, 1);
+      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate day was correctly modified
+      expect(computedSchedule.bookings[1]).toEqual(expectedBookings);
+    });
+
+    it(`should handle an appointment that does cross the day boundary`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+
+      const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 22, 55, 0, 0);
+      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
+      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate days were correctly modified
+      expect(computedSchedule.bookings[0]).toEqual(expectedDayZeroBookings);
+      expect(computedSchedule.bookings[1]).toEqual(expectedDayOneBookings);
+    });
+
+    it(`should return false if the deletion is invalid for one day`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(9, 0, 11, 55, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+
+      const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
+
+      // Only needs to test that the bookings on the appropriate day was correctly modified
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it(`should return false if the deletion is invalid for the first half`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(16, 0, 23, 59, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(16, 0, 23, 59, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(14, 0, 0, 55, 0, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+
+      const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
+
+      // Only needs to test that the bookings on the appropriate day was correctly modified
+      expect(computedSchedule).toBeFalsy();
+    });
+
+    it(`should handle multiple appointments`, () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
+      const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
+      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete, apptToDeleteTwo]) as string[];
+
+      const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 15, 55, 1, 1);
+      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+
+      const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
+
+      // Only needs to test that the bookings on the appropriate day was correctly modified
+      expect(computedSchedule.bookings[1]).toEqual(expectedBookings);
     });
   });
 

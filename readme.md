@@ -35,6 +35,9 @@
   // To process an appointment
   const processedSchedule: Schedule | false = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE);
 
+  // To process an appointments
+  const processedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
+
   // To convert a schedule to an appointment schedule
   const processedSchedule: AppointmentSchedule = scheduler.convertScheduleToAppointmentSchedule(schedule);
 
@@ -49,9 +52,8 @@ Further, information on these two classes can be found here:
 
 ## Coming Features
 
-1. Allow for the conversion of multiple appointments in one go
 1. Add instructions on how to handle the case where appointment crosses the week barrier & add utility to detect such cases
-1. Add ability to update a given schedule's base availability (it's mostly reversing some fields)
+1. Clean up JSDocs
 1. Throw Exceptions for cleaning stack tracing & surround with catches
 1. Bit Array mode (don't store as strings), optional parameter
 1. Allow compressed storage mode

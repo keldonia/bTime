@@ -206,6 +206,39 @@ export class Scheduler {
   }
 
   /**
+   *  @description Takes an array of appointments and update type and tests if the
+   *  appointment updates are valid, if not it returns false, if they are the schedule
+   *  is updated
+   *
+   *  @param {Appointment[]} appointments
+   *  @param {Schedule} schedule
+   *  @param {ScheduleActions} actionType
+   *
+   *  @returns {Schedule | false} Schedule | false
+   */
+  public processAppointments(
+    appointments: Appointment[],
+    schedule: Schedule,
+    actionType: ScheduleActions
+  ): Schedule | false {
+    const appointmentsBStrings: string[] | false = this.binaryTimeFactory.generateBinaryStringFromAppointments(appointments);
+
+    if (!appointmentsBStrings) {
+      return false;
+    }
+
+    if (actionType === ScheduleActions.DELETE_APPT) {
+      return this.deleteAppointments(appointmentsBStrings, schedule);
+    }
+
+    if (actionType === ScheduleActions.BOOKING_UPDATE) {
+      return this.handleBookingUpdateBString(appointmentsBStrings, schedule);
+    }
+
+    return false;
+  }
+
+  /**
    *  @description Takes an appointment and update type and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
@@ -306,14 +339,49 @@ export class Scheduler {
   }
 
   /**
-   *  @description Takes an appointment and update type and tests if the appointment delete
-   *  is valid, if not it returns false, if it is the schedule is updated to reflect the deletion
+   *  @description Takes an array of appointments and tests if the appointment
+   *  update are valid, if not it returns false, if they are the schedule is updated
+   *
+   *  @param {string[]} appointments
+   *  @param {Schedule} schedule
+   *
+   *  @returns {Schedule | false} Schedule | false
+   */
+  public handleBookingUpdateBString(
+    appointmentsBStrings: string[],
+    schedule: Schedule
+  ): Schedule | false {
+    const bookings: string[] = [];
+
+    for (let i = 0; i < daysInWeek; i++) {
+      const tempBookings: string | false = this.binaryTimeFactory.modifyScheduleAndBooking(
+        schedule.bookings[i],
+        schedule.schedule[i],
+        appointmentsBStrings[i]
+      );
+
+      if (!tempBookings) {
+        return false;
+      }
+
+      bookings.push(tempBookings);
+    }
+
+    schedule.bookings = bookings;
+
+    return schedule;
+  }
+
+  /**
+   *  @description Takes an appointment and tests if the appointment to delete
+   *  is valid, if not it returns false, if it is the schedule is updated
+   *  to reflect the deletion
    *
    *  @param {Appointment} appointment
    *  @param {Schedule} schedule
    *  @param {Appointment?} firstAppt
    *
-   *  @returns {Schedule} Schedule
+   *  @returns {Schedule | false} Schedule | false
    */
   public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule | false {
     let startDay = appointment.startTime.getUTCDay();
@@ -341,6 +409,37 @@ export class Scheduler {
     }
 
     schedule.bookings[endDay] = mainCalculated;
+
+    return schedule;
+  }
+
+  /**
+   *  @description Takes an array of appointments and tests if the appointments
+   *  to delete are valid, if not it returns false, if they are the schedule is
+   *  updated to reflect the deletion
+   *
+   *  @param {string[]} appointmentsBStrings
+   *  @param {Schedule} schedule
+   *
+   *  @returns {Schedule | false} Schedule | false
+   */
+  public deleteAppointments(appointmentsBStrings: string[], schedule: Schedule): Schedule | false {
+    const bookings: string[] = [];
+
+    for (let i = 0; i < daysInWeek; i++) {
+      const calculatedSchedule: string | false = this.binaryTimeFactory.deleteAppointmentBString(
+        appointmentsBStrings[i],
+        schedule.bookings[i]
+      );
+
+      if (!calculatedSchedule) {
+        return false;
+      }
+
+      bookings.push(calculatedSchedule);
+    }
+
+    schedule.bookings = bookings;
 
     return schedule;
   }

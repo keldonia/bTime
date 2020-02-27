@@ -243,6 +243,7 @@ export class ScheduleBinaryUtil {
   /**
    *  @description Tests removal a give time slot from a given time interval
    *  and if valid removes it
+   *
    *  NB: This is also used for calculating remaining availability
    *
    *  @param {Appointment} timeSlotToDelete timeSlot to delete
@@ -263,6 +264,7 @@ export class ScheduleBinaryUtil {
   /**
    *  @description Tests removal a give time slot from a given time interval
    *  and if valid removes it
+   *
    *  NB: This is also used for calculating remaining availability
    *
    *  @param {string} bStringToDelete timeSlot to delete
@@ -296,6 +298,7 @@ export class ScheduleBinaryUtil {
   /**
    *  @description Tests removal a give time slot from a given time interval
    *  and if valid removes it
+   *
    *  NB: Deleted appts can restore availability not add new availability
    *      as appts can only be created where the is availability and
    *      availability cannot be deleted when there is a concurrent appt
