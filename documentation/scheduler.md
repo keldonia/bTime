@@ -53,6 +53,19 @@ The `#processAppointment` method takes three agruments, the proposed appointment
   const processedSchedule: Schedule | false = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE); 
 ```
 
+## `#processAppointments`
+
+The `#processAppointments` method takes three agruments, the proposed appointments \- in the form of an array, the schedule, and the type of action \- a booking update or appointment delete.  The method will then check if there is availability for the proposed appointments in the schedule in the case of a booking update, returning with the updated schedule if the appointments are compatible with the schedule, or false if not.  If the appointments are to be deleted the time intervals of the appointments are freed.
+
+```typescript
+  // If using the scheduler
+  // Instantiates a new Scheduler with a time interval of 5 min.
+  const scheduler: Scheduler = new Scheduler(5); 
+
+  // To process an appointment
+  const processedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE); 
+```
+
 ## `#convertScheduleToAppointmentSchedule`
 
 `#convertScheduleToAppointmentSchedule` takes a schedule and converts it into an array of appointments for each date

@@ -35,7 +35,7 @@
   // To process an appointment
   const processedSchedule: Schedule | false = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE);
 
-  // To process an appointments
+  // To process an array of appointments
   const processedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
 
   // To convert a schedule to an appointment schedule
@@ -46,7 +46,7 @@
   const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);  
 ```
 
-Further, information on these two classes can be found here:
+Further information on these two classes can be found here:
 * [Scheduler](./documentation/scheduler.md)
 * [BinaryTimeFactory](./documentation/binaryTimeFactory.md)
 
