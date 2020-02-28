@@ -1,4 +1,4 @@
-import { Schedule, Appointment, hoursInDay} from './../../src/@types/index';
+import { Schedule, Appointment, hoursInDay, AppointmentSchedule} from './../../src/@types/index';
 import { BinaryStringUtil } from './../../src/binaryTime/binaryStringUtil';
 
 const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -28,8 +28,8 @@ export function generateMockDateAppointment(
   day2: number = 0
 ): Appointment {
   return ({
-    startTime: this.generateMockUTCDate(hour1, minute1, day1),
-    endTime: this.generateMockUTCDate(hour2, minute2, day2),
+    startTime: generateMockUTCDate(hour1, minute1, day1),
+    endTime: generateMockUTCDate(hour2, minute2, day2),
     toString: () => `start: ${hour1}:${minute1} on ${day1} :: end: ${hour2}:${minute2} on ${day2}`
   }) as Appointment;
 }
@@ -143,4 +143,60 @@ export function generateTimeSet(
   }
 
   return scheduleSlots;
+}
+
+export function generateTestSchedule() {
+  const dayZeroSchedule: Appointment = generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+  const dayOneSchedule: Appointment = generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+  const scheduledAvailability: string[] = generateTimeSet(
+    dayZeroSchedule, 
+    dayOneSchedule, 
+    dayOneSchedule, 
+    dayOneSchedule,
+    dayOneSchedule,
+    dayOneSchedule,
+    dayOneSchedule
+  );
+
+  const dayZeroBookings: Appointment = generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+  const dayOneBookings: Appointment = generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+  const bookings: string[] = generateTimeSet(
+    dayZeroBookings, 
+    dayOneBookings
+  );
+
+  return generateSchedule(scheduledAvailability, bookings);
+}
+
+export function generateTestAppointmentSchedule() {
+  const dayZeroSchedule: Appointment = generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+  const dayOneSchedule: Appointment = generateMockDateAppointment(10, 0, 18, 0, 0, 0);
+  const dayTwoSchedule: Appointment = generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+  const schedule: Appointment[][] = [
+    [dayZeroSchedule],
+    [dayOneSchedule],
+    [dayTwoSchedule],
+    [dayTwoSchedule],
+    [dayTwoSchedule],
+    [dayTwoSchedule],
+    [dayTwoSchedule]
+  ];
+  const dayZeroBookings: Appointment = generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+  const dayOneBookings: Appointment = generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+  const bookings: Appointment[][] =  [
+    [dayZeroBookings], 
+    [dayOneBookings],
+    [],
+    [],
+    [],
+    [],
+    []
+  ];
+
+  return {
+    schedule,
+    bookings,
+    availability: [[],[],[],[],[],[],[]],
+    weekStart: generateMockUTCDate(0, 1, 0)
+  } as AppointmentSchedule;
 }

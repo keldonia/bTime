@@ -55,6 +55,7 @@ Further information on these two classes can be found here:
 1. Add instructions on how to handle the case where appointment crosses the week barrier & add utility to detect such cases
 1. Clean up JSDocs
 1. Throw Exceptions for cleaning stack tracing & surround with catches
+1. Clean up and reorganize some functions
 1. Bit Array mode (don't store as strings), optional parameter
 1. Allow compressed storage mode
 1. Add an example use case

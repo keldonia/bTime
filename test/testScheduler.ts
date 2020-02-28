@@ -1,4 +1,4 @@
-import { Scheduler } from './../src';
+import { Scheduler, BinaryTimeFactory } from './../src';
 import * as TestUtils from './utils/testUtils';
 import { Schedule, ScheduleActions, Appointment, AppointmentDuo, AppointmentSchedule } from '../src/@types';
 import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
@@ -242,6 +242,119 @@ describe('Test Scheduler', () => {
     });
   });
 
+  describe('#updateScheduleWithAppointmentSchedule', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const binaryTimeFactory: BinaryTimeFactory = scheduler['binaryTimeFactory'];
+
+    const mockGenerateBinaryStringFromAppointments: jest.Mock = jest.fn();
+    const mockUpdateSchedule: jest.Mock = jest.fn();
+    const mockGetCurrentAvailability: jest.Mock = jest.fn();
+    const mockConvertScheduleToAppointmentSchedule: jest.Mock = jest.fn();
+
+    scheduler.updateSchedule = mockUpdateSchedule;
+    scheduler.getCurrentAvailability = mockGetCurrentAvailability;
+    binaryTimeFactory.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
+    binaryTimeFactory.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
+
+    let schedule: Schedule;
+    let appointmentSchedule: AppointmentSchedule;
+
+    beforeEach(() => {
+      jest.resetAllMocks();
+      schedule = TestUtils.generateTestSchedule();
+      appointmentSchedule = TestUtils.generateTestAppointmentSchedule();
+    });
+
+    it('should properly flatten the schedule', () => {
+      mockGenerateBinaryStringFromAppointments.mockReturnValueOnce(false);
+      
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(10, 0, 18, 0, 0, 0);
+      const dayTwoSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const expectedFlattenedSchedule: Appointment[] = [
+        dayZeroSchedule,
+        dayOneSchedule,
+        dayTwoSchedule,
+        dayTwoSchedule,
+        dayTwoSchedule,
+        dayTwoSchedule,
+        dayTwoSchedule
+      ];
+      const testSchedule: Appointment[][] = [
+        [dayZeroSchedule],
+        [dayOneSchedule],
+        [dayTwoSchedule],
+        [dayTwoSchedule],
+        [dayTwoSchedule],
+        [dayTwoSchedule],
+        [dayTwoSchedule]
+      ];
+      appointmentSchedule.schedule = testSchedule;
+
+      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalledWith(expectedFlattenedSchedule);
+      expect(mockUpdateSchedule).not.toBeCalled();
+      expect(mockGetCurrentAvailability).not.toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
+      expect(updatedAppointmentSchedule).toBeFalsy();
+    })
+
+    it('should return false if a binaryString representation of the schedule is unable to be created', () => {
+      mockGenerateBinaryStringFromAppointments.mockReturnValueOnce(false);
+
+      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
+      expect(mockUpdateSchedule).not.toBeCalled();
+      expect(mockGetCurrentAvailability).not.toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
+      expect(updatedAppointmentSchedule).toBeFalsy();
+    });
+
+    it(`should return false if the proposed schedule won't contain current bookings`, () => {
+      mockGenerateBinaryStringFromAppointments.mockReturnValueOnce(true);
+      mockUpdateSchedule.mockReturnValueOnce(false);
+
+      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
+      expect(mockUpdateSchedule).toBeCalled();
+      expect(mockGetCurrentAvailability).not.toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
+      expect(updatedAppointmentSchedule).toBeFalsy();
+    });
+
+    it(`should return false if the proposed schedule won't contain current bookings, availabilty test`, () => {
+      mockGenerateBinaryStringFromAppointments.mockReturnValueOnce(true);
+      mockUpdateSchedule.mockReturnValueOnce(true);
+      mockGetCurrentAvailability.mockReturnValueOnce(false);
+
+      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
+      expect(mockUpdateSchedule).toBeCalled();
+      expect(mockGetCurrentAvailability).toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
+      expect(updatedAppointmentSchedule).toBeFalsy();
+    });
+
+
+    it(`should call convertScheduleToAppointmentSchedule, if none of the checks fail`, () => {
+      mockGenerateBinaryStringFromAppointments.mockReturnValueOnce(true);
+      mockUpdateSchedule.mockReturnValueOnce(true);
+      mockGetCurrentAvailability.mockReturnValueOnce(true);
+
+      scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+
+      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
+      expect(mockUpdateSchedule).toBeCalled();
+      expect(mockGetCurrentAvailability).toBeCalled();
+      expect(mockConvertScheduleToAppointmentSchedule).toBeCalled();
+    });
+  });
+
   describe('#updateSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
     const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
@@ -416,6 +529,59 @@ describe('Test Scheduler', () => {
       const computedSchedule: Schedule | boolean = scheduler.updateSchedule(proposedSchedule, schedule);
 
       expect(computedSchedule).toBeFalsy();
+    });
+
+    it('should ignore any additional intervals outside of the day', () => {
+      const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
+      const scheduledAvailability: string[] = TestUtils.generateTimeSet(
+        dayZeroSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule, 
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule,
+        dayOneSchedule
+      );
+
+      // Add a 25th hour to the last day
+      scheduledAvailability[6] = dayOneSchedule + "101010101010"; 
+
+      const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
+      const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
+      const bookings: string[] = TestUtils.generateTimeSet(
+        dayZeroBookings, 
+        dayOneBookings
+      );
+
+      const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+
+      const proposedDayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 20, 0, 0, 0);
+      const proposedDayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 18, 0, 0, 0);
+      const proposedAvailability: string[] = TestUtils.generateTimeSet(
+        proposedDayZeroSchedule, 
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule,
+        proposedDayOneSchedule
+      );
+
+      // Add a 25th hour to the last day
+      proposedAvailability[6] = proposedDayOneSchedule + "101010101010"; 
+
+      const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
+      
+      const expectedSchedule: Schedule = {
+        schedule: proposedAvailability,
+        bookings: bookings,
+        weekStart: schedule.weekStart
+      };
+
+      const computedSchedule: Schedule = scheduler.updateSchedule(proposedSchedule, schedule) as Schedule;
+
+      expect(computedSchedule).toMatchObject(expectedSchedule);
     });
   });
 

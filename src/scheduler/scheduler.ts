@@ -170,6 +170,51 @@ export class Scheduler {
   }
 
   /**
+   *  @description Tests a propsoed appointment schedule update and updates the schedule,
+   *  if theupdate is valid or returns false if the update is not valid
+   *
+   *  @param {AppointmentSchedule} proposedAppointmentSchedule
+   *  @param {Schedule} schedule
+   *
+   *  @returns {AppointmentSchedule | false} AppointmentSchedule | false
+   */
+  public updateScheduleWithAppointmentSchedule(
+    proposedAppointmentSchedule: AppointmentSchedule,
+    schedule: Schedule
+  ): AppointmentSchedule | false {
+    const scheduleAppointments: Appointment[] = [];
+    proposedAppointmentSchedule.schedule.forEach(appointments  => {
+      appointments.forEach(appointment => {
+        scheduleAppointments.push(appointment);
+      });
+    });
+    const proposedScheduleStrings: string[] | false = this.binaryTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
+
+    if  (!proposedScheduleStrings) {
+      return false;
+    }
+
+    const proposedSchedule: Schedule = {
+      schedule: proposedScheduleStrings,
+      bookings: schedule.bookings,
+      weekStart: schedule.weekStart
+    };
+    const updatedSchedule: Schedule | false = this.updateSchedule(proposedSchedule, schedule);
+
+    if (!updatedSchedule) {
+      return false;
+    }
+    const availability: string[] | false = this.getCurrentAvailability(schedule);
+
+    // NB: This is an additional safe guard
+    if (!availability) {
+      return false;
+    }
+
+    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(updatedSchedule, availability);
+  }
+
+  /**
    *  @description Tests a propsoed schedule update and updates the schedule, if the
    *  update is valid or returns false if the update is not valid
    *
