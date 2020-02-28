@@ -8,13 +8,14 @@
     "build": "tsc",
     "lint": "tslint -p .",
     "lint:fix": "tslint -p . --fix",
-    "prepare": "npm run build",
+    "prepare": "npm run test && npm run stryker && npm run build",
     "stryker": "stryker run",
     "test": "npm audit && npm run lint && npm run build && jest --coverage",
     "test:watch": "npm audit && npm run lint && npm run build && jest --coverage --watch"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "https://github.com/keldonia/bTime"
   },
   "author": "Brian Lambert <keldoniaskylar@gmail.com>",
   "license": "MIT",
@@ -48,7 +49,7 @@
   "jest-junit": {
     "suiteName": "Unit Test Report",
     "outputName": "./jest_unit_tests.xml",
-    "classNameTemplate": "health-checker-unit-tests",
+    "classNameTemplate": "bTime-unit-tests",
     "ancestorSeparator": " ... ",
     "usePathForSuiteName": "true"
   },
