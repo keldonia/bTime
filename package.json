@@ -11,6 +11,7 @@
     "prepare": "npm run test && npm run stryker && npm run build",
     "stryker": "stryker run",
     "test": "npm audit && npm run lint && npm run build && jest --coverage",
+    "test:noAudit": "npm run lint && npm run lint && npm run build && jest --coverage",
     "test:watch": "npm audit && npm run lint && npm run build && jest --coverage --watch"
   },
   "repository": {
