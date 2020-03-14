@@ -2,6 +2,9 @@
 export const daysInWeek: number = 7;
 export const hoursInDay: number = 24;
 export const minutesInHour: number = 60;
+export const millisecondsInWeek: number = 604800000;
+export const millisecondsInHour: number = 60 * 60 * 1000;
+export const millisecondsInDay: number = 24 * 60 * 60 * 1000;
 
 // Binary is in base 2
 export const binaryBase: number = 2;

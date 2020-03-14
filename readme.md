@@ -1,6 +1,6 @@
 # bTime
 
-**bTime** is a small lightweight library, with no dependencies, designed to help manage schedules using bit manipulation.  It is particularly suited to working with dense schedules with discreet time intervals, e.g. 5 minutes.
+**bTime** is a small lightweight library, with no dependencies and 100% test and mutation test coverage, designed to help manage schedules using bit manipulation.  It is particularly suited to working with dense schedules with discreet time intervals, e.g. 5 minutes.
 
 ## Getting Started
 
@@ -52,7 +52,7 @@ Further information on these two classes can be found here:
 
 ## Coming Features
 
-1. Add instructions on how to handle the case where appointment crosses the week barrier & add utility to detect such cases
+1. Add instructions on how to handle the case where appointment crosses the week barrier, using util functions
 1. Clean up JSDocs
 1. Throw Exceptions for cleaning stack tracing & surround with catches
 1. Clean up and reorganize some functions

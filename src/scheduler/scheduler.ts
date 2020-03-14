@@ -1,4 +1,4 @@
-import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay, AppointmentSchedule} from '../@types';
+import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay, AppointmentSchedule, millisecondsInWeek, millisecondsInDay} from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -500,5 +500,33 @@ export class Scheduler {
    */
   public crosssesDayBoundary(appt: Appointment): boolean {
     return appt.startTime.getUTCDay() !== appt.endTime.getUTCDay();
+  }
+
+  /**
+   *  @description Takes an appointment and checks if the appoint crosses a week boundry
+   *
+   *  @param {Appointment} appt
+   *
+   *  @returns {boolean} boolean
+   */
+  public crosssesWeekBoundary(appt: Appointment): boolean {
+    return this.getWeek(appt.startTime) !== this.getWeek(appt.endTime);
+  }
+
+  /**
+   *  @description Takes date and gets the week since the Unix Epoch
+   *
+   *  @param {Date} date
+   *
+   *  @returns {number} number
+   */
+  public getWeek(date: Date): number {
+    /**
+     * NB: This handles the fact the Unix Epoch began on
+     * Thursday Jan 1, 1970
+     */
+    const adjustedDate: number = date.valueOf() + (4 * millisecondsInDay);
+
+    return Math.floor(adjustedDate / millisecondsInWeek);
   }
 }

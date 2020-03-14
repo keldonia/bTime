@@ -545,7 +545,7 @@ describe('Test Scheduler', () => {
       );
 
       // Add a 25th hour to the last day
-      scheduledAvailability[6] = dayOneSchedule + "101010101010"; 
+      scheduledAvailability[0] = dayOneSchedule + "000000000000"; 
 
       const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
@@ -553,6 +553,7 @@ describe('Test Scheduler', () => {
         dayZeroBookings, 
         dayOneBookings
       );
+      bookings[0] = dayZeroBookings + "000000000000";
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
@@ -569,7 +570,7 @@ describe('Test Scheduler', () => {
       );
 
       // Add a 25th hour to the last day
-      proposedAvailability[6] = proposedDayOneSchedule + "101010101010"; 
+      proposedAvailability[0] = proposedDayOneSchedule + "101010101010"; 
 
       const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
       
@@ -1332,6 +1333,87 @@ describe('Test Scheduler', () => {
       const crossesDayBoundary: boolean = scheduler.crosssesDayBoundary(appt);
 
       expect(crossesDayBoundary).toBeTruthy();
+    });
+  });
+
+  describe('#crosssesWeekBoundary', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const tests: Array<{ dateOne: Date, dateTwo: Date, expected: boolean }> = [
+      { dateOne: new Date('1969-12-21T00:00:00Z'), dateTwo: new Date('1969-12-21T00:00:00Z'), expected: false },
+      { dateOne: new Date('1969-12-21T00:00:00Z'), dateTwo: new Date('1969-12-26T00:00:00Z'), expected: false },
+      { dateOne: new Date('1969-12-21T00:00:00Z'), dateTwo: new Date('1969-12-28T00:00:00Z'), expected: true },
+      { dateOne: new Date('1969-12-28T00:00:00Z'), dateTwo: new Date('1970-01-02T00:00:00Z'), expected: false },
+      { dateOne: new Date('2020-02-05T00:00:00Z'), dateTwo: new Date('2020-02-08T00:00:00Z'), expected: false },
+      { dateOne: new Date('2020-02-08T00:00:00Z'), dateTwo: new Date('2020-03-08T00:00:00Z'), expected: true },
+      { dateOne: new Date('2020-03-10T00:00:00Z'), dateTwo: new Date('2020-03-13T00:00:00Z'), expected: false },
+      { dateOne: new Date('2020-02-04T00:00:00Z'), dateTwo: new Date('2020-02-08T00:00:00Z'), expected: false },
+      { dateOne: new Date('2020-02-05T00:00:00Z'), dateTwo: new Date('2020-02-08T00:00:00Z'), expected: false }
+    ]
+
+    tests.forEach(test => {
+      const testName = `should return ${test.expected} when passed an appt starting at: ${test.dateOne} and ending at ${test.dateTwo}`;
+      const appt: Appointment = {
+        startTime: test.dateOne,
+        endTime: test.dateTwo
+      };
+
+      it(testName, () => {
+        const computed: boolean = scheduler.crosssesWeekBoundary(appt);
+
+        expect(computed).toEqual(test.expected);
+      });
+    });
+  });
+
+  describe('#getWeek', () => {
+    const scheduler: Scheduler = new Scheduler(5);
+    const tests: Array<{ input: Date, expected: number }> = [
+      { input: new Date('1969-12-21T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-22T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-23T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-24T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-25T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-26T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-27T00:00:00Z'), expected: -1 },
+      { input: new Date('1969-12-28T00:00:00Z'), expected: 0 },
+      { input: new Date('1969-12-29T00:00:00Z'), expected: 0 },
+      { input: new Date('1969-12-30T00:00:00Z'), expected: 0 },
+      { input: new Date('1969-12-31T00:00:00Z'), expected: 0 },
+      { input: new Date('1970-01-01T00:00:00Z'), expected: 0 },
+      { input: new Date('1970-01-02T00:00:00Z'), expected: 0 },
+      { input: new Date('1970-01-03T00:00:00Z'), expected: 0 },
+      { input: new Date('1970-01-04T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-05T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-06T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-07T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-08T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-09T00:00:00Z'), expected: 1 },
+      { input: new Date('1970-01-10T00:00:00Z'), expected: 1 },
+      { input: new Date('2020-02-02T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-03T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-04T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-05T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-06T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-07T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-02-08T00:00:00Z'), expected: 2614 },
+      { input: new Date('2020-03-08T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-09T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-10T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-11T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-12T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-13T00:00:00Z'), expected: 2619 },
+      { input: new Date('2020-03-14T00:00:00Z'), expected: 2619 },
+    ];
+
+    tests.forEach(test => {
+      
+      const testName: string = `should return ${test.expected}, when passed ${test.input}`;
+
+      it(testName, () => {
+        const computedWeek: number = scheduler.getWeek(test.input);
+
+        expect(computedWeek).toEqual(test.expected);
+      });
     });
   });
 });
