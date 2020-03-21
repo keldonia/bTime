@@ -1,6 +1,9 @@
 # bTime
 
-**bTime** is a small lightweight library, with no dependencies and 100% test and mutation test coverage, designed to help manage schedules using bit manipulation.  It is particularly suited to working with dense schedules with discreet time intervals, e.g. 5 minutes.
+**bTime** is a small lightweight library, with no dependencies and 100% test
+and mutation test coverage, designed to help manage schedules using bit 
+manipulation.  It is particularly suited to working with dense schedules with 
+discreet time intervals, e.g. 5 minutes.
 
 ## Getting Started
 
@@ -19,7 +22,9 @@
 
 ## Using bTime
 
-**bTime** includes two primary classes, [Scheduler](./documentation/scheduler.md) and [BinaryTimeFactory](./documentation/binaryTimeFactory.md).  Scheduler instantiates its own `BinaryTimeFactory` when instantiated.  `BinaryTimeFactory` can also be instantiated separately if one desires to directly make use of the binary time utils;
+**bTime** includes two primary classes, [Scheduler](./documentation/scheduler.md) and [BinaryTimeFactory](./documentation/binaryTimeFactory.md).  
+Scheduler instantiates its own `BinaryTimeFactory` when instantiated.  `BinaryTimeFactory` 
+can also be instantiated separately if one desires to directly make use of the binary time utils;
 
 ```typescript
   // If using the scheduler

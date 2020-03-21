@@ -88,7 +88,10 @@ The `#deleteAppointment` tests removal a give time slot from a given time interv
 
 ## `#modifyScheduleAndBooking`
 
-`#modifyScheduleAndBooking` tests that an timeSlot does not overlap with another timeSlot, if it does not overlap, the timeSlot is added to the bookings, else return false.  Additionally, this method checks that the timeslot is within availabilities (test).
+`#modifyScheduleAndBooking` tests that an timeSlot does not overlap with another
+timeSlot, if it does not overlap, the timeSlot is added to the bookings, else
+return false.  Additionally, this method checks that the timeslot is within
+availabilities (test).
 
 ```typescript
   // If using the scheduler
@@ -104,7 +107,8 @@ The `#deleteAppointment` tests removal a give time slot from a given time interv
 
 ## `#convertScheduleToAppointmentSchedule`
 
-`#convertScheduleToAppointmentSchedule` takes a schedule and availabilty converting them into an array of appointments for each date
+`#convertScheduleToAppointmentSchedule` takes a schedule and availabilty converting
+them into an array of appointments for each date
 
 ```typescript
   // If using the scheduler
