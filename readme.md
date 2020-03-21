@@ -49,6 +49,7 @@
 Further information on these two classes can be found here:
 * [Scheduler](./documentation/scheduler.md)
 * [BinaryTimeFactory](./documentation/binaryTimeFactory.md)
+* [How to use bTime](./documentation/howTos.md)
 
 ## Coming Features
 
