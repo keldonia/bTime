@@ -46,7 +46,7 @@
   const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);  
 ```
 
-Further information on these two classes can be found here:
+Further information on bTime can be found below:
 * [Scheduler](./documentation/scheduler.md)
 * [BinaryTimeFactory](./documentation/binaryTimeFactory.md)
 * [How to use bTime](./documentation/howTos.md)
