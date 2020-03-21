@@ -52,7 +52,6 @@ Further information on these two classes can be found here:
 
 ## Coming Features
 
-1. Add instructions on how to handle the case where appointment crosses the week barrier, using util functions
 1. Clean up JSDocs
 1. Throw Exceptions for cleaning stack tracing & surround with catches
 1. Clean up and reorganize some functions
