@@ -228,11 +228,11 @@ export class Scheduler {
       // We test that no bookings fall outside of the scheduled availability
       const proposed: string = proposedSchedule.schedule[i];
       const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
-      const splitproposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
+      const splitProposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
 
       for (let j = 0; j < hoursInDay; j++) {
         const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
-        const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitproposed[j]);
+        const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitProposed[j]);
 
         const viabile: number | false = this.binaryTimeFactory.testViabilityAndCompute(
           flippedProposedInterval,
@@ -243,6 +243,9 @@ export class Scheduler {
           return false;
         }
       }
+
+      proposedSchedule.schedule[i] = splitProposed.slice(0, hoursInDay).join('');
+      schedule.bookings[i] = splitBookings.slice(0, hoursInDay).join('');
     }
 
     schedule.schedule = proposedSchedule.schedule;

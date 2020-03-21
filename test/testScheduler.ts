@@ -544,18 +544,17 @@ describe('Test Scheduler', () => {
         dayOneSchedule
       );
 
-      // Add a 25th hour to the last day
-      scheduledAvailability[0] = dayOneSchedule + "000000000000"; 
-
       const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
       const bookings: string[] = TestUtils.generateTimeSet(
         dayZeroBookings, 
         dayOneBookings
       );
-      bookings[0] = dayZeroBookings + "000000000000";
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
+      // Add a 25th hour to the first day
+      schedule.schedule[0] = binaryStringUtil.generateBinaryString(dayZeroSchedule) as string + "101010101010";
+      schedule.bookings[0] = binaryStringUtil.generateBinaryString(dayZeroBookings) as string + "101010101010";
 
       const proposedDayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 20, 0, 0, 0);
       const proposedDayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 18, 0, 0, 0);
@@ -569,19 +568,26 @@ describe('Test Scheduler', () => {
         proposedDayOneSchedule
       );
 
-      // Add a 25th hour to the last day
-      proposedAvailability[0] = proposedDayOneSchedule + "101010101010"; 
-
       const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
-      
-      const expectedSchedule: Schedule = {
-        schedule: proposedAvailability,
-        bookings: bookings,
-        weekStart: schedule.weekStart
-      };
+      // Add a 25th hour to the first day
+      const badAvail: string = binaryStringUtil.generateBinaryString(proposedDayZeroSchedule) as string + "001010101010"; 
+      proposedSchedule.schedule[0] = badAvail;
+      proposedSchedule.bookings[0] = schedule.bookings[0];
 
       const computedSchedule: Schedule = scheduler.updateSchedule(proposedSchedule, schedule) as Schedule;
 
+      const expectedSchedule: Schedule = {
+        schedule: proposedAvailability.slice(),
+        bookings: bookings.slice(),
+        weekStart: schedule.weekStart
+      };
+      // Correct expected availability & bookings
+      const expectedAvailibility: string = binaryStringUtil.generateBinaryString(proposedDayZeroSchedule) as string;
+      expectedSchedule.schedule[0] = expectedAvailibility;
+      expectedSchedule.bookings[0] = binaryStringUtil.generateBinaryString(dayZeroBookings) as string;
+
+      expect(computedSchedule.schedule[0]).not.toEqual(badAvail)
+      expect(computedSchedule.schedule[0]).toEqual(expectedAvailibility)
       expect(computedSchedule).toMatchObject(expectedSchedule);
     });
   });
