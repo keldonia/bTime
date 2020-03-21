@@ -8,7 +8,6 @@
     "build": "tsc",
     "lint": "tslint -p .",
     "lint:fix": "tslint -p . --fix",
-    "prepare": "npm run test && npm run stryker && npm run build",
     "stryker": "stryker run",
     "test": "npm audit && npm run lint && npm run build && jest --coverage",
     "test:noAudit": "npm run lint && npm run lint && npm run build && jest --coverage",
@@ -30,18 +29,17 @@
     "scheduling"
   ],
   "devDependencies": {
-    "@stryker-mutator/core": "^2.0.0",
-    "@stryker-mutator/html-reporter": "^2.0.0",
-    "@stryker-mutator/jest-runner": "^2.0.0",
-    "@stryker-mutator/typescript": "^2.0.0",
-    "@types/jest": "^24.9.0",
+    "@stryker-mutator/core": "^3.0.2",
+    "@stryker-mutator/jest-runner": "^3.0.2",
+    "@stryker-mutator/typescript": "^3.0.2",
+    "@types/jest": "^25.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "jest-date-mock": "^1.0.7",
     "jest-junit": "^6.4.0",
     "stryker-cli": "^1.0.0",
-    "ts-jest": "^24.3.0",
+    "ts-jest": "^25.1.0",
     "typescript": "^3.7.5"
   },
   "files": [

@@ -7,9 +7,9 @@
 
 As you might already know, bTime already handles when the case when an appointment
 crosses a day boundary; it does not however handle the case where the appointment
-crosses a week boundary.  The decision to not handle this case was made, better 
+crosses a week boundary.  The decision to not handle this case was made, better
 enable customization of the schedule interface.  However, the Scheduler class does
-provide some utilities to make handling this case.  
+provide some utilities to make handling this case.
 
 That an appointment crosses the week boundary can be checked using the `crosssesWeekBoundary`
 method on the Scheduler class.  This will return `true` if the appointment crosses the week
