@@ -2,9 +2,11 @@ import { BinaryStringUtil } from "./binaryStringUtil";
 import { Appointment, hoursInDay } from "../@types";
 
 /**
- *  @typedef ScheduleBinaryUtil is responsible for handling scheduling use bit manipulations
+ *  @typedef ScheduleBinaryUtil is responsible for handling scheduling
+ *  using bit manipulations
  *
- *  @param {binaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
+ *  @param {binaryStringUtil} binaryStringUtil binaryStringUtil for manipulating
+ *  binary strings
  *
  *  @returns {ScheduleBinaryUtil} scheduleBinaryUtil
  */
@@ -12,9 +14,11 @@ export class ScheduleBinaryUtil {
   private binaryStringUtil?: BinaryStringUtil;
 
   /**
-   *  @description ScheduleBinaryUtil is responsible for handling scheduling use bit manipulations
+   *  @description ScheduleBinaryUtil is responsible for handling scheduling
+   *  using bit manipulations
    *
-   *  @param {BinaryStringUtil} BinaryStringUtil binaryStringUtil for manipulating binary strings
+   *  @param {BinaryStringUtil} binaryStringUtil binaryStringUtil for manipulating
+   *  binary strings
    *
    *  @returns {ScheduleBinaryUtil} scheduleBinaryUtil
    */
@@ -23,10 +27,10 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Takes in a date and gets the UTC date and returns the UTC date that began the
-   *   week that date is in.
+   *  @description Takes in a date and gets the UTC date and returns the UTC date
+   *  that began the week that date is in.
    *
-   *  @param {Date} Date date to find the beginning of the week
+   *  @param {Date} date date to find the beginning of the week
    *
    *  @returns {Date} Date
    */
@@ -44,8 +48,9 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Tests that an appointment does not overlap with another appointment, if it
-   *  does not overlap, the appointment is added to the bookings, else return false
+   *  @description Tests that an appointment does not overlap with another
+   *  appointment, if it does not overlap, the appointment is added to the
+   *  bookings, else return false
    *
    *  @param {Appointment} timeSlot timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
@@ -63,8 +68,9 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Tests that an appointment does not overlap with another appointment, if it
-   *  does not overlap, the appointment is added to the bookings, else return false
+   *  @description Tests that an appointment does not overlap with another
+   *  appointment, if it does not overlap, the appointment is added to the
+   *  bookings, else return false
    *
    *  @param {string} apptBString timeSlot bString to modify schedule
    *  @param {string} schedule schedule to modify
@@ -99,8 +105,8 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Tests that an timeSlot does not overlap with another timeSlot, if it
-   *  does not overlap, the timeSlot is added to the bookings, else return false
+   *  @description Tests that an timeSlot does not overlap with another timeSlot,
+   *  if it does not overlap, the timeSlot is added to the bookings, else return false
    *
    *  @param {string} timeSlotBString timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
@@ -124,9 +130,10 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Tests that an timeSlot does not overlap with another timeSlot, if it
-   *  does not overlap, the timeSlot is added to the bookings, else return false.  Additionally,
-   *  this method checks that the timeslot is within availabilities (test)
+   *  @description Tests that an timeSlot does not overlap with another timeSlot,
+   *  if it does not overlap, the timeSlot is added to the bookings, else return
+   *  false.  Additionally, this method checks that the timeslot is within
+   *  availabilities (test)
    *
    *  NB: If testing a booking update, test that booking fits in avail
    *      This means that bookingsUpdate the inputs are (bookings, bookings, appt)
@@ -169,10 +176,10 @@ export class ScheduleBinaryUtil {
   }
 
   /**
-   *  @description Tests that an timeSlot does not overlap with another timeSlot, if it
-   *  does not overlap, the timeSlot is added to the bookings, else return false.  Additionally,
-   *  this method checks that the timeslot is within availabilities (test)  This occurs within
-   *  a schedule interval
+   *  @description Tests that an timeSlot does not overlap with another timeSlot,
+   *  if it does not overlap, the timeSlot is added to the bookings, else return
+   *  false.  Additionally, this method checks that the timeslot is within
+   *  availabilities (test)  This occurs within a schedule interval
    *
    *  NB: If testing a booking update, test that booking fits in avail
    *      This means that bookingsUpdate the inputs are (bookings, bookings, appt)

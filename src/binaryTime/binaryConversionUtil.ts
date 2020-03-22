@@ -4,9 +4,9 @@ import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay, 
  *  @typedef BinaryConversionUtil is responsible for handling the conversion of schedules
  *  to Appointments
  *
- *  @param {number} number timeInterval the smallest discrete time interval
+ *  @param {number} timeInterval the smallest discrete time interval
  *
- *  @returns {BinaryConversionUtil} binaryConversionUtil
+ *  @returns {BinaryConversionUtil} BinaryConversionUtil
  */
 export class BinaryConversionUtil {
   private timeInterval?: number;
@@ -17,9 +17,9 @@ export class BinaryConversionUtil {
    *  @description BinaryConversionUtil is responsible for handling the conversion of schedules
    *  to Appointments
    *
-   *  @param {number} number timeInterval the smallest discrete time interval
+   *  @param {number} timeInterval the smallest discrete time interval
    *
-   *  @returns {BinaryConversionUtil} binaryConversionUtil
+   *  @returns {BinaryConversionUtil} BinaryConversionUtil
    */
   constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
@@ -32,9 +32,9 @@ export class BinaryConversionUtil {
   }
 
   /**
-   *  @description Takes a date and generates a base Date object for each day of the week
+   *  @description Takes a date and generates a base Date for each day of the week
    *
-   *  @param {Date} Date date to generate base Date objects
+   *  @param {Date} date date to generate base Date objects
    *
    *  @returns {Date[]} Date[]
    */
@@ -42,9 +42,9 @@ export class BinaryConversionUtil {
     const returnDates: Date[] = [date];
 
     /**
-     * NB: We only need to create a date object for each day of the week.
+     * NB: We only need to create a Date for each day of the week.
      *     Additionally, Date::UTC automatically rolls over to the next
-     *     largest increment if a value is greater than the max
+     *     largest increment, if a value is greater than the max
      *     day 0 = Sunday
      */
     for (let i = 1; i < 7; i++) {
@@ -66,10 +66,11 @@ export class BinaryConversionUtil {
   }
 
   /**
-   *  @description Takes a schedule and converts into an array of appointments for each date
+   *  @description Takes a schedule and the schedule's remaining availability 
+   *    and converts each of the bTime representations into Appointment arrays
    *
-   *  @param {Schedule} Schedule schedule to generate base Date objects
-   *  @param {string[]} string[] remaining availability for a given schedule
+   *  @param {Schedule} schedule schedule to generate base Date objects
+   *  @param {string[]} availability remaining availability for a given schedule
    *
    *  @returns {AppointmentSchedule} AppointmentSchedule
    */
@@ -97,10 +98,10 @@ export class BinaryConversionUtil {
    *  @description Takes a set of timeslots and the date on which they occurred
    *   and converts them into Appointments
    *
-   *  @param {string} string timeslots to convert into appointments
-   *  @param {Date} Date date of timeslots
+   *  @param {string} timeslots string to convert into appointments
+   *  @param {Date} date date of timeslots
    *
-   *  @returns {Appointment[]} Appointments
+   *  @returns {Appointment[]} Appointment[] — converted appointments
    */
   public convertTimeSlotsStringToAppointments(timeSlots: string, date: Date): Appointment[] {
     const appointments: Appointment[] = [];
@@ -143,14 +144,14 @@ export class BinaryConversionUtil {
   }
 
   /**
-   *  @description Takes a set of timeslots and the date on which they occurred
-   *   and converts them into Appointments
+   *  @description Takes a  time pointer, base date — the date on which it occured,
+   *    and boolean if it is the end of an appointmen and converts it into a Date
    *
-   *  @param {number} number timePointerIndex
-   *  @param {Date} Date base date
-   *  @param {boolean} boolean beginning of appointment?
+   *  @param {number} timePointerIndex pointer index for time
+   *  @param {Date} baseDate base Date
+   *  @param {boolean} end end of appointment?
    *
-   *  @returns {Date} calculated date
+   *  @returns {Date} Date — calculated date
    */
   public calculateDate(timePointerIndex: number, baseDate: Date, end: boolean = false): Date {
     const hours = Math.floor(timePointerIndex / this.intervalsInHour);

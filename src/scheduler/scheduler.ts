@@ -1,4 +1,14 @@
-import { Schedule, ScheduleActions, daysInWeek, Appointment, AppointmentDuo, hoursInDay, AppointmentSchedule, millisecondsInWeek, millisecondsInDay} from '../@types';
+import {
+  Schedule,
+  ScheduleActions,
+  daysInWeek,
+  Appointment,
+  AppointmentDuo,
+  hoursInDay,
+  AppointmentSchedule,
+  millisecondsInWeek,
+  millisecondsInDay
+} from '../@types';
 import { BinaryTimeFactory } from '../binaryTime';
 
 /**
@@ -29,7 +39,8 @@ export class Scheduler {
   }
 
   /**
-   *  @description Utility function to ensure all times are UTC
+   *  @description Utility function to ensure both Dates in
+   *    and appointment are UTC, converting to UTC if not
    *
    *  @param {Appointment} appointment appointment to convert to UTC
    *
@@ -68,7 +79,7 @@ export class Scheduler {
    *
    *  NB: This is a passthrough to the configured BinaryTimeFactory
    *
-   *  @param {Schedule} Schedule schedule to generate base Date objects
+   *  @param {Schedule} schedule schedule to generate base Date objects
    *
    *  @returns {AppointmentSchedule} AppointmentSchedule
    */
@@ -77,16 +88,22 @@ export class Scheduler {
 
     // NB: This should only be triggered by a malformed schedule
     if (!availability) {
-      throw new Error(`Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`);
+      throw new Error(
+        `Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`
+      );
     }
 
-    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(schedule, availability);
+    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(
+      schedule,
+      availability
+    );
   }
 
   /**
-   *  @description Utility function to split appointments over day boundary
+   *  @description Utility function to split appointments that cross
+   *  the day boundary
    *
-   *  @param {Appointment} appointment appointment to split
+   *  @param {Appointment} appointment Appointment to split
    *
    *  @returns {AppointmentDuo} AppointmentDuo
    */
@@ -129,9 +146,9 @@ export class Scheduler {
   }
 
   /**
-   *  @description Takes a valid schedule and computes the remaining availability based
-   *  on the total availability and current bookings, returns false if an invalid scehdule
-   *  is passed
+   *  @description Takes a valid schedule and computes the remaining availability
+   *  based on the total availability and current bookings, returns false if an
+   *  invalid scehdule is passed
    *
    *  @param {Schedule} schedule
    *
@@ -170,11 +187,11 @@ export class Scheduler {
   }
 
   /**
-   *  @description Tests a propsoed appointment schedule update and updates the schedule,
-   *  if theupdate is valid or returns false if the update is not valid
+   *  @description Tests a propsoed appointment schedule update and updates the
+   *  schedule, if theupdate is valid or returns false if the update is not valid
    *
-   *  @param {AppointmentSchedule} proposedAppointmentSchedule
-   *  @param {Schedule} schedule
+   *  @param {AppointmentSchedule} proposedAppointmentSchedule proposed schedule
+   *  @param {Schedule} schedule current schedule
    *
    *  @returns {AppointmentSchedule | false} AppointmentSchedule | false
    */
@@ -188,7 +205,8 @@ export class Scheduler {
         scheduleAppointments.push(appointment);
       });
     });
-    const proposedScheduleStrings: string[] | false = this.binaryTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
+    const proposedScheduleStrings: string[] | false = 
+      this.binaryTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
 
     if  (!proposedScheduleStrings) {
       return false;
@@ -215,11 +233,11 @@ export class Scheduler {
   }
 
   /**
-   *  @description Tests a propsoed schedule update and updates the schedule, if the
-   *  update is valid or returns false if the update is not valid
+   *  @description Tests a propsoed schedule update and updates the schedule,
+   *  if the update is valid or returns false if the update is not valid
    *
-   *  @param {Schedule} proposedSchedule
-   *  @param {Schedule} schedule
+   *  @param {Schedule} proposedSchedule proposed schedule
+   *  @param {Schedule} schedule current schedule
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -254,13 +272,13 @@ export class Scheduler {
   }
 
   /**
-   *  @description Takes an array of appointments and update type and tests if the
-   *  appointment updates are valid, if not it returns false, if they are the schedule
-   *  is updated
+   *  @description Takes an array of appointments and update type and tests if
+   *  the appointment updates are valid, if not it returns false, if they are
+   *  the schedule is updated
    *
-   *  @param {Appointment[]} appointments
-   *  @param {Schedule} schedule
-   *  @param {ScheduleActions} actionType
+   *  @param {Appointment[]} appointments appointments to process
+   *  @param {Schedule} schedule schedule for appointments to be applied 
+   *  @param {ScheduleActions} actionType determines how to process appointment
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -287,12 +305,13 @@ export class Scheduler {
   }
 
   /**
-   *  @description Takes an appointment and update type and tests if the appointment update
-   *  is valid, if not it returns false, if it is the schedule is updated
+   *  @description Takes an appointment and update type and tests if the
+   *  appointment update is valid, if not it returns false, if it is the
+   *  schedule is updated
    *
-   *  @param {Appointment} appointment
-   *  @param {Schedule} schedule
-   *  @param {ScheduleActions} actionType
+   *  @param {Appointment} appointment appointment to process
+   *  @param {Schedule} schedule schedule for appointments to be applied 
+   *  @param {ScheduleActions} actionType determines how to process appointment
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -330,9 +349,10 @@ export class Scheduler {
    *  @description Takes an appointment and tests if the appointment update
    *  is valid, if not it returns false, if it is the schedule is updated
    *
-   *  @param {Appointment} appointment
-   *  @param {Schedule} schedule
-   *  @param {Appointment?} firstAppt
+   *  @param {Appointment} appointment appointment to test
+   *  @param {Schedule} schedule schedule to test against
+   *  @param {Appointment?} firstAppt — optional additional appointment to
+   *  process if Appointment crosses date boundary
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -390,8 +410,8 @@ export class Scheduler {
    *  @description Takes an array of appointments and tests if the appointment
    *  update are valid, if not it returns false, if they are the schedule is updated
    *
-   *  @param {string[]} appointments
-   *  @param {Schedule} schedule
+   *  @param {string[]} appointments appointments to test
+   *  @param {Schedule} schedule schedule to test against
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -425,9 +445,10 @@ export class Scheduler {
    *  is valid, if not it returns false, if it is the schedule is updated
    *  to reflect the deletion
    *
-   *  @param {Appointment} appointment
-   *  @param {Schedule} schedule
-   *  @param {Appointment?} firstAppt
+   *  @param {Appointment} appointment appointment to test
+   *  @param {Schedule} schedule schedule to test against
+   *  @param {Appointment?} firstAppt — optional additional appointment to
+   *  process if Appointment crosses date boundary
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -466,8 +487,8 @@ export class Scheduler {
    *  to delete are valid, if not it returns false, if they are the schedule is
    *  updated to reflect the deletion
    *
-   *  @param {string[]} appointmentsBStrings
-   *  @param {Schedule} schedule
+   *  @param {string[]} appointmentsBStrings appointments to delete
+   *  @param {Schedule} schedule schedule to delete appointments from
    *
    *  @returns {Schedule | false} Schedule | false
    */
@@ -497,7 +518,7 @@ export class Scheduler {
    *
    *  NB: We assume that at most appts cross 1 day boundary
    *
-   *  @param {Appointment} appt
+   *  @param {Appointment} appt appointment to test
    *
    *  @returns {boolean} boolean
    */
@@ -508,7 +529,7 @@ export class Scheduler {
   /**
    *  @description Takes an appointment and checks if the appoint crosses a week boundry
    *
-   *  @param {Appointment} appt
+   *  @param {Appointment} appt appointment to test
    *
    *  @returns {boolean} boolean
    */
@@ -519,7 +540,7 @@ export class Scheduler {
   /**
    *  @description Takes date and gets the week since the Unix Epoch
    *
-   *  @param {Date} date
+   *  @param {Date} date date to get week since Unix Epoch from
    *
    *  @returns {number} number
    */

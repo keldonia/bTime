@@ -1,5 +1,11 @@
 import {
-  minutesInHour, binaryBase, hoursInDay, validTimeIntervals, Appointment, daysInWeek } from "../@types";
+  minutesInHour,
+  binaryBase,
+  hoursInDay,
+  validTimeIntervals,
+  Appointment,
+  daysInWeek
+} from "../@types";
 
 const zeroPad: string = "0";
 
@@ -8,6 +14,9 @@ const zeroPad: string = "0";
  * the binary strings used by this package
  *
  *  @param {number} timeInterval the smallest discrete time interval
+ *  
+ *  NB: Typically a temporal resolution of 5 mins is sufficient,
+ *  as it constitutes the smallest billable unit in most juristictions
  *
  *  @returns {BinaryStringUtil} binaryStringUtil
  */
@@ -32,6 +41,7 @@ export class BinaryStringUtil {
    * generating and formatting  the binary strings used by this package
    *
    * @param {number} timeInterval the smallest discrete time interval
+   *  
    *  NB: Typically a temporal resolution of 5 mins is sufficient,
    *  as it constitutes the smallest billable unit in most juristictions
    *
@@ -80,8 +90,8 @@ export class BinaryStringUtil {
 
   /**
    * @description Generates a binary string representation of a given
-   * array of appointments, assuming it is valid.  If the appointment is invalid,
-   * it return false, ie it ends before it begins
+   * array of appointments, assuming it is valid.  If the appointment 
+   * is invalid, it return false, ie it ends before it begins
    *
    * NB: This method generates a representation of the entire week
    * NB: Assumes appointments in array don't overlap
@@ -125,7 +135,7 @@ export class BinaryStringUtil {
    * @description Finds a the pointer for a given date in time
    * based on the instatiated time interval, including day of the week
    *
-   * @param {Date} time the time to retrieve the pointer
+   * @param {Date} Date the time to retrieve the pointer
    *
    * @returns {number} number
    */
@@ -137,7 +147,7 @@ export class BinaryStringUtil {
   }
 
   /**
-   * @description Finds the modifer to correct for the day of the week
+   * @description Finds the pointer modifer to correct for day of the week
    *
    * @param {Date} time the time to retrieve the pointer
    *

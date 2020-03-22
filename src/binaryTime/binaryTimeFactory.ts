@@ -1,11 +1,16 @@
 import { BinaryStringUtil } from "./binaryStringUtil";
 import { ScheduleBinaryUtil } from "./scheduleBinaryUtil";
-import { validTimeIntervals, Appointment, Schedule, AppointmentSchedule } from "../@types";
+import {
+  validTimeIntervals,
+  Appointment,
+  Schedule,
+  AppointmentSchedule
+} from "../@types";
 import { BinaryConversionUtil } from "./binaryConversionUtil";
 
 /**
- * @typedef BinaryTimeFactory Manages and exposes various binary scheduling and string
- * utils
+ * @typedef BinaryTimeFactory Manages and exposes various binary scheduling
+ * and string utils
  *
  *  @param {number} timeInterval the smallest discrete time interval
  *  NB: The time interval must be a factor of 60,
@@ -20,8 +25,8 @@ export class BinaryTimeFactory {
   private binaryConversionUtil?: BinaryConversionUtil;
 
   /**
-   * @description BinaryTimeFactory Manages and exposes various binary scheduling and string
-   * utils
+   * @description BinaryTimeFactory Manages and exposes various binary scheduling
+   * and string utils
    *
    *  @param {number} timeInterval the smallest discrete time interval
    *
@@ -69,8 +74,8 @@ export class BinaryTimeFactory {
 
   /**
    * @description Generates a binary string representation of a given
-   * array of appointments, assuming it is valid.  If the appointment is invalid,
-   * it return false, ie it ends before it begins
+   * array of appointments, assuming it is valid.  If the appointment
+   * is invalid, it return false, ie it ends before it begins
    *
    * NB: This method generates a representation of the entire week
    * NB: Assumes appointments in array don't overlap
@@ -159,9 +164,10 @@ export class BinaryTimeFactory {
   }
 
   /**
-   *  @description Tests that an timeSlot does not overlap with another timeSlot, if it
-   *  does not overlap, the timeSlot is added to the bookings, else return false.  Additionally,
-   *  this method checks that the timeslot is within availabilities (test)
+   *  @description Tests that an timeSlot does not overlap with another timeSlot,
+   *  if it does not overlap, the timeSlot is added to the bookings, else return
+   *  false.  Additionally, this method checks that the timeslot is within
+   *  availabilities (test)
    *
    *  NB: If testing a booking update, test that booking fits in avail
    *      This means that bookingsUpdate the inputs are (bookings, bookings, appt)
@@ -186,11 +192,12 @@ export class BinaryTimeFactory {
   }
 
   /**
-   *  @description Takes a schedule and availabilty converting them into an array of appointments for each date
+   *  @description Takes a schedule and availabilty converting them into an array
+   *  of appointments for each date
    *
    *  NB: This is a passthrough to the configured BinaryConversionUtil
    *
-   *  @param {Schedule} Schedule schedule to generate base Date objects
+   *  @param {Schedule} schedule schedule to generate base Date objects
    *  @param {string[]} string[] remaining availability for a given schedule
    *
    *  @returns {AppointmentSchedule} AppointmentSchedule
