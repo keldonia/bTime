@@ -5,11 +5,10 @@ import {
   Appointment,
   AppointmentDuo,
   hoursInDay,
-  AppointmentSchedule,
-  millisecondsInWeek,
-  millisecondsInDay
+  AppointmentSchedule
 } from '../@types';
 import { BTimeFactory } from '../bTime';
+import { DateUtil } from '../utils';
 
 /**
  *  @typedef Scheduler Allows for maintaining of scheduling using
@@ -36,42 +35,6 @@ export class Scheduler {
    */
   constructor(timeInterval: number) {
     this.bTimeFactory = new BTimeFactory(timeInterval);
-  }
-
-  /**
-   *  @description Utility function to ensure both Dates in
-   *    and appointment are UTC, converting to UTC if not
-   *
-   *  @param {Appointment} appointment appointment to convert to UTC
-   *
-   *  @returns {Appointment} Appointment
-   */
-  public enforceUTC(appointment: Appointment): Appointment {
-    const appointmentStart: Date = appointment.startTime;
-    const startTime: Date = new Date(
-      Date.UTC(
-        appointmentStart.getUTCFullYear(),
-        appointmentStart.getUTCMonth(),
-        appointmentStart.getUTCDate(),
-        appointmentStart.getUTCHours(),
-        appointmentStart.getUTCMinutes()
-      )
-    );
-    const appointmentEnd: Date = appointment.endTime;
-    const endTime: Date = new Date(
-      Date.UTC(
-        appointmentEnd.getUTCFullYear(),
-        appointmentEnd.getUTCMonth(),
-        appointmentEnd.getUTCDate(),
-        appointmentEnd.getUTCHours(),
-        appointmentEnd.getUTCMinutes()
-      )
-    );
-
-    return {
-      startTime,
-      endTime
-    };
   }
 
   /**
@@ -108,34 +71,18 @@ export class Scheduler {
    *  @returns {AppointmentDuo} AppointmentDuo
    */
   public composeAppointments(appointment: Appointment): AppointmentDuo {
-    const utcAppt: Appointment = this.enforceUTC(appointment);
+    const utcAppt: Appointment = DateUtil.getInstance().enforceUTC(appointment);
     const utcStartTime: Date = utcAppt.startTime;
     const utcEndTime: Date = utcAppt.endTime;
 
     // Clone Appt
     const initialAppointment: Appointment = {
       startTime: utcStartTime,
-      endTime: new Date(
-        Date.UTC(
-          utcStartTime.getUTCFullYear(),
-          utcStartTime.getUTCMonth(),
-          utcStartTime.getUTCDate(),
-          23,
-          59
-        )
-      )
+      endTime: DateUtil.getInstance().getUtcDateEnd(utcStartTime)
     };
 
     const secondAppointment: Appointment = {
-      startTime: new Date(
-        Date.UTC(
-          utcEndTime.getUTCFullYear(),
-          utcEndTime.getUTCMonth(),
-          utcEndTime.getUTCDate(),
-          0,
-          0
-        )
-      ),
+      startTime: DateUtil.getInstance().getUtcDateStart(utcEndTime),
       endTime: utcEndTime
     };
 
@@ -320,7 +267,7 @@ export class Scheduler {
     schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
-    const crosssesDayBoundary: boolean = this.crosssesDayBoundary(appointment);
+    const crosssesDayBoundary: boolean = DateUtil.getInstance().crosssesDayBoundary(appointment);
     let firstAppt: Appointment;
 
     if (crosssesDayBoundary) {
@@ -511,46 +458,5 @@ export class Scheduler {
     schedule.bookings = bookings;
 
     return schedule;
-  }
-
-  /**
-   *  @description Takes an appointment and checks if the appoint crosses a day boundry
-   *
-   *  NB: We assume that at most appts cross 1 day boundary
-   *
-   *  @param {Appointment} appt appointment to test
-   *
-   *  @returns {boolean} boolean
-   */
-  public crosssesDayBoundary(appt: Appointment): boolean {
-    return appt.startTime.getUTCDay() !== appt.endTime.getUTCDay();
-  }
-
-  /**
-   *  @description Takes an appointment and checks if the appoint crosses a week boundry
-   *
-   *  @param {Appointment} appt appointment to test
-   *
-   *  @returns {boolean} boolean
-   */
-  public crosssesWeekBoundary(appt: Appointment): boolean {
-    return this.getWeek(appt.startTime) !== this.getWeek(appt.endTime);
-  }
-
-  /**
-   *  @description Takes date and gets the week since the Unix Epoch
-   *
-   *  @param {Date} date date to get week since Unix Epoch from
-   *
-   *  @returns {number} number
-   */
-  public getWeek(date: Date): number {
-    /**
-     * NB: This handles the fact the Unix Epoch began on
-     * Thursday Jan 1, 1970
-     */
-    const adjustedDate: number = date.valueOf() + (4 * millisecondsInDay);
-
-    return Math.floor(adjustedDate / millisecondsInWeek);
   }
 }

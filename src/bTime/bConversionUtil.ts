@@ -1,4 +1,5 @@
 import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay, validTimeIntervals } from "../@types";
+import { DateUtil } from "../utils";
 
 /**
  *  @typedef BinaryConversionUtil is responsible for handling the conversion of schedules
@@ -32,40 +33,6 @@ export class BConversionUtil {
   }
 
   /**
-   *  @description Takes a date and generates a base Date for each day of the week
-   *
-   *  @param {Date} date date to generate base Date objects
-   *
-   *  @returns {Date[]} Date[]
-   */
-  public getDatesFromFromStartDate(date: Date): Date[] {
-    const returnDates: Date[] = [date];
-
-    /**
-     * NB: We only need to create a Date for each day of the week.
-     *     Additionally, Date::UTC automatically rolls over to the next
-     *     largest increment, if a value is greater than the max
-     *     day 0 = Sunday
-     */
-    for (let i = 1; i < 7; i++) {
-      const modifiedDate: number = date.getUTCDate() + i;
-      const newDate = new Date(
-        Date.UTC(
-          date.getUTCFullYear(),
-          date.getUTCMonth(),
-          modifiedDate,
-          0,
-          0
-        )
-      );
-
-      returnDates.push(newDate);
-    }
-
-    return returnDates;
-  }
-
-  /**
    *  @description Takes a schedule and the schedule's remaining availability
    *    and converts each of the bTime representations into Appointment arrays
    *
@@ -75,7 +42,7 @@ export class BConversionUtil {
    *  @returns {AppointmentSchedule} AppointmentSchedule
    */
   public convertScheduleToAppointmentSchedule(schedule: Schedule, availability: string[]): AppointmentSchedule {
-    const days: Date[] = this.getDatesFromFromStartDate(schedule.weekStart);
+    const days: Date[] = DateUtil.getInstance().getDatesFromFromStartDate(schedule.weekStart);
     const appointmentAvailability: Appointment[][] = availability.map((avail, idx) => {
       return this.convertTimeSlotsStringToAppointments(avail, days[idx]);
     });
@@ -123,16 +90,7 @@ export class BConversionUtil {
     }
 
     if (currentStart) {
-      const currentEnd: Date = new Date(
-        Date.UTC(
-          date.getUTCFullYear(),
-          date.getUTCMonth(),
-          date.getUTCDate(),
-          23,
-          59,
-          59
-        )
-      );
+      const currentEnd: Date = DateUtil.getInstance().getUtcDateEnd(date, 59);
       const appointment: Appointment = {
         startTime: currentStart,
         endTime: currentEnd

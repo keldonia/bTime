@@ -27,27 +27,6 @@ export class BScheduleUtil {
   }
 
   /**
-   *  @description Takes in a date and gets the UTC date and returns the UTC date
-   *  that began the week that date is in.
-   *
-   *  @param {Date} date date to find the beginning of the week
-   *
-   *  @returns {Date} Date
-   */
-  public getFirstDayOfWeekFromDate(date: Date): Date {
-    const modifiedDate = date.getUTCDate() - date.getUTCDay();
-    return new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        modifiedDate,
-        0,
-        0
-      )
-    );
-  }
-
-  /**
    *  @description Tests that an appointment does not overlap with another
    *  appointment, if it does not overlap, the appointment is added to the
    *  bookings, else return false
