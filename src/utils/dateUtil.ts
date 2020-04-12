@@ -165,9 +165,9 @@ export class DateUtil {
    *
    *  @param {Date} date date to get the utc start of the day
    *
-   *  @returns {number} number
+   *  @returns {Date} Date
    */
-  public getUtcDateStart(date: Date) {
+  public getUtcDateStart(date: Date): Date {
     return new Date(
       Date.UTC(
         date.getUTCFullYear(),
@@ -185,9 +185,9 @@ export class DateUtil {
    *  @param {Date} date date to get the utc end of the day
    *  @param {number} seconds optional seconds value, default zero (0)
    *
-   *  @returns {number} number
+   *  @returns {Date} Date
    */
-  public getUtcDateEnd(date: Date, seconds: number = 0) {
+  public getUtcDateEnd(date: Date, seconds: number = 0): Date {
     return new Date(
       Date.UTC(
         date.getUTCFullYear(),
