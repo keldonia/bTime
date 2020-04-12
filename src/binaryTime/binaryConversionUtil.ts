@@ -66,7 +66,7 @@ export class BinaryConversionUtil {
   }
 
   /**
-   *  @description Takes a schedule and the schedule's remaining availability 
+   *  @description Takes a schedule and the schedule's remaining availability
    *    and converts each of the bTime representations into Appointment arrays
    *
    *  @param {Schedule} schedule schedule to generate base Date objects

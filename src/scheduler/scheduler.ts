@@ -205,7 +205,7 @@ export class Scheduler {
         scheduleAppointments.push(appointment);
       });
     });
-    const proposedScheduleStrings: string[] | false = 
+    const proposedScheduleStrings: string[] | false =
       this.binaryTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
 
     if  (!proposedScheduleStrings) {
@@ -277,7 +277,7 @@ export class Scheduler {
    *  the schedule is updated
    *
    *  @param {Appointment[]} appointments appointments to process
-   *  @param {Schedule} schedule schedule for appointments to be applied 
+   *  @param {Schedule} schedule schedule for appointments to be applied
    *  @param {ScheduleActions} actionType determines how to process appointment
    *
    *  @returns {Schedule | false} Schedule | false
@@ -310,7 +310,7 @@ export class Scheduler {
    *  schedule is updated
    *
    *  @param {Appointment} appointment appointment to process
-   *  @param {Schedule} schedule schedule for appointments to be applied 
+   *  @param {Schedule} schedule schedule for appointments to be applied
    *  @param {ScheduleActions} actionType determines how to process appointment
    *
    *  @returns {Schedule | false} Schedule | false

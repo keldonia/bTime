@@ -6,6 +6,7 @@ import {
   Appointment,
   daysInWeek
 } from "../@types";
+import { BPointerCalculator } from "./bPointerCalculator";
 
 const zeroPad: string = "0";
 
@@ -14,19 +15,15 @@ const zeroPad: string = "0";
  * the binary strings used by this package
  *
  *  @param {number} timeInterval the smallest discrete time interval
- *  
+ *
  *  NB: Typically a temporal resolution of 5 mins is sufficient,
  *  as it constitutes the smallest billable unit in most juristictions
  *
  *  @returns {BinaryStringUtil} binaryStringUtil
  */
 export class BinaryStringUtil {
-  private timeInterval?: number;
   /*
    * Calculated Constants
-   * NB: This length was chosen such that each match is the equivalent
-   *     of 1 hour
-   * NB: This could be expanded to <= 32 due to IEEE 754 & 32bit ints in js
    */
   private intervalsInHour?: number;
   private intervalsInDay?: number;
@@ -35,13 +32,14 @@ export class BinaryStringUtil {
   private bStringDaySplitRegex?: RegExp;
   private emptyHour?: string;
   private emptyDay?: string;
+  private bPointerCalculator?: BPointerCalculator;
 
   /**
    * @description Instantiates a new BinaryStringUtil, which is responsible for
    * generating and formatting  the binary strings used by this package
    *
    * @param {number} timeInterval the smallest discrete time interval
-   *  
+   *
    *  NB: Typically a temporal resolution of 5 mins is sufficient,
    *  as it constitutes the smallest billable unit in most juristictions
    *
@@ -51,10 +49,10 @@ export class BinaryStringUtil {
     if (!validTimeIntervals.has(timeInterval)) {
       throw new Error(`Invalid timeInterval entered for BinaryStringUtil: ${timeInterval}`);
     }
-    this.timeInterval = timeInterval;
     this.intervalsInHour = minutesInHour / timeInterval;
     this.intervalsInDay = minutesInHour / timeInterval * hoursInDay;
     this.intervalsInWeek = minutesInHour / timeInterval * hoursInDay * daysInWeek;
+    this.bPointerCalculator = new BPointerCalculator(timeInterval);
 
     // Generate calulated constants
     const bStringSplitRegexStr = "(.{1," + this.intervalsInHour + "})";
@@ -79,8 +77,8 @@ export class BinaryStringUtil {
       return false;
     }
 
-    const startPointer = this.findBinaryPointer(appt.startTime);
-    const endPointer = this.findBinaryPointer(appt.endTime);
+    const startPointer = this.bPointerCalculator.findBPointer(appt.startTime);
+    const endPointer = this.bPointerCalculator.findBPointer(appt.endTime);
     const timeBlock = endPointer - startPointer + 1;
 
     return (this.emptyDay.substring(0, startPointer) +
@@ -90,7 +88,7 @@ export class BinaryStringUtil {
 
   /**
    * @description Generates a binary string representation of a given
-   * array of appointments, assuming it is valid.  If the appointment 
+   * array of appointments, assuming it is valid.  If the appointment
    * is invalid, it return false, ie it ends before it begins
    *
    * NB: This method generates a representation of the entire week
@@ -110,8 +108,8 @@ export class BinaryStringUtil {
         return false;
       }
 
-      const startPointer = this.findBinaryPointerIncludingDay(appt.startTime);
-      const endPointer = this.findBinaryPointerIncludingDay(appt.endTime);
+      const startPointer = this.bPointerCalculator.findBPointerIncludingDay(appt.startTime);
+      const endPointer = this.bPointerCalculator.findBPointerIncludingDay(appt.endTime);
       const timeBlock = endPointer - startPointer + 1;
 
       // If an appt begins before the previous ends, it is invalid
@@ -129,47 +127,6 @@ export class BinaryStringUtil {
     composedBString = composedBString + "0".repeat(this.intervalsInWeek - composedBString.length);
 
     return composedBString.match(this.bStringDaySplitRegex);
-  }
-
-  /**
-   * @description Finds a the pointer for a given date in time
-   * based on the instatiated time interval, including day of the week
-   *
-   * @param {Date} Date the time to retrieve the pointer
-   *
-   * @returns {number} number
-   */
-  public findBinaryPointerIncludingDay(time: Date): number {
-    const hourAndMinutePointer: number = this.findBinaryPointer(time);
-    const dayModifer: number = this.findBinaryPointerModiferForDayOfWeek(time);
-
-    return dayModifer + hourAndMinutePointer;
-  }
-
-  /**
-   * @description Finds the pointer modifer to correct for day of the week
-   *
-   * @param {Date} time the time to retrieve the pointer
-   *
-   * @returns {number} number
-   */
-  public findBinaryPointerModiferForDayOfWeek(time: Date): number {
-    return time.getUTCDay() * this.intervalsInHour * hoursInDay;
-  }
-
-  /**
-   * @description Finds a the pointer for a given date in time
-   * based on the instatiated time interval within a given day
-   *
-   * @param {Date} time the time to retrieve the pointer
-   *
-   * @returns {number} number
-   */
-  public findBinaryPointer(time: Date): number{
-    const hourPointer: number = time.getUTCHours() * this.intervalsInHour;
-    const minutePointer: number = Math.floor(time.getUTCMinutes() / this.timeInterval);
-
-    return hourPointer + minutePointer;
   }
 
   /**

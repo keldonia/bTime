@@ -58,11 +58,12 @@ Further information on bTime can be found below:
 
 ## Coming Features
 
-1. Throw Exceptions for cleaning stack tracing & surround with catches
 1. Clean up and reorganize some functions
+1. Throw Exceptions for cleaning stack tracing & surround with catches
+1. Improve documentation
+1. Add an example use case
 1. Bit Array mode (don't store as strings), optional parameter
 1. Allow compressed storage mode
-1. Add an example use case
 
 ## Assumptions
 
