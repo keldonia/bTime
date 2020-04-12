@@ -42,10 +42,10 @@ describe('bTime Factory', () => {
     const bConversionUtil: BConversionUtil = bTimeFactory['bConversionUtil'];
     
     const mockParseBString: jest.Mock = jest.fn();
-    const mockGenerateBinaryString: jest.Mock = jest.fn();
-    const mockGenerateBinaryStringFromAppointments: jest.Mock = jest.fn();
+    const mockGenerateBString: jest.Mock = jest.fn();
+    const mockGenerateBStringFromAppointments: jest.Mock = jest.fn();
     const mockTimeStringSplit: jest.Mock = jest.fn();
-    const mockDecimalToBinaryString: jest.Mock = jest.fn();
+    const mockDecimalToBString: jest.Mock = jest.fn();
     const mockTestViabilityAndCompute: jest.Mock = jest.fn();
     const mockDeleteAppointment: jest.Mock = jest.fn();
     const mockDeleteAppointmentBString: jest.Mock = jest.fn();
@@ -53,10 +53,10 @@ describe('bTime Factory', () => {
     const mockConvertScheduleToAppointmentSchedule: jest.Mock = jest.fn();
 
     bStringUtil.parseBString = mockParseBString;
-    bStringUtil.generateBinaryString = mockGenerateBinaryString;
-    bStringUtil.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
+    bStringUtil.generateBString = mockGenerateBString;
+    bStringUtil.generateBStringFromAppointments = mockGenerateBStringFromAppointments;
     bStringUtil.timeStringSplit = mockTimeStringSplit;
-    bStringUtil.decimalToBinaryString = mockDecimalToBinaryString;
+    bStringUtil.decimalToBString = mockDecimalToBString;
     bScheduleUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
     bScheduleUtil.deleteAppointment = mockDeleteAppointment;
     bScheduleUtil.deleteAppointmentBString = mockDeleteAppointmentBString;
@@ -77,24 +77,24 @@ describe('bTime Factory', () => {
       expect(mockParseBString).toBeCalledWith(testArg1);
     });
 
-    it(`should call it's bStringUtil's generateBinaryString when generateBinaryString called`, () => {
+    it(`should call it's bStringUtil's generateBString when generateBString called`, () => {
       
       const testArg1: Appointment = TestUtils.generateSimpleDateAppointment(new Date());
       
-      bTimeFactory.generateBinaryString(testArg1);
+      bTimeFactory.generateBString(testArg1);
       
-      expect(mockGenerateBinaryString).toBeCalled();
-      expect(mockGenerateBinaryString).toBeCalledWith(testArg1);
+      expect(mockGenerateBString).toBeCalled();
+      expect(mockGenerateBString).toBeCalledWith(testArg1);
     });
 
-    it(`should call it's bStringUtil's generateBinaryStringFromAppointments when generateBinaryStringFromAppointments called`, () => {
+    it(`should call it's bStringUtil's generateBStringFromAppointments when generateBStringFromAppointments called`, () => {
       
       const testArg1: Appointment[] = [TestUtils.generateSimpleDateAppointment(new Date())];
       
-      bTimeFactory.generateBinaryStringFromAppointments(testArg1);
+      bTimeFactory.generateBStringFromAppointments(testArg1);
       
-      expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
-      expect(mockGenerateBinaryStringFromAppointments).toBeCalledWith(testArg1);
+      expect(mockGenerateBStringFromAppointments).toBeCalled();
+      expect(mockGenerateBStringFromAppointments).toBeCalledWith(testArg1);
     });
 
     it(`should call it's bStringUtil's timeStringSplit when timeStringSplit called`, () => {
@@ -104,12 +104,12 @@ describe('bTime Factory', () => {
       expect(mockTimeStringSplit).toBeCalledWith(TestUtils.emptyDay());
     });
 
-    it(`should call it's bStringUtil's decimalToBinaryString when decimalToBinaryString called`, () => {
+    it(`should call it's bStringUtil's decimalToBString when decimalToBString called`, () => {
       const testNumber: number = 1;
-      bTimeFactory.decimalToBinaryString(testNumber);
+      bTimeFactory.decimalToBString(testNumber);
       
-      expect(mockDecimalToBinaryString).toBeCalled();
-      expect(mockDecimalToBinaryString).toBeCalledWith(testNumber);
+      expect(mockDecimalToBString).toBeCalled();
+      expect(mockDecimalToBString).toBeCalledWith(testNumber);
     });
 
     it(`should call it's bScheduleUtil's testViabilityAndCompute when testViabilityAndCompute called`, () => {

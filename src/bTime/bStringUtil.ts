@@ -35,15 +35,15 @@ export class BStringUtil {
   private bPointerCalculator?: BPointerCalculator;
 
   /**
-   * @description Instantiates a new BinaryStringUtil, which is responsible for
-   * generating and formatting  the binary strings used by this package
+   * @description Instantiates a new BStringUtil, which is responsible for
+   * generating and formatting  the bStrings used by this package
    *
    * @param {number} timeInterval the smallest discrete time interval
    *
    *  NB: Typically a temporal resolution of 5 mins is sufficient,
    *  as it constitutes the smallest billable unit in most juristictions
    *
-   * @returns {BStringUtil} BinaryStringUtil
+   * @returns {BStringUtil} BStringUtil
    */
   public constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
@@ -64,7 +64,7 @@ export class BStringUtil {
   }
 
   /**
-   * @description Generates a binary string representation of a given
+   * @description Generates a bString representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
    * it return false, ie it ends before it begins
    *
@@ -72,7 +72,7 @@ export class BStringUtil {
    *
    * @returns {string | false} string | false
    */
-  public generateBinaryString(appt: Appointment): string | false {
+  public generateBString(appt: Appointment): string | false {
     if (appt.endTime.valueOf() < appt.startTime.valueOf()) {
       return false;
     }
@@ -87,7 +87,7 @@ export class BStringUtil {
   }
 
   /**
-   * @description Generates a binary string representation of a given
+   * @description Generates a bString representation of a given
    * array of appointments, assuming it is valid.  If the appointment
    * is invalid, it return false, ie it ends before it begins
    *
@@ -98,7 +98,7 @@ export class BStringUtil {
    *
    * @returns {string[] | false} string[] | false
    */
-  public generateBinaryStringFromAppointments(appointments: Appointment[]): string[] | false {
+  public generateBStringFromAppointments(appointments: Appointment[]): string[] | false {
     let composedBString: string = "";
 
     for (let i = 0; i < appointments.length; i++) {
@@ -133,7 +133,7 @@ export class BStringUtil {
    * @description Splits each schedule BString into a string of length
    * defined in the regex
    *
-   * @param {string} scheduleString binary schedule string to be split
+   * @param {string} scheduleString schedule string to be split
    *
    * @returns {string[]} string[]
    */
@@ -142,10 +142,10 @@ export class BStringUtil {
   }
 
   /**
-   * @description Converts binaryString representation of a number
+   * @description Converts bString representation of a number
    * into a number for calculation purposes
    *
-   * @param {string} bString binary string to be converted into a number
+   * @param {string} bString bString to be converted into a number
    *
    * @returns {number} number
    */
@@ -154,14 +154,14 @@ export class BStringUtil {
   }
 
   /**
-   * @description Converts number into a binaryString representation with
+   * @description Converts number into a bString representation with
    * the given scheduling interval
    *
-   * @param {number} decimal number to be converted into a binary string
+   * @param {number} decimal number to be converted into a bString
    *
    * @returns {string} string
    */
-  public decimalToBinaryString(decimal: number): string {
+  public decimalToBString(decimal: number): string {
     return decimal
       .toString(binaryBase)
       .padStart(this.intervalsInHour, zeroPad);

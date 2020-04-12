@@ -16,7 +16,7 @@
 
 ## `#parseBString`
 
-The `#parseBString` method converts a binary string in to a number so that it may be operated on, eg '10' = 2.
+The `#parseBString` method converts a bString in to a number so that it may be operated on, eg '10' = 2.
 
 ```typescript
   // If using the scheduler
@@ -26,21 +26,21 @@ The `#parseBString` method converts a binary string in to a number so that it ma
   const convertedBString: number = bTimeFactory.parseBString(bString);
 ```
 
-## `#generateBinaryString`
+## `#generateBString`
 
-The `#generateBinaryString` method converts an appointment into its binary string representation. If the appointment is invalid, it return false.
+The `#generateBString` method converts an appointment into its bString representation. If the appointment is invalid, it return false.
 
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
   const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
-  const generatedBString: number | false = bTimeFactory.generateBinaryString(appt);
+  const generatedBString: number | false = bTimeFactory.generateBString(appt);
 ```
 
 ## `#timeStringSplit`
 
-The `#timeStringSplit` splits a binary string into intervals dependent upon the time interval, each interval is one hour long.
+The `#timeStringSplit` splits a bString into intervals dependent upon the time interval, each interval is one hour long.
 
 ```typescript
   // If using the scheduler
@@ -50,16 +50,16 @@ The `#timeStringSplit` splits a binary string into intervals dependent upon the 
   const splitBStriing: string[] = bTimeFactory.timeStringSplit(string);
 ```
 
-## `#decimalToBinaryString`
+## `#decimalToBString`
 
-The `#decimalToBinaryString` converts number into a binaryString representation with the given scheduling interval.
+The `#decimalToBString` converts number into a bString representation with the given scheduling interval.
 
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
   const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
-  const splitBStriing: string[] = bTimeFactory.decimalToBinaryString(string);
+  const splitBStriing: string[] = bTimeFactory.decimalToBString(string);
 ```
 
 ## `#testViabilityAndCompute`

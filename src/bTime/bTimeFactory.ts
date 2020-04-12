@@ -44,7 +44,7 @@ export class BTimeFactory {
   }
 
   /**
-   * @description Converts binaryString representation of a number
+   * @description Converts bString representation of a number
    * into a number for calculation purposes
    *
    * NB: This is a passthrough to the configured bStringUtil
@@ -58,7 +58,7 @@ export class BTimeFactory {
   }
 
   /**
-   * @description Generates a binary string representation of a given
+   * @description Generates a bString representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
    * it return false
    *
@@ -68,12 +68,12 @@ export class BTimeFactory {
    *
    * @returns {string | false} string | false
    */
-  public generateBinaryString(appt: Appointment): string | false {
-    return this.bStringUtil.generateBinaryString(appt);
+  public generateBString(appt: Appointment): string | false {
+    return this.bStringUtil.generateBString(appt);
   }
 
   /**
-   * @description Generates a binary string representation of a given
+   * @description Generates a bString representation of a given
    * array of appointments, assuming it is valid.  If the appointment
    * is invalid, it return false, ie it ends before it begins
    *
@@ -85,12 +85,12 @@ export class BTimeFactory {
    *
    * @returns {string[] | false} string[] | false
    */
-  public generateBinaryStringFromAppointments(appointments: Appointment[]): string[] | false {
-    return this.bStringUtil.generateBinaryStringFromAppointments(appointments);
+  public generateBStringFromAppointments(appointments: Appointment[]): string[] | false {
+    return this.bStringUtil.generateBStringFromAppointments(appointments);
   }
 
   /**
-   * @description Splits each schedule BString into a string of length
+   * @description Splits each schedule bString into a string of length
    * defined in the regex
    *
    * NB: This is a passthrough to the configured bStringUtil
@@ -104,17 +104,17 @@ export class BTimeFactory {
   }
 
   /**
-   * @description Converts number into a binaryString representation with
+   * @description Converts number into a bString representation with
    * the given scheduling interval
    *
    * NB: This is a passthrough to the configured bStringUtil
    *
-   * @param {number} decimal number to be converted into a binary string
+   * @param {number} decimal number to be converted into a bString
    *
    * @returns {string} string
    */
-  public decimalToBinaryString(decimal: number): string {
-    return this.bStringUtil.decimalToBinaryString(decimal);
+  public decimalToBString(decimal: number): string {
+    return this.bStringUtil.decimalToBString(decimal);
   }
 
   /**
@@ -195,7 +195,7 @@ export class BTimeFactory {
    *  @description Takes a schedule and availabilty converting them into an array
    *  of appointments for each date
    *
-   *  NB: This is a passthrough to the configured BinaryConversionUtil
+   *  NB: This is a passthrough to the configured BConversionUtil
    *
    *  @param {Schedule} schedule schedule to generate base Date objects
    *  @param {string[]} string[] remaining availability for a given schedule

@@ -217,7 +217,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T00:00:00Z'),
         endTime: new Date('2019-12-29T23:59:59Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -229,7 +229,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T13:00:00Z'),
         endTime: new Date('2019-12-29T14:45:00Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
@@ -242,7 +242,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T00:00:00Z'),
         endTime: new Date('2019-12-29T14:45:00Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
@@ -255,7 +255,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T00:05:00Z'),
         endTime: new Date('2019-12-29T14:45:00Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       simpleAppointment.endTime = new Date('2019-12-29T14:49:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
@@ -268,7 +268,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T13:00:00Z'),
         endTime: new Date('2019-12-29T23:59:59Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
 
@@ -280,7 +280,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T13:00:00Z'),
         endTime: new Date('2019-12-29T23:54:00Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       simpleAppointment.endTime = new Date('2019-12-29T23:54:59Z')
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
@@ -293,7 +293,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T13:00:00Z'),
         endTime: new Date('2019-12-29T23:58:00Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       simpleAppointment.endTime = new Date('2019-12-29T23:59:59Z');
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
@@ -306,7 +306,7 @@ describe('bConversionUtil', () => {
         startTime: new Date('2019-12-29T13:00:00Z'),
         endTime: new Date('2019-12-29T23:59:59Z')
       }
-      const timeSlots: string = bStringUtil.generateBinaryString(simpleAppointment) as string;
+      const timeSlots: string = bStringUtil.generateBString(simpleAppointment) as string;
       const expectedAppointments: Appointment[] = [simpleAppointment];
       const computedAppointments: Appointment[] = bConversionUtil.convertTimeSlotsStringToAppointments(timeSlots, baseDate);
       expect(computedAppointments).toEqual(expectedAppointments);

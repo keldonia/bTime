@@ -103,40 +103,40 @@ export function generateTimeSet(
   dayFive?: Appointment,
   daySix?: Appointment
 ): string[] {
-  const dayZeroString: string = bStringUtil.generateBinaryString(dayZero) as string;
-  const dayOneString: string = bStringUtil.generateBinaryString(dayOne) as string;
+  const dayZeroString: string = bStringUtil.generateBString(dayZero) as string;
+  const dayOneString: string = bStringUtil.generateBString(dayOne) as string;
   const scheduleSlots: string[] = [ dayZeroString, dayOneString ];
   
   if (dayTwo) {
-    const dayTwoString: string = bStringUtil.generateBinaryString(dayTwo) as string;
+    const dayTwoString: string = bStringUtil.generateBString(dayTwo) as string;
     scheduleSlots.push(dayTwoString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayThree) {
-    const dayThreeString: string = bStringUtil.generateBinaryString(dayThree) as string;
+    const dayThreeString: string = bStringUtil.generateBString(dayThree) as string;
     scheduleSlots.push(dayThreeString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayFour) {
-    const dayFourString: string = bStringUtil.generateBinaryString(dayFour) as string;
+    const dayFourString: string = bStringUtil.generateBString(dayFour) as string;
     scheduleSlots.push(dayFourString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (dayFive) {
-    const dayFiveString: string = bStringUtil.generateBinaryString(dayFive) as string;
+    const dayFiveString: string = bStringUtil.generateBString(dayFive) as string;
     scheduleSlots.push(dayFiveString);
   } else {
     scheduleSlots.push(emptyDay());
   }
 
   if (daySix) {
-    const daySixString: string = bStringUtil.generateBinaryString(daySix) as string;
+    const daySixString: string = bStringUtil.generateBString(daySix) as string;
     scheduleSlots.push(daySixString);
   } else {
     scheduleSlots.push(emptyDay());

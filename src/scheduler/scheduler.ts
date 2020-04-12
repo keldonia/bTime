@@ -177,7 +177,7 @@ export class Scheduler {
 
         const remainingAvailability: number = ~remainingAvailabilityMask;
 
-        calculatedAvailability.push(this.bTimeFactory.decimalToBinaryString(remainingAvailability));
+        calculatedAvailability.push(this.bTimeFactory.decimalToBString(remainingAvailability));
       }
 
       totalRemainingAvailability.push(calculatedAvailability.join(''));
@@ -206,7 +206,7 @@ export class Scheduler {
       });
     });
     const proposedScheduleStrings: string[] | false =
-      this.bTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
+      this.bTimeFactory.generateBStringFromAppointments(scheduleAppointments);
 
     if  (!proposedScheduleStrings) {
       return false;
@@ -287,7 +287,7 @@ export class Scheduler {
     schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
-    const appointmentsBStrings: string[] | false = this.bTimeFactory.generateBinaryStringFromAppointments(appointments);
+    const appointmentsBStrings: string[] | false = this.bTimeFactory.generateBStringFromAppointments(appointments);
 
     if (!appointmentsBStrings) {
       return false;
@@ -366,7 +366,7 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptBString: string | false = this.bTimeFactory.generateBinaryString(firstAppt);
+      const firstApptBString: string | false = this.bTimeFactory.generateBString(firstAppt);
 
       if (!firstApptBString) {
         return false;
@@ -385,7 +385,7 @@ export class Scheduler {
       schedule.bookings[startDay] = tempBookings;
     }
 
-    const apptBString: string | false = this.bTimeFactory.generateBinaryString(appointment);
+    const apptBString: string | false = this.bTimeFactory.generateBString(appointment);
 
     if (!apptBString) {
       return false;

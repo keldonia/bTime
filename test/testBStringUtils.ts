@@ -16,7 +16,7 @@ describe("bStringUtil", () => {
     });
   });
 
-  describe("#generateBinaryString(), assumes 5 min interval", () => {
+  describe("#generateBString(), assumes 5 min interval", () => {
     const tests = [
       { args: [4, 12, 5, 5], expected: "000000000000000000000000000000000000000000000000001111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [0, 12, 0, 24], expected: "001110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
@@ -40,14 +40,14 @@ describe("bStringUtil", () => {
        and end: ${args[2]}:${args[3]}`;
 
       it(testName, () => {
-        const bString: string | false = bStringUtil.generateBinaryString(testAppt);
+        const bString: string | false = bStringUtil.generateBString(testAppt);
         
         expect(bString).toEqual(expected);
       });
     });
   });
 
-  describe("#generateBinaryStringFromAppointments(), assumes 5 min interval", () => {
+  describe("#generateBStringFromAppointments(), assumes 5 min interval", () => {
     const tests = [
       { 
         appointments: [
@@ -207,7 +207,7 @@ describe("bStringUtil", () => {
       const testName = `should properly construct binary representation of ${test.appointments.length} appointments, test #${idx}`;
 
       it(testName, () => {
-        const bString: string[] | false = bStringUtil.generateBinaryStringFromAppointments(appts);
+        const bString: string[] | false = bStringUtil.generateBStringFromAppointments(appts);
         
         expect(bString).toEqual(expected);
       });
@@ -248,24 +248,24 @@ describe("bStringUtil", () => {
     });
   });
 
-  describe("#decimalToBinaryString", () => {
+  describe("#decimalToBString", () => {
     it('should return a binary string equal to 0 when passed 0', () => {
       const zero: string = "000000000000";
-      const computed: string = bStringUtil.decimalToBinaryString(0);
+      const computed: string = bStringUtil.decimalToBString(0);
 
       expect(computed).toEqual(zero);
     });
 
     it('should return a binary string equal to 2 when passed 2', () => {
       const two: string = "000000000010";
-      const computed: string = bStringUtil.decimalToBinaryString(2);
+      const computed: string = bStringUtil.decimalToBString(2);
 
       expect(computed).toEqual(two);
     });
 
     it('should return a binary string equal to 256 when passed 256', () => {
       const number: string = "000100000000";
-      const computed: string = bStringUtil.decimalToBinaryString(256);
+      const computed: string = bStringUtil.decimalToBString(256);
 
       expect(computed).toEqual(number);
     });

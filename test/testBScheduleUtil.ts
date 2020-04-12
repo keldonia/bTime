@@ -81,7 +81,7 @@ describe("bScheduleUtil", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
-      const appt2Str: string = bStringUtil.generateBinaryString(appt2) as string;
+      const appt2Str: string = bStringUtil.generateBString(appt2) as string;
       const expected: string | boolean = test.expected;
       const testName: string = !!expected ?
         "should return schedule binary if appointments do not overlap" :
@@ -144,10 +144,10 @@ describe("bScheduleUtil", () => {
       const expected: Appointment = TestUtils.generateMockDateAppointment(
         12, 20, 17, 40
       );
-      const scheduleToModifyStr: string = bStringUtil.generateBinaryString(scheduleToModify) as string;
-      const baseAvailabilityStr: string = bStringUtil.generateBinaryString(baseAvailability) as string;
-      const apptStr: string = bStringUtil.generateBinaryString(appt) as string;
-      const expectedStr: string = bStringUtil.generateBinaryString(expected) as string;
+      const scheduleToModifyStr: string = bStringUtil.generateBString(scheduleToModify) as string;
+      const baseAvailabilityStr: string = bStringUtil.generateBString(baseAvailability) as string;
+      const apptStr: string = bStringUtil.generateBString(appt) as string;
+      const expectedStr: string = bStringUtil.generateBString(expected) as string;
       const computed: string = bScheduleUtil.modifyScheduleAndBooking(scheduleToModifyStr, baseAvailabilityStr, apptStr) as string;
 
       expect(computed).toEqual(expectedStr);
@@ -208,7 +208,7 @@ describe("bScheduleUtil", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         args[4], args[5], args[6], args[7]
       );
-      const appt2Str: string = bStringUtil.generateBinaryString(appt2) as string;
+      const appt2Str: string = bStringUtil.generateBString(appt2) as string;
       const expected: string | boolean = test.expected;
       const testName: string = `should delete an appointment of ${args[0]}:${args[1]} to ${args[2]}:${args[3]} from a base of ${args[4]}:${args[5]} to ${args[6]}:${args[7]}`;
 
@@ -226,7 +226,7 @@ describe("bScheduleUtil", () => {
       const appt2: Appointment = TestUtils.generateMockDateAppointment(
         13, 12, 15, 24
       );
-      const appt2Str: string = bStringUtil.generateBinaryString(appt2) as string;
+      const appt2Str: string = bStringUtil.generateBString(appt2) as string;
       function test() {
         bScheduleUtil.deleteAppointment(invalidAppt, appt2Str);
       }

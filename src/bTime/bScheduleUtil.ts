@@ -8,7 +8,7 @@ import { Appointment, hoursInDay } from "../@types";
  *  @param {bStringUtil} bStringUtil bStringUtil for manipulating
  *  binary strings
  *
- *  @returns {BScheduleUtil} scheduleBinaryUtil
+ *  @returns {BScheduleUtil} BScheduleUtil
  */
 export class BScheduleUtil {
   private bStringUtil?: BStringUtil;
@@ -20,7 +20,7 @@ export class BScheduleUtil {
    *  @param {BStringUtil} bStringUtil bStringUtil for manipulating
    *  binary strings
    *
-   *  @returns {BScheduleUtil} scheduleBinaryUtil
+   *  @returns {BScheduleUtil} BScheduleUtil
    */
   constructor(bStringUtil: BStringUtil) {
     this.bStringUtil = bStringUtil;
@@ -58,7 +58,7 @@ export class BScheduleUtil {
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
-    const apptBString: string | false = this.bStringUtil.generateBinaryString(timeSlot);
+    const apptBString: string | false = this.bStringUtil.generateBString(timeSlot);
 
     if (!apptBString) {
       return false;
@@ -123,7 +123,7 @@ export class BScheduleUtil {
 
     // IFF OR === XOR, there is not a schedule conflict
     if (modified === test) {
-      return this.bStringUtil.decimalToBinaryString(modified);
+      return this.bStringUtil.decimalToBString(modified);
     }
 
     return false;
@@ -214,7 +214,7 @@ export class BScheduleUtil {
       return false;
     }
 
-    return this.bStringUtil.decimalToBinaryString(update);
+    return this.bStringUtil.decimalToBString(update);
   }
 
   /**
@@ -259,7 +259,7 @@ export class BScheduleUtil {
    *  @returns {string} string of modified time interval
    */
   public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
-    const apptToDeleteBString: string | false = this.bStringUtil.generateBinaryString(timeSlotToDelete);
+    const apptToDeleteBString: string | false = this.bStringUtil.generateBString(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
       throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
@@ -325,7 +325,7 @@ export class BScheduleUtil {
     // Performs a XOR on the schedule and the proposed schedule
     const modified: number = parsedSchedule ^ parsedApptBString;
 
-    return this.bStringUtil.decimalToBinaryString(modified);
+    return this.bStringUtil.decimalToBString(modified);
   }
 
   /**
