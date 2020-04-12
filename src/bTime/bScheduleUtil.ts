@@ -1,29 +1,29 @@
-import { BinaryStringUtil } from "./binaryStringUtil";
+import { BStringUtil } from "./bStringUtil";
 import { Appointment, hoursInDay } from "../@types";
 
 /**
- *  @typedef ScheduleBinaryUtil is responsible for handling scheduling
+ *  @typedef BScheduleUtil is responsible for handling scheduling
  *  using bit manipulations
  *
- *  @param {binaryStringUtil} binaryStringUtil binaryStringUtil for manipulating
+ *  @param {bStringUtil} bStringUtil bStringUtil for manipulating
  *  binary strings
  *
- *  @returns {ScheduleBinaryUtil} scheduleBinaryUtil
+ *  @returns {BScheduleUtil} scheduleBinaryUtil
  */
-export class ScheduleBinaryUtil {
-  private binaryStringUtil?: BinaryStringUtil;
+export class BScheduleUtil {
+  private bStringUtil?: BStringUtil;
 
   /**
-   *  @description ScheduleBinaryUtil is responsible for handling scheduling
+   *  @description BScheduleUtil is responsible for handling scheduling
    *  using bit manipulations
    *
-   *  @param {BinaryStringUtil} binaryStringUtil binaryStringUtil for manipulating
+   *  @param {BStringUtil} bStringUtil bStringUtil for manipulating
    *  binary strings
    *
-   *  @returns {ScheduleBinaryUtil} scheduleBinaryUtil
+   *  @returns {BScheduleUtil} scheduleBinaryUtil
    */
-  constructor(binaryStringUtil: BinaryStringUtil) {
-    this.binaryStringUtil = binaryStringUtil;
+  constructor(bStringUtil: BStringUtil) {
+    this.bStringUtil = bStringUtil;
   }
 
   /**
@@ -58,7 +58,7 @@ export class ScheduleBinaryUtil {
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
-    const apptBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlot);
+    const apptBString: string | false = this.bStringUtil.generateBinaryString(timeSlot);
 
     if (!apptBString) {
       return false;
@@ -78,10 +78,10 @@ export class ScheduleBinaryUtil {
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringsWithTestBase(apptBString: string, schedule: string): string | false {
-    const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
+    const apptMask: string[] = this.bStringUtil.timeStringSplit(
       apptBString
     );
-    const splitSchedule: string[] = this.binaryStringUtil.timeStringSplit(schedule);
+    const splitSchedule: string[] = this.bStringUtil.timeStringSplit(schedule);
     const mergedSchedule: string[] = [];
 
     /*
@@ -114,8 +114,8 @@ export class ScheduleBinaryUtil {
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringWithTest(timeSlotBString: string, schedule: string): string | false {
-    const parsedSchedule: number = this.binaryStringUtil.parseBString(schedule);
-    const parsedApptBString: number = this.binaryStringUtil.parseBString(timeSlotBString);
+    const parsedSchedule: number = this.bStringUtil.parseBString(schedule);
+    const parsedApptBString: number = this.bStringUtil.parseBString(timeSlotBString);
     // Performs a XOR on the schedule and the proposed schedule
     const modified: number = parsedSchedule ^ parsedApptBString;
     // Performs an OR on the schedule and the proposed schedule
@@ -123,7 +123,7 @@ export class ScheduleBinaryUtil {
 
     // IFF OR === XOR, there is not a schedule conflict
     if (modified === test) {
-      return this.binaryStringUtil.decimalToBinaryString(modified);
+      return this.bStringUtil.decimalToBinaryString(modified);
     }
 
     return false;
@@ -149,9 +149,9 @@ export class ScheduleBinaryUtil {
     scheduleBStringToTest: string,
     appt: string
   ) {
-    const splitToModify: string[] = this.binaryStringUtil.timeStringSplit(scheduleBStringToModify);
-    const splitToTest: string[] = this.binaryStringUtil.timeStringSplit(scheduleBStringToTest);
-    const splitAppt: string[] = this.binaryStringUtil.timeStringSplit(appt);
+    const splitToModify: string[] = this.bStringUtil.timeStringSplit(scheduleBStringToModify);
+    const splitToTest: string[] = this.bStringUtil.timeStringSplit(scheduleBStringToTest);
+    const splitAppt: string[] = this.bStringUtil.timeStringSplit(appt);
     const modifedSchedule: string[] = [];
 
     /*
@@ -195,10 +195,10 @@ export class ScheduleBinaryUtil {
     scheduleBStringToTest: string,
     appt: string
   ): string | false {
-    const parsedToModify: number = this.binaryStringUtil.parseBString(scheduleBStringToModify);
+    const parsedToModify: number = this.bStringUtil.parseBString(scheduleBStringToModify);
     // Flip the bits to test the pattern
-    const parsedToTest: number = ~this.binaryStringUtil.parseBString(scheduleBStringToTest);
-    const parsedApptBString: number = this.binaryStringUtil.parseBString(appt);
+    const parsedToTest: number = ~this.bStringUtil.parseBString(scheduleBStringToTest);
+    const parsedApptBString: number = this.bStringUtil.parseBString(appt);
 
     const viabilityTest: number | false = this.testViabilityAndCompute(parsedApptBString, parsedToTest);
 
@@ -214,7 +214,7 @@ export class ScheduleBinaryUtil {
       return false;
     }
 
-    return this.binaryStringUtil.decimalToBinaryString(update);
+    return this.bStringUtil.decimalToBinaryString(update);
   }
 
   /**
@@ -259,7 +259,7 @@ export class ScheduleBinaryUtil {
    *  @returns {string} string of modified time interval
    */
   public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
-    const apptToDeleteBString: string | false = this.binaryStringUtil.generateBinaryString(timeSlotToDelete);
+    const apptToDeleteBString: string | false = this.bStringUtil.generateBinaryString(timeSlotToDelete);
 
     if (!apptToDeleteBString) {
       throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
@@ -280,10 +280,10 @@ export class ScheduleBinaryUtil {
    *  @returns {string} string of modified time interval
    */
   public deleteAppointmentBString(bStringToDelete: string, scheduleSlot: string): string | false {
-    const apptMask: string[] = this.binaryStringUtil.timeStringSplit(
+    const apptMask: string[] = this.bStringUtil.timeStringSplit(
       bStringToDelete
     );
-    const splitBookings: string[] = this.binaryStringUtil.timeStringSplit(scheduleSlot);
+    const splitBookings: string[] = this.bStringUtil.timeStringSplit(scheduleSlot);
     const returnAppointment: string[] = [];
 
     for (let i = 0; i < hoursInDay; i++) {
@@ -316,8 +316,8 @@ export class ScheduleBinaryUtil {
    *  @returns {string} string of modified time interval
    */
   public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string | false {
-    const parsedSchedule: number = this.binaryStringUtil.parseBString(scheduleInterval);
-    const parsedApptBString: number = this.binaryStringUtil.parseBString(timeSlotBString);
+    const parsedSchedule: number = this.bStringUtil.parseBString(scheduleInterval);
+    const parsedApptBString: number = this.bStringUtil.parseBString(timeSlotBString);
 
     if (!this.validDeletion(parsedSchedule, parsedApptBString)) {
       return false;
@@ -325,7 +325,7 @@ export class ScheduleBinaryUtil {
     // Performs a XOR on the schedule and the proposed schedule
     const modified: number = parsedSchedule ^ parsedApptBString;
 
-    return this.binaryStringUtil.decimalToBinaryString(modified);
+    return this.bStringUtil.decimalToBinaryString(modified);
   }
 
   /**

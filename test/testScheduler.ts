@@ -1,7 +1,7 @@
-import { Scheduler, BinaryTimeFactory } from './../src';
+import { Scheduler, BTimeFactory } from './../src';
 import * as TestUtils from './utils/testUtils';
 import { Schedule, ScheduleActions, Appointment, AppointmentDuo, AppointmentSchedule } from '../src/@types';
-import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
+import { BStringUtil } from '../src/bTime/bStringUtil';
 
 describe('Test Scheduler', () => {
 
@@ -244,7 +244,7 @@ describe('Test Scheduler', () => {
 
   describe('#updateScheduleWithAppointmentSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryTimeFactory: BinaryTimeFactory = scheduler['binaryTimeFactory'];
+    const bTimeFactory: BTimeFactory = scheduler['bTimeFactory'];
 
     const mockGenerateBinaryStringFromAppointments: jest.Mock = jest.fn();
     const mockUpdateSchedule: jest.Mock = jest.fn();
@@ -253,8 +253,8 @@ describe('Test Scheduler', () => {
 
     scheduler.updateSchedule = mockUpdateSchedule;
     scheduler.getCurrentAvailability = mockGetCurrentAvailability;
-    binaryTimeFactory.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
-    binaryTimeFactory.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
+    bTimeFactory.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
+    bTimeFactory.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
 
     let schedule: Schedule;
     let appointmentSchedule: AppointmentSchedule;
@@ -357,7 +357,7 @@ describe('Test Scheduler', () => {
 
   describe('#updateSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+    const bStringUtil: BStringUtil = new BStringUtil(5);
     const emptyBookings: string[] = TestUtils.emptyWeek();
 
     it('should return the modified schedule if the current bookings are contained within the proposed availability', () => {
@@ -419,7 +419,7 @@ describe('Test Scheduler', () => {
         dayOneSchedule,
         dayOneSchedule
       );
-      scheduledAvailability.push(binaryStringUtil.generateBinaryString(dayOneSchedule) as string);
+      scheduledAvailability.push(bStringUtil.generateBinaryString(dayOneSchedule) as string);
 
       const dayZeroBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneBookings: Appointment = TestUtils.generateMockDateAppointment(11, 0, 17, 0, 1, 1);
@@ -553,8 +553,8 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       // Add a 25th hour to the first day
-      schedule.schedule[0] = binaryStringUtil.generateBinaryString(dayZeroSchedule) as string + "101010101010";
-      schedule.bookings[0] = binaryStringUtil.generateBinaryString(dayZeroBookings) as string + "101010101010";
+      schedule.schedule[0] = bStringUtil.generateBinaryString(dayZeroSchedule) as string + "101010101010";
+      schedule.bookings[0] = bStringUtil.generateBinaryString(dayZeroBookings) as string + "101010101010";
 
       const proposedDayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 20, 0, 0, 0);
       const proposedDayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 18, 0, 0, 0);
@@ -570,7 +570,7 @@ describe('Test Scheduler', () => {
 
       const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
       // Add a 25th hour to the first day
-      const badAvail: string = binaryStringUtil.generateBinaryString(proposedDayZeroSchedule) as string + "001010101010"; 
+      const badAvail: string = bStringUtil.generateBinaryString(proposedDayZeroSchedule) as string + "001010101010"; 
       proposedSchedule.schedule[0] = badAvail;
       proposedSchedule.bookings[0] = schedule.bookings[0];
 
@@ -582,9 +582,9 @@ describe('Test Scheduler', () => {
         weekStart: schedule.weekStart
       };
       // Correct expected availability & bookings
-      const expectedAvailibility: string = binaryStringUtil.generateBinaryString(proposedDayZeroSchedule) as string;
+      const expectedAvailibility: string = bStringUtil.generateBinaryString(proposedDayZeroSchedule) as string;
       expectedSchedule.schedule[0] = expectedAvailibility;
-      expectedSchedule.bookings[0] = binaryStringUtil.generateBinaryString(dayZeroBookings) as string;
+      expectedSchedule.bookings[0] = bStringUtil.generateBinaryString(dayZeroBookings) as string;
 
       expect(computedSchedule.schedule[0]).not.toEqual(badAvail)
       expect(computedSchedule.schedule[0]).toEqual(expectedAvailibility)
@@ -753,7 +753,7 @@ describe('Test Scheduler', () => {
 
   describe('#processAppointments', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = scheduler['binaryTimeFactory']['binaryStringUtil'];
+    const bStringUtil: BStringUtil = scheduler['bTimeFactory']['bStringUtil'];
     const mockDeleteAppointments: jest.Mock = jest.fn();
     const mockHandleBookingUpdateBString: jest.Mock = jest.fn();
 
@@ -834,7 +834,7 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
       const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
       const appointments: Appointment[] = [ apptToDelete, apptToDeleteTwo ];
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
 
       scheduler.processAppointments(appointments, schedule, ScheduleActions.DELETE_APPT);
 
@@ -855,7 +855,7 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
       const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
       const appointments: Appointment[] = [ apptToDelete, apptToDeleteTwo ];
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments(appointments) as string[];
 
       scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
 
@@ -865,7 +865,7 @@ describe('Test Scheduler', () => {
 
   describe('#handleBookingUpdate',  () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+    const bStringUtil: BStringUtil = new BStringUtil(5);
 
     it(`should handle an appointment that doesn't cross the day boundary`, () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
@@ -881,7 +881,7 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 10, 55, 1, 1);
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(10, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdate(apptToBook, schedule) as Schedule;
 
@@ -940,10 +940,10 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 0, 55, 1, 1);
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = bStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook) as Schedule;
 
@@ -993,7 +993,7 @@ describe('Test Scheduler', () => {
 
   describe('#handleBookingUpdateBString', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+    const bStringUtil: BStringUtil = new BStringUtil(5);
 
     it(`should handle an appointment that doesn't cross the day boundary`, () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
@@ -1007,10 +1007,10 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 10, 55, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(10, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
 
@@ -1030,7 +1030,7 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 2, 0, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
 
       const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
 
@@ -1049,13 +1049,13 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = bStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
 
@@ -1076,7 +1076,7 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 1, 0, 0, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToBook]) as string[];
 
       const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
 
@@ -1096,13 +1096,13 @@ describe('Test Scheduler', () => {
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
       const apptToBookTwo: Appointment = TestUtils.generateMockDateAppointment(17, 5, 18, 0, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToBook, apptToBookTwo]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToBook, apptToBookTwo]) as string[];
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = bStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(0, 0, 18, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.handleBookingUpdateBString(apptBStrings, schedule) as Schedule;
 
@@ -1114,7 +1114,7 @@ describe('Test Scheduler', () => {
 
   describe('#deleteAppointment', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+    const bStringUtil: BStringUtil = new BStringUtil(5);
 
     it(`should handle an appointment that doesn't cross the day boundary`, () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
@@ -1130,7 +1130,7 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11,0, 11, 55, 1, 1);
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointment(apptToDelete, schedule) as Schedule;
 
@@ -1153,10 +1153,10 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(0, 0, 0, 55, 1, 1);
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 22, 55, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = bStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointment(apptToDelete, schedule, firstApptToDelete) as Schedule;
 
@@ -1207,7 +1207,7 @@ describe('Test Scheduler', () => {
 
   describe('#deleteAppointments', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+    const bStringUtil: BStringUtil = new BStringUtil(5);
 
     it(`should handle an appointment that doesn't cross the day boundary`, () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
@@ -1221,10 +1221,10 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 17, 0, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
 
@@ -1244,13 +1244,13 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(23, 0, 0, 55, 0, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
 
       const dayZeroExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(8, 0, 22, 55, 0, 0);
-      const expectedDayZeroBookings: string = binaryStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
+      const expectedDayZeroBookings: string = bStringUtil.generateBinaryString(dayZeroExpectedBookings) as string;
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(1, 0, 17, 0, 1, 1);
-      const expectedDayOneBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedDayOneBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
 
@@ -1271,7 +1271,7 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(9, 0, 11, 55, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
 
       const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
 
@@ -1291,7 +1291,7 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(14, 0, 0, 55, 0, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToDelete]) as string[];
 
       const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
 
@@ -1312,10 +1312,10 @@ describe('Test Scheduler', () => {
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(11, 0, 11, 55, 1, 1);
       const apptToDeleteTwo: Appointment = TestUtils.generateMockDateAppointment(16, 0, 17, 0, 1, 1);
-      const apptBStrings: string[] = binaryStringUtil.generateBinaryStringFromAppointments([apptToDelete, apptToDeleteTwo]) as string[];
+      const apptBStrings: string[] = bStringUtil.generateBinaryStringFromAppointments([apptToDelete, apptToDeleteTwo]) as string[];
 
       const dayOneExpectedBookings: Appointment = TestUtils.generateMockDateAppointment(12, 0, 15, 55, 1, 1);
-      const expectedBookings: string = binaryStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
+      const expectedBookings: string = bStringUtil.generateBinaryString(dayOneExpectedBookings) as string;
 
       const computedSchedule: Schedule = scheduler.deleteAppointments(apptBStrings, schedule) as Schedule;
 

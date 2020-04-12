@@ -1,9 +1,9 @@
 import * as TestUtils from './utils/testUtils';
 
 import {hoursInDay } from '../src/@types';
-import { BPointerCalculator } from '../src/binaryTime/bPointerCalculator';
+import { BPointerCalculator } from '../src/bTime/bPointerCalculator';
 
-describe('BPointerCalculator', () => {
+describe('bPointerCalculator', () => {
   const bPointerCalculator: BPointerCalculator = new BPointerCalculator(5);
 
   describe('constructor', () => {

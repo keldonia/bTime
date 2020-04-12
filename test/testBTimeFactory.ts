@@ -1,16 +1,16 @@
 import * as TestUtils from './utils/testUtils';
-import { BinaryTimeFactory } from './../src/binaryTime/index';
-import { ScheduleBinaryUtil } from '../src/binaryTime/scheduleBinaryUtil';
-import { BinaryStringUtil } from '../src/binaryTime/binaryStringUtil';
+import { BTimeFactory } from '../src/bTime/index';
+import { BScheduleUtil } from '../src/bTime/bScheduleUtil';
+import { BStringUtil } from '../src/bTime/bStringUtil';
 import { Appointment, Schedule } from '../src/@types';
-import { BinaryConversionUtil } from '../src/binaryTime/binaryConversionUtil';
+import { BConversionUtil } from '../src/bTime/bConversionUtil';
 
-describe('Binary Time Factory', () => {
+describe('bTime Factory', () => {
   describe('constructor', () => {
     it('should not throw an error if an valid time interval is supplied: 3', () => {
       const timeInterval: number = 3;
       function test() {
-        new BinaryTimeFactory(timeInterval);
+        new BTimeFactory(timeInterval);
       };
 
       expect(test).not.toThrow();
@@ -19,7 +19,7 @@ describe('Binary Time Factory', () => {
     it('should not throw an error if an valid time interval is supplied: 5', () => {
       const timeInterval: number = 5;
       function test() {
-        new BinaryTimeFactory(timeInterval);
+        new BTimeFactory(timeInterval);
       };
 
       expect(test).not.toThrow();
@@ -28,18 +28,18 @@ describe('Binary Time Factory', () => {
     it('should throw an error if an invalid time interval is supplied: 7', () => {
       const timeInterval: number = 7;
       function test() {
-        new BinaryTimeFactory(timeInterval);
+        new BTimeFactory(timeInterval);
       };
 
-      expect(test).toThrow(`Invalid timeInterval entered for BinaryTimeFactory: ${timeInterval}`);
+      expect(test).toThrow(`Invalid timeInterval entered for BTimeFactory: ${timeInterval}`);
     });
   });
 
   describe('test pass-through methods', () => {
-    const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);
-    const scheduleBinaryUtil: ScheduleBinaryUtil = binaryTimeFactory['scheduleBinaryUtil'];
-    const binaryStringUtil: BinaryStringUtil = binaryTimeFactory['binaryStringUtil'];
-    const binaryConversionUtil: BinaryConversionUtil = binaryTimeFactory['binaryConversionUtil'];
+    const bTimeFactory: BTimeFactory = new BTimeFactory(5);
+    const bScheduleUtil: BScheduleUtil = bTimeFactory['bScheduleUtil'];
+    const bStringUtil: BStringUtil = bTimeFactory['bStringUtil'];
+    const bConversionUtil: BConversionUtil = bTimeFactory['bConversionUtil'];
     
     const mockParseBString: jest.Mock = jest.fn();
     const mockGenerateBinaryString: jest.Mock = jest.fn();
@@ -52,112 +52,112 @@ describe('Binary Time Factory', () => {
     const mockModifyScheduleAndBooking: jest.Mock = jest.fn();
     const mockConvertScheduleToAppointmentSchedule: jest.Mock = jest.fn();
 
-    binaryStringUtil.parseBString = mockParseBString;
-    binaryStringUtil.generateBinaryString = mockGenerateBinaryString;
-    binaryStringUtil.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
-    binaryStringUtil.timeStringSplit = mockTimeStringSplit;
-    binaryStringUtil.decimalToBinaryString = mockDecimalToBinaryString;
-    scheduleBinaryUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
-    scheduleBinaryUtil.deleteAppointment = mockDeleteAppointment;
-    scheduleBinaryUtil.deleteAppointmentBString = mockDeleteAppointmentBString;
-    scheduleBinaryUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
-    binaryConversionUtil.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
+    bStringUtil.parseBString = mockParseBString;
+    bStringUtil.generateBinaryString = mockGenerateBinaryString;
+    bStringUtil.generateBinaryStringFromAppointments = mockGenerateBinaryStringFromAppointments;
+    bStringUtil.timeStringSplit = mockTimeStringSplit;
+    bStringUtil.decimalToBinaryString = mockDecimalToBinaryString;
+    bScheduleUtil.testViabilityAndCompute = mockTestViabilityAndCompute;
+    bScheduleUtil.deleteAppointment = mockDeleteAppointment;
+    bScheduleUtil.deleteAppointmentBString = mockDeleteAppointmentBString;
+    bScheduleUtil.modifyScheduleAndBooking = mockModifyScheduleAndBooking;
+    bConversionUtil.convertScheduleToAppointmentSchedule = mockConvertScheduleToAppointmentSchedule;
 
     beforeEach(() => {
       jest.resetAllMocks();
     });
 
-    it(`should call it's binaryStringUtil's parseBString when parseBString is called`, () => {
+    it(`should call it's bStringUtil's parseBString when parseBString is called`, () => {
       
       const testArg1: string = '01';
       
-      binaryTimeFactory.parseBString(testArg1);
+      bTimeFactory.parseBString(testArg1);
       
       expect(mockParseBString).toBeCalled();
       expect(mockParseBString).toBeCalledWith(testArg1);
     });
 
-    it(`should call it's binaryStringUtil's generateBinaryString when generateBinaryString called`, () => {
+    it(`should call it's bStringUtil's generateBinaryString when generateBinaryString called`, () => {
       
       const testArg1: Appointment = TestUtils.generateSimpleDateAppointment(new Date());
       
-      binaryTimeFactory.generateBinaryString(testArg1);
+      bTimeFactory.generateBinaryString(testArg1);
       
       expect(mockGenerateBinaryString).toBeCalled();
       expect(mockGenerateBinaryString).toBeCalledWith(testArg1);
     });
 
-    it(`should call it's binaryStringUtil's generateBinaryStringFromAppointments when generateBinaryStringFromAppointments called`, () => {
+    it(`should call it's bStringUtil's generateBinaryStringFromAppointments when generateBinaryStringFromAppointments called`, () => {
       
       const testArg1: Appointment[] = [TestUtils.generateSimpleDateAppointment(new Date())];
       
-      binaryTimeFactory.generateBinaryStringFromAppointments(testArg1);
+      bTimeFactory.generateBinaryStringFromAppointments(testArg1);
       
       expect(mockGenerateBinaryStringFromAppointments).toBeCalled();
       expect(mockGenerateBinaryStringFromAppointments).toBeCalledWith(testArg1);
     });
 
-    it(`should call it's binaryStringUtil's timeStringSplit when timeStringSplit called`, () => {
-      binaryTimeFactory.timeStringSplit(TestUtils.emptyDay());
+    it(`should call it's bStringUtil's timeStringSplit when timeStringSplit called`, () => {
+      bTimeFactory.timeStringSplit(TestUtils.emptyDay());
       
       expect(mockTimeStringSplit).toBeCalled();
       expect(mockTimeStringSplit).toBeCalledWith(TestUtils.emptyDay());
     });
 
-    it(`should call it's binaryStringUtil's decimalToBinaryString when decimalToBinaryString called`, () => {
+    it(`should call it's bStringUtil's decimalToBinaryString when decimalToBinaryString called`, () => {
       const testNumber: number = 1;
-      binaryTimeFactory.decimalToBinaryString(testNumber);
+      bTimeFactory.decimalToBinaryString(testNumber);
       
       expect(mockDecimalToBinaryString).toBeCalled();
       expect(mockDecimalToBinaryString).toBeCalledWith(testNumber);
     });
 
-    it(`should call it's scheduleBinaryUtil's testViabilityAndCompute when testViabilityAndCompute called`, () => {
+    it(`should call it's bScheduleUtil's testViabilityAndCompute when testViabilityAndCompute called`, () => {
       
       const testArg1: number = 1;
       const testArg2: number = 2;
       
-      binaryTimeFactory.testViabilityAndCompute(testArg1, testArg2);
+      bTimeFactory.testViabilityAndCompute(testArg1, testArg2);
       
       expect(mockTestViabilityAndCompute).toBeCalled();
       expect(mockTestViabilityAndCompute).toBeCalledWith(testArg1, testArg2);
     });
 
-    it(`should call it's scheduleBinaryUtil's deleteAppointment when deleteAppointment called`, () => {
+    it(`should call it's bScheduleUtil's deleteAppointment when deleteAppointment called`, () => {
       
       const testArg1: Appointment = TestUtils.generateSimpleDateAppointment(new Date());
       const testArg2: string = '00';
       
-      binaryTimeFactory.deleteAppointment(testArg1, testArg2);
+      bTimeFactory.deleteAppointment(testArg1, testArg2);
       
       expect(mockDeleteAppointment).toBeCalled();
       expect(mockDeleteAppointment).toBeCalledWith(testArg1, testArg2);
     });
 
-    it(`should call it's scheduleBinaryUtil's deleteAppointmentBString when deleteAppointmentBString called`, () => {
+    it(`should call it's bScheduleUtil's deleteAppointmentBString when deleteAppointmentBString called`, () => {
       
       const testArg1: string = '01';
       const testArg2: string = '00';
       
-      binaryTimeFactory.deleteAppointmentBString(testArg1, testArg2);
+      bTimeFactory.deleteAppointmentBString(testArg1, testArg2);
       
       expect(mockDeleteAppointmentBString).toBeCalled();
       expect(mockDeleteAppointmentBString).toBeCalledWith(testArg1, testArg2);
     });
 
-    it(`should call it's scheduleBinaryUtil's modifyScheduleAndBooking when modifyScheduleAndBooking called`, () => {
+    it(`should call it's bScheduleUtil's modifyScheduleAndBooking when modifyScheduleAndBooking called`, () => {
       
       const testArg1: string = '001';
       const testArg2: string = '111';
       const testArg3: string = '110';
       
-      binaryTimeFactory.modifyScheduleAndBooking(testArg1, testArg2, testArg3);
+      bTimeFactory.modifyScheduleAndBooking(testArg1, testArg2, testArg3);
       
       expect(mockModifyScheduleAndBooking).toBeCalled();
       expect(mockModifyScheduleAndBooking).toBeCalledWith(testArg1, testArg2, testArg3);
     });
 
-    it(`should call it's binaryConversionUtils's convertScheduleToAppointmentSchedule when convertScheduleToAppointmentSchedule called`, () => {
+    it(`should call it's bConversionUtils's convertScheduleToAppointmentSchedule when convertScheduleToAppointmentSchedule called`, () => {
         const baseDate: Date = new Date('2020-02-09T00:00:00Z');
         const schedule: Schedule = TestUtils.generateSchedule(
           TestUtils.emptyWeek(),
@@ -166,7 +166,7 @@ describe('Binary Time Factory', () => {
         );
         const emptyAvail: string[] = TestUtils.emptyWeek();
       
-      binaryTimeFactory.convertScheduleToAppointmentSchedule(schedule, emptyAvail);
+      bTimeFactory.convertScheduleToAppointmentSchedule(schedule, emptyAvail);
       
       expect(mockConvertScheduleToAppointmentSchedule).toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).toBeCalledWith(schedule, emptyAvail);

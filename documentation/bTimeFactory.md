@@ -1,15 +1,15 @@
-# BinaryTimeFactory
+# BTimeFactory
 
-`BinaryTimeFactory` is the other class that is available to end users.  It is exposed for users who desire to directly interact with the utilities provided.  As such `BinaryTimeFactory` exposes several utility methods.
+`BTimeFactory` is the other class that is available to end users.  It is exposed for users who desire to directly interact with the utilities provided.  As such `BTimeFactory` exposes several utility methods.
 
 ##  Instantiating
 
-`BinaryTimeFactory` only requires one argument in it's constructor, the time interval.  The time interval will affect the temporal resolution of the scheduler, ie if was set to 5 - the schedule's resolution is 5 minute intervals.
+`BTimeFactory` only requires one argument in it's constructor, the time interval.  The time interval will affect the temporal resolution of the scheduler, ie if was set to 5 - the schedule's resolution is 5 minute intervals.
 
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 ```
 
 **NB**: Each schedule group, ie all appointments for a given person, should have the same time interval
@@ -21,7 +21,7 @@ The `#parseBString` method converts a binary string in to a number so that it ma
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const convertedBString: number = bTimeFactory.parseBString(bString);
 ```
@@ -33,7 +33,7 @@ The `#generateBinaryString` method converts an appointment into its binary strin
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const generatedBString: number | false = bTimeFactory.generateBinaryString(appt);
 ```
@@ -45,7 +45,7 @@ The `#timeStringSplit` splits a binary string into intervals dependent upon the 
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const splitBStriing: string[] = bTimeFactory.timeStringSplit(string);
 ```
@@ -57,7 +57,7 @@ The `#decimalToBinaryString` converts number into a binaryString representation 
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const splitBStriing: string[] = bTimeFactory.decimalToBinaryString(string);
 ```
@@ -69,7 +69,7 @@ The `#testViabilityAndCompute` tests that two time intervals do not overlap, eit
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const computedValue: number | false = bTimeFactory.testViabilityAndCompute(bString1, bString2);
 ```
@@ -81,7 +81,7 @@ The `#deleteAppointment` tests removal a give time slot from a given time interv
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const computedBString: string = bTimeFactory.deleteAppointment(appointmentToDelete, scheduleInterval);
 ```
@@ -96,7 +96,7 @@ availabilities (test).
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const computedBString: string | false = bTimeFactory.modifyScheduleAndBooking(
     scheduleBStringToModify,
@@ -113,7 +113,7 @@ them into an array of appointments for each date
 ```typescript
   // If using the scheduler
   // Instantiates a new Scheduler with a time interval of 5 min.
-  const bTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5); 
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5); 
 
   const appointmentSchedule: AppointmentSchedule = bTimeFactory.convertScheduleToAppointmentSchedule(
     schedule,

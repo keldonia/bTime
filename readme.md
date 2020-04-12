@@ -22,9 +22,9 @@ discreet time intervals, e.g. 5 minutes.
 
 ## Using bTime
 
-**bTime** includes two primary classes, [Scheduler](./documentation/scheduler.md) and [BinaryTimeFactory](./documentation/binaryTimeFactory.md).  
-Scheduler instantiates its own `BinaryTimeFactory` when instantiated.  `BinaryTimeFactory` 
-can also be instantiated separately if one desires to directly make use of the binary time utils;
+**bTime** includes two primary classes, [Scheduler](./documentation/scheduler.md) and [BTimeFactory](./documentation/bTimeFactory.md).  
+Scheduler instantiates its own `BTimeFactory` when instantiated.  `BTimeFactory` 
+can also be instantiated separately if one desires to directly make use of the btime utils;
 
 ```typescript
   // If using the scheduler
@@ -47,13 +47,13 @@ can also be instantiated separately if one desires to directly make use of the b
   const processedSchedule: AppointmentSchedule = scheduler.convertScheduleToAppointmentSchedule(schedule);
 
   // If using the factory directly
-  // Instantiates a new BinaryTimeFactory with a time interval of 5 min.
-  const binaryTimeFactory: BinaryTimeFactory = new BinaryTimeFactory(5);  
+  // Instantiates a new BTimeFactory with a time interval of 5 min.
+  const bTimeFactory: BTimeFactory = new BTimeFactory(5);  
 ```
 
 Further information on bTime can be found below:
 * [Scheduler](./documentation/scheduler.md)
-* [BinaryTimeFactory](./documentation/binaryTimeFactory.md)
+* [BTimeFactory](./documentation/bTimeFactory.md)
 * [How to use bTime](./documentation/howTos.md)
 
 ## Coming Features

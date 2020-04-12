@@ -19,9 +19,9 @@ const zeroPad: string = "0";
  *  NB: Typically a temporal resolution of 5 mins is sufficient,
  *  as it constitutes the smallest billable unit in most juristictions
  *
- *  @returns {BinaryStringUtil} binaryStringUtil
+ *  @returns {BStringUtil} binaryStringUtil
  */
-export class BinaryStringUtil {
+export class BStringUtil {
   /*
    * Calculated Constants
    */
@@ -43,11 +43,11 @@ export class BinaryStringUtil {
    *  NB: Typically a temporal resolution of 5 mins is sufficient,
    *  as it constitutes the smallest billable unit in most juristictions
    *
-   * @returns {BinaryStringUtil} BinaryStringUtil
+   * @returns {BStringUtil} BinaryStringUtil
    */
   public constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
-      throw new Error(`Invalid timeInterval entered for BinaryStringUtil: ${timeInterval}`);
+      throw new Error(`Invalid timeInterval entered for BStringUtil: ${timeInterval}`);
     }
     this.intervalsInHour = minutesInHour / timeInterval;
     this.intervalsInDay = minutesInHour / timeInterval * hoursInDay;

@@ -6,9 +6,9 @@ import { Schedule, AppointmentSchedule, Appointment, minutesInHour, hoursInDay, 
  *
  *  @param {number} timeInterval the smallest discrete time interval
  *
- *  @returns {BinaryConversionUtil} BinaryConversionUtil
+ *  @returns {BConversionUtil} BinaryConversionUtil
  */
-export class BinaryConversionUtil {
+export class BConversionUtil {
   private timeInterval?: number;
   private intervalsInHour?: number;
   private intervalsInDay?: number;
@@ -19,11 +19,11 @@ export class BinaryConversionUtil {
    *
    *  @param {number} timeInterval the smallest discrete time interval
    *
-   *  @returns {BinaryConversionUtil} BinaryConversionUtil
+   *  @returns {BConversionUtil} BinaryConversionUtil
    */
   constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
-      throw new Error(`Invalid timeInterval entered for BinaryConversionUtil: ${timeInterval}`);
+      throw new Error(`Invalid timeInterval entered for BConversionUtil: ${timeInterval}`);
     }
 
     this.timeInterval = timeInterval;

@@ -1,18 +1,18 @@
 import * as TestUtils from './utils/testUtils';
-import { BinaryStringUtil } from './../src/binaryTime/binaryStringUtil';
+import { BStringUtil } from '../src/bTime/bStringUtil';
 import { Appointment } from '../src/@types';
 
-describe("Binary Utils", () => {
-  const binaryStringUtil: BinaryStringUtil = new BinaryStringUtil(5);
+describe("bStringUtil", () => {
+  const bStringUtil: BStringUtil = new BStringUtil(5);
 
   describe('constructor', () => {
     it('should throw an error if an invalid time interval is supplied', () => {
       const timeInterval: number = 31;
       function test() {
-        new BinaryStringUtil(timeInterval);
+        new BStringUtil(timeInterval);
       };
 
-      expect(test).toThrow(`Invalid timeInterval entered for BinaryStringUtil: ${timeInterval}`);
+      expect(test).toThrow(`Invalid timeInterval entered for BStringUtil: ${timeInterval}`);
     });
   });
 
@@ -40,7 +40,7 @@ describe("Binary Utils", () => {
        and end: ${args[2]}:${args[3]}`;
 
       it(testName, () => {
-        const bString: string | false = binaryStringUtil.generateBinaryString(testAppt);
+        const bString: string | false = bStringUtil.generateBinaryString(testAppt);
         
         expect(bString).toEqual(expected);
       });
@@ -207,7 +207,7 @@ describe("Binary Utils", () => {
       const testName = `should properly construct binary representation of ${test.appointments.length} appointments, test #${idx}`;
 
       it(testName, () => {
-        const bString: string[] | false = binaryStringUtil.generateBinaryStringFromAppointments(appts);
+        const bString: string[] | false = bStringUtil.generateBinaryStringFromAppointments(appts);
         
         expect(bString).toEqual(expected);
       });
@@ -219,7 +219,7 @@ describe("Binary Utils", () => {
 
     it('should return an array of empty hours if passed an empty string', () => {
       const expectedHours: string[] = new Array(24).fill(emptyHour);
-      const computedHours: string[] = binaryStringUtil.timeStringSplit(TestUtils.emptyDay());
+      const computedHours: string[] = bStringUtil.timeStringSplit(TestUtils.emptyDay());
 
       expect(computedHours).toEqual(expectedHours);
     });
@@ -228,21 +228,21 @@ describe("Binary Utils", () => {
   describe("#parseBString", () => {
     it('should return 0 when passed a binary string equal to 0', () => {
       const zero: string = "000000000000";
-      const computed: number = binaryStringUtil.parseBString(zero);
+      const computed: number = bStringUtil.parseBString(zero);
 
       expect(computed).toEqual(0);
     });
 
     it('should return 2 when passed a binary string equal to 2', () => {
       const two: string = "000000000010";
-      const computed: number = binaryStringUtil.parseBString(two);
+      const computed: number = bStringUtil.parseBString(two);
 
       expect(computed).toEqual(2);
     });
 
     it('should return 256 when passed a binary string equal to 256', () => {
       const two: string = "000100000000";
-      const computed: number = binaryStringUtil.parseBString(two);
+      const computed: number = bStringUtil.parseBString(two);
 
       expect(computed).toEqual(256);
     });
@@ -251,21 +251,21 @@ describe("Binary Utils", () => {
   describe("#decimalToBinaryString", () => {
     it('should return a binary string equal to 0 when passed 0', () => {
       const zero: string = "000000000000";
-      const computed: string = binaryStringUtil.decimalToBinaryString(0);
+      const computed: string = bStringUtil.decimalToBinaryString(0);
 
       expect(computed).toEqual(zero);
     });
 
     it('should return a binary string equal to 2 when passed 2', () => {
       const two: string = "000000000010";
-      const computed: string = binaryStringUtil.decimalToBinaryString(2);
+      const computed: string = bStringUtil.decimalToBinaryString(2);
 
       expect(computed).toEqual(two);
     });
 
     it('should return a binary string equal to 256 when passed 256', () => {
       const number: string = "000100000000";
-      const computed: string = binaryStringUtil.decimalToBinaryString(256);
+      const computed: string = bStringUtil.decimalToBinaryString(256);
 
       expect(computed).toEqual(number);
     });

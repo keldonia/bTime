@@ -1,7 +1,7 @@
 import { Scheduler } from "./scheduler";
-import { BinaryTimeFactory } from "./binaryTime";
+import { BTimeFactory } from "./bTime";
 
 export {
   Scheduler,
-  BinaryTimeFactory
+  BTimeFactory
 };

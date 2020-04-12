@@ -9,7 +9,7 @@ import {
   millisecondsInWeek,
   millisecondsInDay
 } from '../@types';
-import { BinaryTimeFactory } from '../binaryTime';
+import { BTimeFactory } from '../bTime';
 
 /**
  *  @typedef Scheduler Allows for maintaining of scheduling using
@@ -22,7 +22,7 @@ import { BinaryTimeFactory } from '../binaryTime';
  *  @returns {Scheduler} Scheduler
  */
 export class Scheduler {
-  private binaryTimeFactory?: BinaryTimeFactory;
+  private bTimeFactory?: BTimeFactory;
 
   /**
    *  @description Scheduler Allows for maintaining of scheduling using
@@ -35,7 +35,7 @@ export class Scheduler {
    *  @returns {Scheduler} Scheduler
    */
   constructor(timeInterval: number) {
-    this.binaryTimeFactory = new BinaryTimeFactory(timeInterval);
+    this.bTimeFactory = new BTimeFactory(timeInterval);
   }
 
   /**
@@ -77,7 +77,7 @@ export class Scheduler {
   /**
    *  @description Takes a schedule and converts into an array of appointments for each date
    *
-   *  NB: This is a passthrough to the configured BinaryTimeFactory
+   *  NB: This is a passthrough to the configured BTimeFactory
    *
    *  @param {Schedule} schedule schedule to generate base Date objects
    *
@@ -93,7 +93,7 @@ export class Scheduler {
       );
     }
 
-    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(
+    return this.bTimeFactory.convertScheduleToAppointmentSchedule(
       schedule,
       availability
     );
@@ -159,14 +159,14 @@ export class Scheduler {
     for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
       const availability: string = schedule.schedule[i];
-      const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
-      const splitAvailability: string[] = this.binaryTimeFactory.timeStringSplit(availability);
+      const splitBookings: string[] = this.bTimeFactory.timeStringSplit(schedule.bookings[i]);
+      const splitAvailability: string[] = this.bTimeFactory.timeStringSplit(availability);
       const calculatedAvailability: string[] = [];
 
       for (let j = 0; j < splitBookings.length; j++) {
-        const flippedBAvailabiltyInterval: number = ~this.binaryTimeFactory.parseBString(splitAvailability[j]);
-        const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
-        const remainingAvailabilityMask: number | false = this.binaryTimeFactory.testViabilityAndCompute(
+        const flippedBAvailabiltyInterval: number = ~this.bTimeFactory.parseBString(splitAvailability[j]);
+        const bBookingInterval: number = this.bTimeFactory.parseBString(splitBookings[j]);
+        const remainingAvailabilityMask: number | false = this.bTimeFactory.testViabilityAndCompute(
           flippedBAvailabiltyInterval,
           bBookingInterval
         );
@@ -177,7 +177,7 @@ export class Scheduler {
 
         const remainingAvailability: number = ~remainingAvailabilityMask;
 
-        calculatedAvailability.push(this.binaryTimeFactory.decimalToBinaryString(remainingAvailability));
+        calculatedAvailability.push(this.bTimeFactory.decimalToBinaryString(remainingAvailability));
       }
 
       totalRemainingAvailability.push(calculatedAvailability.join(''));
@@ -206,7 +206,7 @@ export class Scheduler {
       });
     });
     const proposedScheduleStrings: string[] | false =
-      this.binaryTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
+      this.bTimeFactory.generateBinaryStringFromAppointments(scheduleAppointments);
 
     if  (!proposedScheduleStrings) {
       return false;
@@ -229,7 +229,7 @@ export class Scheduler {
       return false;
     }
 
-    return this.binaryTimeFactory.convertScheduleToAppointmentSchedule(updatedSchedule, availability);
+    return this.bTimeFactory.convertScheduleToAppointmentSchedule(updatedSchedule, availability);
   }
 
   /**
@@ -245,14 +245,14 @@ export class Scheduler {
     for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
       const proposed: string = proposedSchedule.schedule[i];
-      const splitBookings: string[] = this.binaryTimeFactory.timeStringSplit(schedule.bookings[i]);
-      const splitProposed: string[] = this.binaryTimeFactory.timeStringSplit(proposed);
+      const splitBookings: string[] = this.bTimeFactory.timeStringSplit(schedule.bookings[i]);
+      const splitProposed: string[] = this.bTimeFactory.timeStringSplit(proposed);
 
       for (let j = 0; j < hoursInDay; j++) {
-        const bBookingInterval: number = this.binaryTimeFactory.parseBString(splitBookings[j]);
-        const flippedProposedInterval: number = ~this.binaryTimeFactory.parseBString(splitProposed[j]);
+        const bBookingInterval: number = this.bTimeFactory.parseBString(splitBookings[j]);
+        const flippedProposedInterval: number = ~this.bTimeFactory.parseBString(splitProposed[j]);
 
-        const viabile: number | false = this.binaryTimeFactory.testViabilityAndCompute(
+        const viabile: number | false = this.bTimeFactory.testViabilityAndCompute(
           flippedProposedInterval,
           bBookingInterval
         );
@@ -287,7 +287,7 @@ export class Scheduler {
     schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
-    const appointmentsBStrings: string[] | false = this.binaryTimeFactory.generateBinaryStringFromAppointments(appointments);
+    const appointmentsBStrings: string[] | false = this.bTimeFactory.generateBinaryStringFromAppointments(appointments);
 
     if (!appointmentsBStrings) {
       return false;
@@ -366,13 +366,13 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptBString: string | false = this.binaryTimeFactory.generateBinaryString(firstAppt);
+      const firstApptBString: string | false = this.bTimeFactory.generateBinaryString(firstAppt);
 
       if (!firstApptBString) {
         return false;
       }
 
-      const tempBookings: string | false = this.binaryTimeFactory.modifyScheduleAndBooking(
+      const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
         schedule.bookings[startDay],
         schedule.schedule[startDay],
         firstApptBString
@@ -385,13 +385,13 @@ export class Scheduler {
       schedule.bookings[startDay] = tempBookings;
     }
 
-    const apptBString: string | false = this.binaryTimeFactory.generateBinaryString(appointment);
+    const apptBString: string | false = this.bTimeFactory.generateBinaryString(appointment);
 
     if (!apptBString) {
       return false;
     }
 
-    const tempBookings: string | false = this.binaryTimeFactory.modifyScheduleAndBooking(
+    const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
       schedule.bookings[endDay],
       schedule.schedule[endDay],
       apptBString
@@ -422,7 +422,7 @@ export class Scheduler {
     const bookings: string[] = [];
 
     for (let i = 0; i < daysInWeek; i++) {
-      const tempBookings: string | false = this.binaryTimeFactory.modifyScheduleAndBooking(
+      const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
         schedule.bookings[i],
         schedule.schedule[i],
         appointmentsBStrings[i]
@@ -458,7 +458,7 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptCaluculated: string | false = this.binaryTimeFactory.deleteAppointment(
+      const firstApptCaluculated: string | false = this.bTimeFactory.deleteAppointment(
         firstAppt,
         schedule.bookings[startDay]
       );
@@ -468,7 +468,7 @@ export class Scheduler {
       schedule.bookings[startDay] = firstApptCaluculated;
     }
 
-    const mainCalculated: string | false = this.binaryTimeFactory.deleteAppointment(
+    const mainCalculated: string | false = this.bTimeFactory.deleteAppointment(
       appointment,
       schedule.bookings[endDay]
     );
@@ -496,7 +496,7 @@ export class Scheduler {
     const bookings: string[] = [];
 
     for (let i = 0; i < daysInWeek; i++) {
-      const calculatedSchedule: string | false = this.binaryTimeFactory.deleteAppointmentBString(
+      const calculatedSchedule: string | false = this.bTimeFactory.deleteAppointmentBString(
         appointmentsBStrings[i],
         schedule.bookings[i]
       );
