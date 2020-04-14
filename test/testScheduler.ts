@@ -1148,10 +1148,8 @@ describe('Test Scheduler', () => {
 
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(9, 0, 11, 55, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.deleteAppointment(apptToDelete, schedule);
-
-      // Only needs to test that the bookings on the appropriate day was correctly modified
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.deleteAppointment(apptToDelete, schedule))
+        .toThrow('Scheduler Error: Unable to delete appointment starting at 1/2/2020T9:0 and ending at 1/2/2020T11:55, occurs outside of schedule');
     });
 
     it(`should return false if the deletion is invalid for the first half`, () => {
@@ -1168,10 +1166,8 @@ describe('Test Scheduler', () => {
       const firstApptToDelete: Appointment = TestUtils.generateMockDateAppointment(14, 0, 23, 59, 0, 0);
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(0, 0, 0, 55, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.deleteAppointment(apptToDelete, schedule, firstApptToDelete);
-
-      // Only needs to test that the bookings on the appropriate day was correctly modified
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.deleteAppointment(apptToDelete, schedule, firstApptToDelete))
+        .toThrow('Scheduler Error: Unable to delete appointment starting at 0/2/2020T14:0 and ending at 0/2/2020T23:59, occurs outside of schedule');
     });
   });
 
@@ -1243,13 +1239,11 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(9, 0, 11, 55, 1, 1);
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToDelete]) as string[];
 
-      const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
-
-      // Only needs to test that the bookings on the appropriate day was correctly modified
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.deleteAppointments(apptBStrings, schedule))
+        .toThrow('BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 111111111111 Schedule: 000000000000');
     });
 
-    it(`should return false if the deletion is invalid for the first half`, () => {
+    it(`should throw an error if the deletion is invalid for the first half`, () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(16, 0, 23, 59, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -1263,10 +1257,8 @@ describe('Test Scheduler', () => {
       const apptToDelete: Appointment = TestUtils.generateMockDateAppointment(14, 0, 0, 55, 0, 1);
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToDelete]) as string[];
 
-      const computedSchedule: Schedule | false = scheduler.deleteAppointments(apptBStrings, schedule);
-
-      // Only needs to test that the bookings on the appropriate day was correctly modified
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.deleteAppointments(apptBStrings, schedule))
+        .toThrow('BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 111111111111 Schedule: 000000000000');
     });
 
     it(`should handle multiple appointments`, () => {

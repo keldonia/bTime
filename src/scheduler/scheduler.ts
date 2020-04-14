@@ -373,7 +373,7 @@ export class Scheduler {
 
   /**
    *  @description Takes an appointment and tests if the appointment to delete
-   *  is valid, if not it returns false, if it is the schedule is updated
+   *  is valid, if not throws an error, if it is the schedule is updated
    *  to reflect the deletion
    *
    *  @param {Appointment} appointment appointment to test
@@ -381,62 +381,66 @@ export class Scheduler {
    *  @param {Appointment?} firstAppt — optional additional appointment to
    *  process if Appointment crosses date boundary
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @throws {Error} Unable to delete appointment occuring outside of schedule
+   *  @returns {Schedule} Schedule
    */
-  public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule | false {
+  public deleteAppointment(appointment: Appointment, schedule: Schedule, firstAppt?: Appointment): Schedule {
     let startDay = appointment.startTime.getUTCDay();
     const endDay = appointment.endTime.getUTCDay();
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptCaluculated: string | false = this.bTimeFactory.deleteAppointment(
-        firstAppt,
-        schedule.bookings[startDay]
-      );
-      if (!firstApptCaluculated) {
-        return false;
+      try {
+        const firstApptCaluculated: string = this.bTimeFactory.deleteAppointment(
+          firstAppt,
+          schedule.bookings[startDay]
+        );
+
+        schedule.bookings[startDay] = firstApptCaluculated;
+      } catch (error) {
+        throw new Error(`BScheduler Error: Unable to delete appointment starting at ${firstAppt.startTime.toUTCString()} and ending at ${firstAppt.endTime.toUTCString()}, occurs outside of schedule`);
       }
-      schedule.bookings[startDay] = firstApptCaluculated;
     }
 
-    const mainCalculated: string | false = this.bTimeFactory.deleteAppointment(
-      appointment,
-      schedule.bookings[endDay]
-    );
+    try {
+      const mainCalculated: string = this.bTimeFactory.deleteAppointment(
+        appointment,
+        schedule.bookings[endDay]
+      );
 
-    if (!mainCalculated) {
-      return false;
+      schedule.bookings[endDay] = mainCalculated;
+    } catch (error) {
+      throw new Error(`BScheduler Error: Unable to delete appointment starting at ${appointment.startTime.toUTCString()} and ending at ${appointment.endTime.toUTCString()}, occurs outside of schedule`);
     }
-
-    schedule.bookings[endDay] = mainCalculated;
 
     return schedule;
   }
 
   /**
    *  @description Takes an array of appointments and tests if the appointments
-   *  to delete are valid, if not it returns false, if they are the schedule is
+   *  to delete are valid, if not throws an error, if they are the schedule is
    *  updated to reflect the deletion
    *
    *  @param {string[]} appointmentsBStrings appointments to delete
    *  @param {Schedule} schedule schedule to delete appointments from
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @throws {Error} Invalid Deletion, interval to delete occurs outside of schedule interval
+   *  @returns {Schedule} Schedule
    */
-  public deleteAppointments(appointmentsBStrings: string[], schedule: Schedule): Schedule | false {
+  public deleteAppointments(appointmentsBStrings: string[], schedule: Schedule): Schedule {
     const bookings: string[] = [];
 
     for (let i = 0; i < daysInWeek; i++) {
-      const calculatedSchedule: string | false = this.bTimeFactory.deleteAppointmentBString(
-        appointmentsBStrings[i],
-        schedule.bookings[i]
-      );
+      try {
+        const calculatedSchedule: string = this.bTimeFactory.deleteAppointmentBString(
+          appointmentsBStrings[i],
+          schedule.bookings[i]
+        );
 
-      if (!calculatedSchedule) {
-        return false;
+        bookings.push(calculatedSchedule);
+      } catch (error) {
+        throw error;
       }
-
-      bookings.push(calculatedSchedule);
     }
 
     schedule.bookings = bookings;

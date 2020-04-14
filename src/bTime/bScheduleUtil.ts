@@ -235,10 +235,11 @@ export class BScheduleUtil {
    *  @param {Appointment} timeSlotToDelete timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
-   *  @throw {Error} BScheduleError invalid appointment
+   *  @throws {Error} BScheduleError invalid appointment
+   *  @throws {Error} invalid deletion, interval to delete occurs outside of schedule interval
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
+  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
     if (timeSlotToDelete.endTime < timeSlotToDelete.startTime) {
       throw new Error(`BSchedule Error: Invalid appointment passed to delete appointment: ${timeSlotToDelete.toString()}`);
     }
@@ -257,9 +258,10 @@ export class BScheduleUtil {
    *  @param {string} bStringToDelete timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
+   *  @throws {Error} invalid deletion, interval to delete occurs outside of schedule interval
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointmentBString(bStringToDelete: string, scheduleSlot: string): string | false {
+  public deleteAppointmentBString(bStringToDelete: string, scheduleSlot: string): string {
     const apptMask: string[] = this.bStringUtil.timeStringSplit(
       bStringToDelete
     );
@@ -267,16 +269,17 @@ export class BScheduleUtil {
     const returnAppointment: string[] = [];
 
     for (let i = 0; i < hoursInDay; i++) {
-      const currentInterval: string | false = this.deleteAppointmentInterval(
-        apptMask[i],
-        splitBookings[i]
-      );
+      try {
+        const currentInterval: string = this.deleteAppointmentInterval(
+          apptMask[i],
+          splitBookings[i]
+        );
 
-      if (!currentInterval) {
-        return false;
+        returnAppointment.push(currentInterval);
+      } catch (err) {
+        // NB: Rethrow error
+        throw err;
       }
-
-      returnAppointment.push(currentInterval);
     }
 
     return returnAppointment.join("");
@@ -293,14 +296,17 @@ export class BScheduleUtil {
    *  @param {string} timeSlotBString timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
+   *  @throws  {Error} invalid deletion, interval to delete occurs outside of schedule interval
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string | false {
+  public deleteAppointmentInterval(timeSlotBString: string, scheduleInterval: string): string {
     const parsedSchedule: number = this.bStringUtil.parseBString(scheduleInterval);
     const parsedApptBString: number = this.bStringUtil.parseBString(timeSlotBString);
 
     if (!this.validDeletion(parsedSchedule, parsedApptBString)) {
-      return false;
+      throw new Error(
+        `BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: ${timeSlotBString} Schedule: ${scheduleInterval}`
+      );
     }
     // Performs a XOR on the schedule and the proposed schedule
     const modified: number = parsedSchedule ^ parsedApptBString;

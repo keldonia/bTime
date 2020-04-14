@@ -144,9 +144,11 @@ export class BTimeFactory {
    *  @param {Appointment} timeSlotToDelete timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
+   *  @throws {Error} BScheduleError invalid appointment
+   *  @throws {Error} invalid deletion, interval to delete occurs outside of schedule interval
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
+  public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string {
     return this.bScheduleUtil.deleteAppointment(timeSlotToDelete, scheduleSlot);
   }
 
@@ -160,9 +162,10 @@ export class BTimeFactory {
    *  @param {string} bStringToDelete timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
+   *  @throws {Error} Invalid deletion, interval to delete occurs outside of schedule interval
    *  @returns {string} string of modified time interval
    */
-  public deleteAppointmentBString(timeSlotToDelete: string, scheduleSlot: string): string | false {
+  public deleteAppointmentBString(timeSlotToDelete: string, scheduleSlot: string): string {
     return this.bScheduleUtil.deleteAppointmentBString(timeSlotToDelete, scheduleSlot);
   }
 

@@ -173,11 +173,11 @@ describe("bScheduleUtil", () => {
   describe("#deleteAppointment()", () => {
     const tests = [
       { args: [1, 0, 1, 24, 0, 12, 1, 24], expected: "001111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
-      { args: [1, 0, 1, 24, 4, 12, 5, 24], expected: false },
+      { args: [1, 0, 1, 24, 4, 12, 5, 24], expected: 'BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 111110000000 Schedule: 000000000000' },
       { args: [0, 20, 0, 40, 0, 12, 0, 40], expected: "001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
-      { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: false },
+      { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: 'BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 000011111111 Schedule: 000000000000' },
       { args: [0, 20, 0, 40, 0, 12, 12, 40], expected: "001100000111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
-      { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: false },
+      { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: 'BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 000011111000 Schedule: 001110000000' },
       { args: [0, 20, 0, 20, 0, 20, 0, 24], expected: "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
     ];
 
@@ -191,12 +191,17 @@ describe("bScheduleUtil", () => {
       );
       const appt2Str: string = bStringUtil.generateBString(appt2) as string;
       const expected: string | boolean = test.expected;
-      const testName: string = `should delete an appointment of ${args[0]}:${args[1]} to ${args[2]}:${args[3]} from a base of ${args[4]}:${args[5]} to ${args[6]}:${args[7]}`;
+      const testName: string = `should${expected.toString().startsWith('B') ? 'n\'t' : ''} delete an appointment of ${args[0]}:${args[1]} to ${args[2]}:${args[3]} from a base of ${args[4]}:${args[5]} to ${args[6]}:${args[7]}`;
 
 
       it(testName, () => {
-        const mergedBString: string | false = bScheduleUtil.deleteAppointment(appt1, appt2Str);
-        expect(mergedBString).toEqual(expected);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.deleteAppointment(appt1, appt2Str))
+            .toThrow(expected)
+        } else {
+          const mergedBString: string | false = bScheduleUtil.deleteAppointment(appt1, appt2Str);
+          expect(mergedBString).toEqual(expected);
+        }
       });
     });
 
@@ -219,7 +224,7 @@ describe("bScheduleUtil", () => {
   describe("#deleteAppointmentInterval()", () => {
     const tests = [
       { args: [ "000011110011", "000000000011" ], expected: "000011110000" },
-      { args: [ "000000000000", "000000000011" ], expected: false },
+      { args: [ "000000000000", "000000000011" ], expected: `BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 000000000011 Schedule: 000000000000` },
       { args: [ "000011110000", "000000000000" ], expected: "000011110000" },
       { args: [ "011000011000", "000000011000" ], expected: "011000000000" },
       { args: [ "100000011111", "000000011111" ], expected: "100000000000" },
@@ -240,9 +245,14 @@ describe("bScheduleUtil", () => {
         expected;
 
       it(testName, () => {
-        const deleteAppointmentSchedule: string | false = bScheduleUtil.deleteAppointmentInterval(appt, base);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.deleteAppointmentInterval(appt, base))
+            .toThrow(expected)
+        } else {
+          const deleteAppointmentSchedule: string = bScheduleUtil.deleteAppointmentInterval(appt, base);
 
-        expect(deleteAppointmentSchedule).toEqual(expected);
+          expect(deleteAppointmentSchedule).toEqual(expected);
+        }
       });
     });
   });
