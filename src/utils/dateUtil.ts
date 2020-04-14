@@ -37,31 +37,29 @@ export class DateUtil {
    *  @returns {Appointment} Appointment
    */
   public enforceUTC(appointment: Appointment): Appointment {
-    const appointmentStart: Date = appointment.startTime;
-    const startTime: Date = new Date(
-      Date.UTC(
-        appointmentStart.getUTCFullYear(),
-        appointmentStart.getUTCMonth(),
-        appointmentStart.getUTCDate(),
-        appointmentStart.getUTCHours(),
-        appointmentStart.getUTCMinutes()
-      )
-    );
-    const appointmentEnd: Date = appointment.endTime;
-    const endTime: Date = new Date(
-      Date.UTC(
-        appointmentEnd.getUTCFullYear(),
-        appointmentEnd.getUTCMonth(),
-        appointmentEnd.getUTCDate(),
-        appointmentEnd.getUTCHours(),
-        appointmentEnd.getUTCMinutes()
-      )
-    );
-
     return {
-      startTime,
-      endTime
+      startTime: this.getUTC(appointment.startTime),
+      endTime: this.getUTC(appointment.endTime)
     };
+  }
+
+  /**
+   *  @description Utility function to ensure a Date is UTC
+   *
+   *  @param {Date} date date to convert to UTC
+   *
+   *  @returns {Date} date
+   */
+  public getUTC(date: Date): Date {
+    return new Date(
+      Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes()
+      )
+    );
   }
 
   /**

@@ -870,7 +870,7 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(12, 0, 2, 0, 1, 1);
 
       expect(() => scheduler.handleBookingUpdate(apptToBook, schedule))
-        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 129600000 Appointment end: 93600000`);
+        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 1/2/2020T12:0 Appointment end: 1/2/2020T2:0`);
     });
 
     it('should return false if the appointment passed does not fit in the schedule', () => {
@@ -933,7 +933,7 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 1, 0, 1, 1);
 
       expect(() => scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook))
-        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 86340000 Appointment end: 82800000`)
+        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 0/2/2020T23:59 Appointment end: 0/2/2020T23:0`)
     });
 
     it('should return false if a firstAppt passed does not fit in the schedule', () => {

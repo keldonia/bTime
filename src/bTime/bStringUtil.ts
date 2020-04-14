@@ -49,7 +49,7 @@ export class BStringUtil {
    */
   public constructor(timeInterval: number) {
     if (!validTimeIntervals.has(timeInterval)) {
-      throw new Error(`Invalid timeInterval entered for BStringUtil: ${timeInterval}`);
+      throw new Error(`BString Error: Invalid timeInterval entered for BStringUtil: ${timeInterval}`);
     }
     this.intervalsInHour = minutesInHour / timeInterval;
     this.intervalsInDay = minutesInHour / timeInterval * hoursInDay;
@@ -77,7 +77,7 @@ export class BStringUtil {
    */
   public generateBString(appt: Appointment): string {
     if (appt.endTime.valueOf() < appt.startTime.valueOf()) {
-      throw new Error(`BString Error: Appointment can't end before it begins.  Appointment start: ${appt.startTime} Appointment end: ${appt.endTime}`);
+      throw new Error(`BString Error: Appointment can't end before it begins.  Appointment start: ${appt.startTime.toUTCString()} Appointment end: ${appt.endTime.toUTCString()}`);
     }
 
     const startPointer = this.bPointerCalculator.findBPointer(appt.startTime);
