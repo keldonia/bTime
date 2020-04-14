@@ -313,11 +313,7 @@ export class Scheduler {
 
     if (firstAppt) {
       startDay = firstAppt.startTime.getUTCDay();
-      const firstApptBString: string | false = this.bTimeFactory.generateBString(firstAppt);
-
-      if (!firstApptBString) {
-        return false;
-      }
+      const firstApptBString: string = this.bTimeFactory.generateBString(firstAppt);
 
       const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
         schedule.bookings[startDay],
@@ -332,11 +328,7 @@ export class Scheduler {
       schedule.bookings[startDay] = tempBookings;
     }
 
-    const apptBString: string | false = this.bTimeFactory.generateBString(appointment);
-
-    if (!apptBString) {
-      return false;
-    }
+    const apptBString: string = this.bTimeFactory.generateBString(appointment);
 
     const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
       schedule.bookings[endDay],

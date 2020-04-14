@@ -45,7 +45,8 @@ describe("bScheduleUtil", () => {
       { args: [1, 0, 1, 24, 4, 12, 5, 24], expected: "000000000000111110000000000000000000000000000000001111111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: false },
       { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: false },
-      { args: [13, 20, 12, 40, 13, 12, 15, 24], expected: false },
+      { args: [13, 20, 12, 40, 13, 12, 15, 24], expected: `BSchedule Error: Invalid timeslot passed to merge schedule BString: start: 13:20 on 0 :: end: 12:40 on 0` },
+      { args: [0, 20, 0, 20, 0, 20, 0, 24], expected: false },
     ];
 
     tests.forEach(test => {
@@ -63,9 +64,13 @@ describe("bScheduleUtil", () => {
         "should return boolean false if appointments do overlap";
 
       it(testName, () => {
-        const mergedBString: string | false = bScheduleUtil.mergeScheduleBStringsWithTest(appt1, appt2Str);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.mergeScheduleBStringsWithTest(appt1, appt2Str)).toThrow(expected);
+        } else {
+          const mergedBString: string | false = bScheduleUtil.mergeScheduleBStringsWithTest(appt1, appt2Str);
 
-        expect(mergedBString).toEqual(expected);
+          expect(mergedBString).toEqual(expected);
+        }
       });
     });
   });
@@ -173,6 +178,7 @@ describe("bScheduleUtil", () => {
       { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: false },
       { args: [0, 20, 0, 40, 0, 12, 12, 40], expected: "001100000111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: false },
+      { args: [0, 20, 0, 20, 0, 20, 0, 24], expected: "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
     ];
 
     tests.forEach(test => {
@@ -206,7 +212,7 @@ describe("bScheduleUtil", () => {
         bScheduleUtil.deleteAppointment(invalidAppt, appt2Str);
       }
       
-      expect(test).toThrow('Invalid appt passed to delete appointment: start: 12:20 on 0 :: end: 11:40 on 0');
+      expect(test).toThrow('BSchedule Error: Invalid appointment passed to delete appointment: start: 12:20 on 0 :: end: 11:40 on 0');
     });
   });
 

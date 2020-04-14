@@ -856,7 +856,7 @@ describe('Test Scheduler', () => {
       expect(computedSchedule.bookings[1]).toEqual(expectedBookings);
     });
 
-    it('should return false if the appointment passed is not valid', () => {
+    it('should throw an error if the appointment passed is not valid', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -869,9 +869,8 @@ describe('Test Scheduler', () => {
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(12, 0, 2, 0, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdate(apptToBook, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.handleBookingUpdate(apptToBook, schedule))
+        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 129600000 Appointment end: 93600000`);
     });
 
     it('should return false if the appointment passed does not fit in the schedule', () => {
@@ -919,7 +918,7 @@ describe('Test Scheduler', () => {
       expect(computedSchedule.bookings[1]).toEqual(expectedDayOneBookings);
     });
 
-    it('should return false if a firstAppt is passed not a valid appointment', () => {
+    it('should throw an error if a firstAppt is passed not a valid appointment', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 23, 59, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(0, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -933,9 +932,8 @@ describe('Test Scheduler', () => {
       const firstApptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 59, 23, 0, 0, 0);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 1, 0, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook))
+        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 86340000 Appointment end: 82800000`)
     });
 
     it('should return false if a firstAppt passed does not fit in the schedule', () => {

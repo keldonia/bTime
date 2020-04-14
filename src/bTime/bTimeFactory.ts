@@ -66,9 +66,9 @@ export class BTimeFactory {
    *
    * @param {Appointment} appt the appointment to be converted
    *
-   * @returns {string | false} string | false
+   * @returns {string} string
    */
-  public generateBString(appt: Appointment): string | false {
+  public generateBString(appt: Appointment): string {
     return this.bStringUtil.generateBString(appt);
   }
 

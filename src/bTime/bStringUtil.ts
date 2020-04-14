@@ -19,6 +19,7 @@ const zeroPad: string = "0";
  *  NB: Typically a temporal resolution of 5 mins is sufficient,
  *  as it constitutes the smallest billable unit in most juristictions
  *
+ *  @throws {Error} Invalid time interval
  *  @returns {BStringUtil} binaryStringUtil
  */
 export class BStringUtil {
@@ -43,6 +44,7 @@ export class BStringUtil {
    *  NB: Typically a temporal resolution of 5 mins is sufficient,
    *  as it constitutes the smallest billable unit in most juristictions
    *
+   * @throws {Error} Invalid time interval
    * @returns {BStringUtil} BStringUtil
    */
   public constructor(timeInterval: number) {
@@ -70,11 +72,12 @@ export class BStringUtil {
    *
    * @param {Appointment} appt the appointment to be converted
    *
-   * @returns {string | false} string | false
+   * @throws {Error} Appointments can end before they begin
+   * @returns {string} string
    */
-  public generateBString(appt: Appointment): string | false {
+  public generateBString(appt: Appointment): string {
     if (appt.endTime.valueOf() < appt.startTime.valueOf()) {
-      return false;
+      throw new Error(`BString Error: Appointment can't end before it begins.  Appointment start: ${appt.startTime} Appointment end: ${appt.endTime}`);
     }
 
     const startPointer = this.bPointerCalculator.findBPointer(appt.startTime);

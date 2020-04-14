@@ -34,14 +34,14 @@ export class BScheduleUtil {
    *  @param {Appointment} timeSlot timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
    *
+   *  @throw {Error} Invalid Appointment
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
-    const apptBString: string | false = this.bStringUtil.generateBString(timeSlot);
-
-    if (!apptBString) {
-      return false;
+    if (timeSlot.endTime < timeSlot.startTime) {
+      throw new Error(`BSchedule Error: Invalid timeslot passed to merge schedule BString: ${timeSlot.toString()}`);
     }
+    const apptBString: string = this.bStringUtil.generateBString(timeSlot);
 
     return this.mergeScheduleBStringsWithTestBase(apptBString, schedule);
   }
@@ -235,14 +235,15 @@ export class BScheduleUtil {
    *  @param {Appointment} timeSlotToDelete timeSlot to delete
    *  @param {string} scheduleSlot time interval to remove timeSlotToDelete
    *
+   *  @throw {Error} BScheduleError invalid appointment
    *  @returns {string} string of modified time interval
    */
   public deleteAppointment(timeSlotToDelete: Appointment, scheduleSlot: string): string | false {
-    const apptToDeleteBString: string | false = this.bStringUtil.generateBString(timeSlotToDelete);
-
-    if (!apptToDeleteBString) {
-      throw new Error(`Invalid appt passed to delete appointment: ${timeSlotToDelete.toString()}`);
+    if (timeSlotToDelete.endTime < timeSlotToDelete.startTime) {
+      throw new Error(`BSchedule Error: Invalid appointment passed to delete appointment: ${timeSlotToDelete.toString()}`);
     }
+
+    const apptToDeleteBString: string = this.bStringUtil.generateBString(timeSlotToDelete);
 
     return this.deleteAppointmentBString(apptToDeleteBString, scheduleSlot);
   }

@@ -58,7 +58,7 @@ Further information on bTime can be found below:
 
 ## Coming Features
 
-1. Throw Exceptions for cleaning stack tracing & surround with catches
+1. Throw Exceptions for clean stack tracing & surround with catches
 1. Improve documentation
 1. Add an example use case
 1. Bit Array mode (don't store as strings), optional parameter
@@ -66,6 +66,6 @@ Further information on bTime can be found below:
 
 ## Assumptions
 
-1. Weeks start on Sunday
-1. Times are expected to be in UTC
-1. Using 2016 * 2 digits (as a string, once for the schedule, once for bookings) to store the time for the week is ok for 5 min intervals, note this adjusts as time interval size changes.  The efficiency is greater for denser schedules.
+1. Weeks start on Sunday, this is the same as JS's Date object
+1. Times are expected to be in UTC, utility converters are provided
+1. Using 2016 * 2 digits (as a string, once for the schedule, once for bookings) to store the time for the week at 5 minute intervals, note this adjusts as time interval size changes.  The efficiency is greater for denser schedules.
