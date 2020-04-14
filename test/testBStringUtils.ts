@@ -80,7 +80,7 @@ describe("bStringUtil", () => {
       },
       { 
         appointments: [[4, 20, 1, 40]], 
-        expected: false 
+        expected: `BString Error: Appointment can't end before it begins.  Appointment start: 0/2/2020T4:20 Appointment end: 0/2/2020T1:40` 
       },
       { 
         appointments: [[0, 20, 0, 21]], 
@@ -114,7 +114,7 @@ describe("bStringUtil", () => {
           [0, 20, 0, 30], 
           [0, 25, 0, 39]
         ], 
-        expected: false
+        expected: `BString Error: Appointment can't begin before previous appointment ends.  Appointment start: 0/2/2020T0:25 Previous Appointment end: 0/2/2020T0:30`
       },
       { appointments: [[0, 20, 0, 20]], 
         expected: [
@@ -210,9 +210,13 @@ describe("bStringUtil", () => {
       const testName = `should properly construct binary representation of ${test.appointments.length} appointments, test #${idx}`;
 
       it(testName, () => {
-        const bString: string[] | false = bStringUtil.generateBStringFromAppointments(appts);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bStringUtil.generateBStringFromAppointments(appts)).toThrow(expected)
+        } else {
+          const bString: string[] | false = bStringUtil.generateBStringFromAppointments(appts);
         
-        expect(bString).toEqual(expected);
+          expect(bString).toEqual(expected);
+        }
       });
     });
   });

@@ -233,7 +233,10 @@ describe('Test Scheduler', () => {
     });
 
     it('should properly flatten the schedule', () => {
-      mockGenerateBStringFromAppointments.mockReturnValueOnce(false);
+      const mockErrorMessage: string = 'mock error'
+      mockGenerateBStringFromAppointments.mockImplementation(() => { 
+        throw new Error(mockErrorMessage); 
+      });
       
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(10, 0, 18, 0, 0, 0);
@@ -258,26 +261,29 @@ describe('Test Scheduler', () => {
       ];
       appointmentSchedule.schedule = testSchedule;
 
-      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+      expect(() => scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule))
+        .toThrow(mockErrorMessage);
 
       expect(mockGenerateBStringFromAppointments).toBeCalled();
       expect(mockGenerateBStringFromAppointments).toBeCalledWith(expectedFlattenedSchedule);
       expect(mockUpdateSchedule).not.toBeCalled();
       expect(mockGetCurrentAvailability).not.toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
-      expect(updatedAppointmentSchedule).toBeFalsy();
     })
 
     it('should return false if a binaryString representation of the schedule is unable to be created', () => {
-      mockGenerateBStringFromAppointments.mockReturnValueOnce(false);
+      const mockErrorMessage: string = 'mock error'
+      mockGenerateBStringFromAppointments.mockImplementation(() => { 
+        throw new Error(mockErrorMessage); 
+      });
 
-      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
+      expect(() => scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule))
+        .toThrow(mockErrorMessage);
 
       expect(mockGenerateBStringFromAppointments).toBeCalled();
       expect(mockUpdateSchedule).not.toBeCalled();
       expect(mockGetCurrentAvailability).not.toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
-      expect(updatedAppointmentSchedule).toBeFalsy();
     });
 
     it(`should return false if the proposed schedule won't contain current bookings`, () => {
@@ -731,7 +737,7 @@ describe('Test Scheduler', () => {
       jest.resetAllMocks();
     });
 
-    it('should return false if an appointment is invalid', () => {
+    it('should return throw an error if an appointment is invalid', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -743,12 +749,12 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 9, 0, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.processAppointments([apptToBook], schedule, ScheduleActions.BOOKING_UPDATE);
 
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.processAppointments([apptToBook], schedule, ScheduleActions.BOOKING_UPDATE))
+        .toThrow(`BString Error: Appointment can't end before it begins.  Appointment start: 1/2/2020T10:0 Appointment end: 1/2/2020T9:0`)
     });
 
-    it('should return false if the appointment array is invalid', () => {
+    it('should throw an error if the appointment array is invalid', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -762,9 +768,8 @@ describe('Test Scheduler', () => {
       const apptToBookTwo: Appointment = TestUtils.generateMockDateAppointment(11, 0, 13, 0, 1, 1);
       const appointments: Appointment[] = [ apptToBook, apptToBookTwo ];
 
-      const computedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE))
+        .toThrow(`BString Error: Appointment can't begin before previous appointment ends.  Appointment start: 1/2/2020T11:0 Previous Appointment end: 1/2/2020T12:0`)
     });
 
     it('should return false if passed an unknown action type', () => {

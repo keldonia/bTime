@@ -152,12 +152,8 @@ export class Scheduler {
         scheduleAppointments.push(appointment);
       });
     });
-    const proposedScheduleStrings: string[] | false =
+    const proposedScheduleStrings: string[] =
       this.bTimeFactory.generateBStringFromAppointments(scheduleAppointments);
-
-    if  (!proposedScheduleStrings) {
-      return false;
-    }
 
     const proposedSchedule: Schedule = {
       schedule: proposedScheduleStrings,
@@ -234,11 +230,7 @@ export class Scheduler {
     schedule: Schedule,
     actionType: ScheduleActions
   ): Schedule | false {
-    const appointmentsBStrings: string[] | false = this.bTimeFactory.generateBStringFromAppointments(appointments);
-
-    if (!appointmentsBStrings) {
-      return false;
-    }
+    const appointmentsBStrings: string[] = this.bTimeFactory.generateBStringFromAppointments(appointments);
 
     if (actionType === ScheduleActions.DELETE_APPT) {
       return this.deleteAppointments(appointmentsBStrings, schedule);

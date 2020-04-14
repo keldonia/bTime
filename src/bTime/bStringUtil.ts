@@ -68,11 +68,11 @@ export class BStringUtil {
   /**
    * @description Generates a bString representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
-   * it return false, ie it ends before it begins
+   * it will throw an error
    *
    * @param {Appointment} appt the appointment to be converted
    *
-   * @throws {Error} Appointments can end before they begin
+   * @throws {Error} Appointments can't end before they begin
    * @returns {string} string
    */
   public generateBString(appt: Appointment): string {
@@ -92,23 +92,25 @@ export class BStringUtil {
   /**
    * @description Generates a bString representation of a given
    * array of appointments, assuming it is valid.  If the appointment
-   * is invalid, it return false, ie it ends before it begins
+   * is invalid, it will throw an error
    *
    * NB: This method generates a representation of the entire week
    * NB: Assumes appointments in array don't overlap
    *
    * @param {Appointment[]} appointments the appointments to be converted
    *
-   * @returns {string[] | false} string[] | false
+   * @throw {Error} Appointments can't end before they begin
+   * @throw {Error} Appointments can't overlap
+   * @returns {string[]} string[]
    */
-  public generateBStringFromAppointments(appointments: Appointment[]): string[] | false {
+  public generateBStringFromAppointments(appointments: Appointment[]): string[] {
     let composedBString: string = "";
 
     for (let i = 0; i < appointments.length; i++) {
       const appt: Appointment = appointments[i];
 
       if (appt.endTime.valueOf() < appt.startTime.valueOf()) {
-        return false;
+        throw new Error(`BString Error: Appointment can't end before it begins.  Appointment start: ${appt.startTime.toUTCString()} Appointment end: ${appt.endTime.toUTCString()}`);
       }
 
       const startPointer = this.bPointerCalculator.findBPointerIncludingDay(appt.startTime);
@@ -117,7 +119,7 @@ export class BStringUtil {
 
       // If an appt begins before the previous ends, it is invalid
       if (startPointer < composedBString.length) {
-        return false;
+        throw new Error(`BString Error: Appointment can't begin before previous appointment ends.  Appointment start: ${appt.startTime.toUTCString()} Previous Appointment end: ${appointments[i - 1].endTime.toUTCString()}`);
       }
 
       // Adds padding between appointments

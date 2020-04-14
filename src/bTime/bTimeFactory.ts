@@ -66,6 +66,7 @@ export class BTimeFactory {
    *
    * @param {Appointment} appt the appointment to be converted
    *
+   * @throws {Error} Appointments can't end before they begin
    * @returns {string} string
    */
   public generateBString(appt: Appointment): string {
@@ -75,7 +76,7 @@ export class BTimeFactory {
   /**
    * @description Generates a bString representation of a given
    * array of appointments, assuming it is valid.  If the appointment
-   * is invalid, it return false, ie it ends before it begins
+   * is invalid, it will throw an error
    *
    * NB: This method generates a representation of the entire week
    * NB: Assumes appointments in array don't overlap
@@ -83,9 +84,11 @@ export class BTimeFactory {
    *
    * @param {Appointment[]} appointments the appointments to be converted
    *
-   * @returns {string[] | false} string[] | false
+   * @throw {Error} Appointments can't end before they begin
+   * @throw {Error} Appointments can't overlap
+   * @returns {string[]} string[]
    */
-  public generateBStringFromAppointments(appointments: Appointment[]): string[] | false {
+  public generateBStringFromAppointments(appointments: Appointment[]): string[] {
     return this.bStringUtil.generateBStringFromAppointments(appointments);
   }
 
