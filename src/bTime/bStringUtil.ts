@@ -9,6 +9,7 @@ import {
 import { BPointerCalculator } from "./bPointerCalculator";
 
 const zeroPad: string = "0";
+const onePad: string = "1";
 
 /**
  * @typedef BinaryStringUtil is responsible for generating and formatting
@@ -85,7 +86,7 @@ export class BStringUtil {
     const timeBlock = endPointer - startPointer + 1;
 
     return (this.emptyDay.substring(0, startPointer) +
-      "1".repeat(timeBlock) +
+      onePad.repeat(timeBlock) +
       this.emptyDay.substring(endPointer + 1));
   }
 
@@ -123,13 +124,13 @@ export class BStringUtil {
       }
 
       // Adds padding between appointments
-      const addedZeros: string = "0".repeat(startPointer - composedBString.length);
+      const addedZeros: string = zeroPad.repeat(startPointer - composedBString.length);
 
-      composedBString = composedBString + addedZeros + "1".repeat(timeBlock);
+      composedBString = composedBString + addedZeros + onePad.repeat(timeBlock);
     }
 
     // Pad out remainder of week
-    composedBString = composedBString + "0".repeat(this.intervalsInWeek - composedBString.length);
+    composedBString = composedBString + zeroPad.repeat(this.intervalsInWeek - composedBString.length);
 
     return composedBString.match(this.bStringDaySplitRegex);
   }
