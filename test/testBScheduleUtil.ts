@@ -79,15 +79,15 @@ describe("bScheduleUtil", () => {
     // NB: We can test using these tests that only supply a single interval, as they will trigger the cases
     const tests = [
       { args: [ "000011110000", "000011111111", "000000000011" ], expected: "000011110011" },
-      { args: [ "000000000000", "000000000000", "000000000011" ], expected: false },
+      { args: [ "000000000000", "000000000000", "000000000011" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
       { args: [ "000011110000", "000011110000", "000000000000" ], expected: "000011110000" },
-      { args: [ "011000000000", "000000000000", "000000011000" ], expected: false },
+      { args: [ "011000000000", "000000000000", "000000011000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
       { args: [ "100000000000", "111111111111", "000000011111" ], expected: "100000011111" },
       { args: [ "011110000000", "011110011111", "000000011111" ], expected: "011110011111" },
-      { args: [ "011110000000", "000000000000", "000011110000" ], expected: false },
-      { args: [ "110000000000", "000000000000", "111100000000" ], expected: false },
-      { args: [ "000000000111", "000000000000", "000000111110" ], expected: false },
-      { args: [ "000000000111", "111111111111", "000000111110" ], expected: false }
+      { args: [ "011110000000", "000000000000", "000011110000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "110000000000", "000000000000", "111100000000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "000000000111", "000000000000", "000000111110" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "000000000111", "111111111111", "000000111110" ], expected: 'BScheduleUtil Error: Time intervals overlap.' }
     ];
 
     tests.forEach(test => {
@@ -105,9 +105,13 @@ describe("bScheduleUtil", () => {
         expected;
 
       it(testName, () => {
-        const modifiedSchedule: string | false = bScheduleUtil.modifyScheduleAndBooking(base, testString, appt);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.modifyScheduleAndBooking(base, testString, appt)).toThrow(expected);
+        } else {
+          const modifiedSchedule: string | false = bScheduleUtil.modifyScheduleAndBooking(base, testString, appt);
 
-        expect(modifiedSchedule).toEqual(expected);
+          expect(modifiedSchedule).toEqual(expected);
+        }
       });
     });
 
@@ -137,15 +141,15 @@ describe("bScheduleUtil", () => {
   describe("#modifyScheduleAndBookingInterval()", () => {
     const tests = [
       { args: [ "000011110000", "000011111111", "000000000011" ], expected: "000011110011" },
-      { args: [ "000000000000", "000000000000", "000000000011" ], expected: false },
+      { args: [ "000000000000", "000000000000", "000000000011" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
       { args: [ "000011110000", "000011110000", "000000000000" ], expected: "000011110000" },
-      { args: [ "011000000000", "000000000000", "000000011000" ], expected: false },
+      { args: [ "011000000000", "000000000000", "000000011000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
       { args: [ "100000000000", "111111111111", "000000011111" ], expected: "100000011111" },
       { args: [ "011110000000", "011110011111", "000000011111" ], expected: "011110011111" },
-      { args: [ "011110000000", "000000000000", "000011110000" ], expected: false },
-      { args: [ "110000000000", "000000000000", "111100000000" ], expected: false },
-      { args: [ "000000000111", "000000000000", "000000111110" ], expected: false },
-      { args: [ "000000000111", "111111111111", "000000111110" ], expected: false }
+      { args: [ "011110000000", "000000000000", "000011110000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "110000000000", "000000000000", "111100000000" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "000000000111", "000000000000", "000000111110" ], expected: 'BScheduleUtil Error: Time intervals overlap.' },
+      { args: [ "000000000111", "111111111111", "000000111110" ], expected: 'BScheduleUtil Error: Time intervals overlap.' }
     ];
 
     tests.forEach(test => {
@@ -163,9 +167,13 @@ describe("bScheduleUtil", () => {
         expected;
 
       it(testName, () => {
-        const modifiedSchedule: string | false = bScheduleUtil.modifyScheduleAndBookingInterval(base, testString, appt);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.modifyScheduleAndBookingInterval(base, testString, appt)).toThrow(expected);
+        } else {
+          const modifiedSchedule: string | false = bScheduleUtil.modifyScheduleAndBookingInterval(base, testString, appt);
 
-        expect(modifiedSchedule).toEqual(expected);
+          expect(modifiedSchedule).toEqual(expected);
+        }
       });
     });
   });

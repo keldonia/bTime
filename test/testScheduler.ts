@@ -155,9 +155,8 @@ describe('Test Scheduler', () => {
       );
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       
-      const computedAvailability: string[] | false = scheduler.getCurrentAvailability(schedule);
-
-      expect(computedAvailability).toBeFalsy();
+      expect(() => scheduler.getCurrentAvailability(schedule))
+        .toThrow('BSchedule Error: Time intervals overlap on hour: 8 of day: 0 of the week starting on 0/2/2020T0:1');
     });
   });
 
@@ -188,7 +187,7 @@ describe('Test Scheduler', () => {
         scheduler.convertScheduleToAppointmentSchedule(schedule);
       }
 
-      expect(test).toThrow(`Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`);
+      expect(test).toThrow(`BScheduler Error: Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`);
     });
 
     it('should return the appropriate appointment schedule', () => {
@@ -461,9 +460,8 @@ describe('Test Scheduler', () => {
       
       const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
 
-      const computedSchedule: Schedule | boolean = scheduler.updateSchedule(proposedSchedule, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.updateSchedule(proposedSchedule, schedule))
+        .toThrow('BScheduleUtil Error: Time intervals overlap.');
     });
 
     it('should return false if the current bookings are not contained within the proposed availability, non-empty hour', () => {
@@ -499,9 +497,8 @@ describe('Test Scheduler', () => {
       
       const proposedSchedule: Schedule = TestUtils.generateSchedule(proposedAvailability, emptyBookings);
 
-      const computedSchedule: Schedule | boolean = scheduler.updateSchedule(proposedSchedule, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.updateSchedule(proposedSchedule, schedule))
+        .toThrow('BScheduleUtil Error: Time intervals overlap.')
     });
 
     it('should ignore any additional intervals outside of the day', () => {
@@ -891,9 +888,8 @@ describe('Test Scheduler', () => {
 
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 2, 0, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdate(apptToBook, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.handleBookingUpdate(apptToBook, schedule))
+        .toThrow('BSchedule Error: Time intervals overlap on 1/2/2020T0:0 for schedule starting on 0/2/2020T0:1');
     });
 
     it(`should handle an appointment that does cross the day boundary`, () => {
@@ -955,9 +951,8 @@ describe('Test Scheduler', () => {
       const firstApptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 23, 59, 0, 0);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 1, 0, 1, 1);
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.handleBookingUpdate(apptToBook, schedule, firstApptToBook))
+        .toThrow('BSchedule Error: Time intervals overlap on 0/2/2020T23:0 for schedule starting on 0/2/2020T0:1');
     });
   });
 
@@ -1002,9 +997,8 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(0, 0, 2, 0, 1, 1);
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToBook]) as string[];
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.handleBookingUpdateBString(apptBStrings, schedule))
+        .toThrow('BSchedule Error: time intervals overlap on day 1 of the week starting on 0/2/2020T0:1');
     });
 
     it(`should handle an appointment that does cross the day boundary`, () => {
@@ -1048,9 +1042,8 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(23, 0, 1, 0, 0, 1);
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToBook]) as string[];
 
-      const computedSchedule: Schedule | false = scheduler.handleBookingUpdateBString(apptBStrings, schedule);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() =>  scheduler.handleBookingUpdateBString(apptBStrings, schedule))
+        .toThrow('BSchedule Error: time intervals overlap on day 0 of the week starting on 0/2/2020T0:1');
     });
 
     it('should handle multiple appointments', () => {
@@ -1240,7 +1233,7 @@ describe('Test Scheduler', () => {
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToDelete]) as string[];
 
       expect(() => scheduler.deleteAppointments(apptBStrings, schedule))
-        .toThrow('BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 111111111111 Schedule: 000000000000');
+        .toThrow('BSchedule Error: interval to delete occurs outside of schedule on day 1 of the week starting on 0/2/2020T0:1');
     });
 
     it(`should throw an error if the deletion is invalid for the first half`, () => {
@@ -1258,7 +1251,7 @@ describe('Test Scheduler', () => {
       const apptBStrings: string[] = bStringUtil.generateBStringFromAppointments([apptToDelete]) as string[];
 
       expect(() => scheduler.deleteAppointments(apptBStrings, schedule))
-        .toThrow('BScheduleUtil Error: invalid deletion, interval to delete occurs outside of schedule interval. To be deleted: 111111111111 Schedule: 000000000000');
+        .toThrow('BSchedule Error: interval to delete occurs outside of schedule on day 0 of the week starting on 0/2/2020T0:1');
     });
 
     it(`should handle multiple appointments`, () => {

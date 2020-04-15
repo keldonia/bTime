@@ -29,12 +29,12 @@ export class BScheduleUtil {
   /**
    *  @description Tests that an appointment does not overlap with another
    *  appointment, if it does not overlap, the appointment is added to the
-   *  bookings, else return false
+   *  bookings, else return throw an error
    *
    *  @param {Appointment} timeSlot timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
    *
-   *  @throw {Error} Invalid Appointment
+   *  @throws {Error} Invalid Appointment
    *  @returns {string | false} string | false
    */
   public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
@@ -110,8 +110,8 @@ export class BScheduleUtil {
 
   /**
    *  @description Tests that an timeSlot does not overlap with another timeSlot,
-   *  if it does not overlap, the timeSlot is added to the bookings, else return
-   *  false.  Additionally, this method checks that the timeslot is within
+   *  if it does not overlap, the timeSlot is added to the bookings, else throw
+   *  an error.  Additionally, this method checks that the timeslot is within
    *  availabilities (test)
    *
    *  NB: If testing a booking update, test that booking fits in avail
@@ -121,7 +121,8 @@ export class BScheduleUtil {
    *  @param {string} scheduleBStringToTest schedule to test (availability)
    *  @param {string} timeSlotBString timeSlot to modify schedule
    *
-   *  @returns {string | false} string | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {string} string
    */
   public modifyScheduleAndBooking(
     scheduleBStringToModify: string,
@@ -139,16 +140,17 @@ export class BScheduleUtil {
     *  schedule and appt BStrings conflict
     */
     for (let i = 0; i < splitToModify.length; i++) {
-      const mergeReturn: string | false = this.modifyScheduleAndBookingInterval(
-        splitToModify[i],
-        splitToTest[i],
-        splitAppt[i]
-      );
+      try {
+        const mergeReturn: string = this.modifyScheduleAndBookingInterval(
+          splitToModify[i],
+          splitToTest[i],
+          splitAppt[i]
+        );
 
-      if (!mergeReturn) {
-        return false;
+        modifedSchedule.push(mergeReturn);
+      } catch (error) {
+        throw error;
       }
-      modifedSchedule.push(mergeReturn);
     }
 
     return modifedSchedule.join("");
@@ -156,8 +158,8 @@ export class BScheduleUtil {
 
   /**
    *  @description Tests that an timeSlot does not overlap with another timeSlot,
-   *  if it does not overlap, the timeSlot is added to the bookings, else return
-   *  false.  Additionally, this method checks that the timeslot is within
+   *  if it does not overlap, the timeSlot is added to the bookings, else throws
+   *  an error.  Additionally, this method checks that the timeslot is within
    *  availabilities (test)  This occurs within a schedule interval
    *
    *  NB: If testing a booking update, test that booking fits in avail
@@ -167,33 +169,32 @@ export class BScheduleUtil {
    *  @param {string} scheduleBStringToTest schedule to test (availability)
    *  @param {string} timeSlotBString timeSlot to modify schedule
    *
-   *  @returns {string | false} string | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {string} string
    */
   public modifyScheduleAndBookingInterval(
     scheduleBStringToModify: string,
     scheduleBStringToTest: string,
     appt: string
-  ): string | false {
+  ): string {
     const parsedToModify: number = this.bStringUtil.parseBString(scheduleBStringToModify);
     // Flip the bits to test the pattern
     const parsedToTest: number = ~this.bStringUtil.parseBString(scheduleBStringToTest);
     const parsedApptBString: number = this.bStringUtil.parseBString(appt);
 
-    const viabilityTest: number | false = this.testViabilityAndCompute(parsedApptBString, parsedToTest);
-
-    // Test if change invalidates schedule or booking
-    if (!this.booleanViabilityCheck(viabilityTest)) {
-      return false;
+    try {
+      this.testViabilityAndCompute(parsedApptBString, parsedToTest);
+    } catch (error) {
+      throw error;
     }
 
-    const update: number | false = this.testViabilityAndCompute(parsedApptBString, parsedToModify);
+    try {
+      const update: number = this.testViabilityAndCompute(parsedApptBString, parsedToModify);
 
-    // Test if change invalid to update value
-    if (!update && update !== 0) {
-      return false;
+      return this.bStringUtil.decimalToBString(update);
+    } catch (error) {
+      throw error;
     }
-
-    return this.bStringUtil.decimalToBString(update);
   }
 
   /**
@@ -202,9 +203,10 @@ export class BScheduleUtil {
    *  @param {number} binary1 first time interval
    *  @param {number} binary2 second time interval
    *
-   *  @returns {number | false} number | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {number} number
    */
-  public testViabilityAndCompute(binary1: number, binary2: number): number | false {
+  public testViabilityAndCompute(binary1: number, binary2: number): number {
     const modified: number = binary1 ^ binary2;
     const test: number = binary1 | binary2;
 
@@ -212,18 +214,7 @@ export class BScheduleUtil {
       return modified;
     }
 
-    return false;
-  }
-
-  /**
-   *  @description Quick test that it is a viable for tranformation
-   *
-   *  @param {number | boolean } binaryDec number to test
-   *
-   *  @returns {boolean} boolean
-   */
-  public booleanViabilityCheck(binaryDec: number | boolean): boolean {
-    return !!binaryDec;
+    throw new Error(`BScheduleUtil Error: Time intervals overlap.`);
   }
 
   /**

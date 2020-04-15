@@ -60,7 +60,7 @@ export class BTimeFactory {
   /**
    * @description Generates a bString representation of a given
    * appointment, assuming it is valid.  If the appointment is invalid,
-   * it return false
+   * it throws an error
    *
    * NB: This is a passthrough to the configured bStringUtil
    *
@@ -84,8 +84,8 @@ export class BTimeFactory {
    *
    * @param {Appointment[]} appointments the appointments to be converted
    *
-   * @throw {Error} Appointments can't end before they begin
-   * @throw {Error} Appointments can't overlap
+   * @throws {Error} Appointments can't end before they begin
+   * @throws {Error} Appointments can't overlap
    * @returns {string[]} string[]
    */
   public generateBStringFromAppointments(appointments: Appointment[]): string[] {
@@ -121,22 +121,24 @@ export class BTimeFactory {
   }
 
   /**
-   *  @description Tests that two time intervals do not overlap
+   *  @description Tests that two time intervals do not overlap,
+   *  throwing an error if they do
    *
    *  NB: This is a passthrough to the configured bScheduleUtil
    *
    *  @param {number} binary1 first time interval
    *  @param {number} binary2 second time interval
    *
-   *  @returns {number | false} number | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {number} number
    */
-  public testViabilityAndCompute(binary1: number, binary2: number): number | false {
+  public testViabilityAndCompute(binary1: number, binary2: number): number {
     return this.bScheduleUtil.testViabilityAndCompute(binary1, binary2);
   }
 
   /**
    *  @description Tests removal a give time slot from a given time interval
-   *  and if valid removes it
+   *  and if valid removes it, else throws an error
    *
    *  NB: This is also used for calculating remaining availability
    *  NB: This is a passthrough to the configured bScheduleUtil
@@ -154,7 +156,7 @@ export class BTimeFactory {
 
   /**
    *  @description Tests removal a give time slot from a given time interval
-   *  and if valid removes it
+   *  and if valid removes it, else throws an error
    *
    *  NB: This is also used for calculating remaining availability
    *  NB: This is a passthrough to the configured bScheduleUtil
@@ -171,8 +173,8 @@ export class BTimeFactory {
 
   /**
    *  @description Tests that an timeSlot does not overlap with another timeSlot,
-   *  if it does not overlap, the timeSlot is added to the bookings, else return
-   *  false.  Additionally, this method checks that the timeslot is within
+   *  if it does not overlap, the timeSlot is added to the bookings, else throw
+   *  an error.  Additionally, this method checks that the timeslot is within
    *  availabilities (test)
    *
    *  NB: If testing a booking update, test that booking fits in avail
@@ -183,13 +185,14 @@ export class BTimeFactory {
    *  @param {string} scheduleBStringToTest schedule to test (availability)
    *  @param {string} timeSlotBString timeSlot to modify schedule
    *
-   *  @returns {string | false} string | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {string} string
    */
   public modifyScheduleAndBooking(
     scheduleBStringToModify: string,
     scheduleBStringToTest: string,
     appt: string
-  ): string | false {
+  ): string {
     return this.bScheduleUtil.modifyScheduleAndBooking(
       scheduleBStringToModify,
       scheduleBStringToTest,

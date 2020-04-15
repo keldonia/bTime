@@ -47,19 +47,19 @@ export class Scheduler {
    *  @returns {AppointmentSchedule} AppointmentSchedule
    */
   public convertScheduleToAppointmentSchedule(schedule: Schedule): AppointmentSchedule {
-    const availability: string[] | false = this.getCurrentAvailability(schedule);
+    try {
+      const availability: string[] = this.getCurrentAvailability(schedule) as string[];
 
-    // NB: This should only be triggered by a malformed schedule
-    if (!availability) {
+      return this.bTimeFactory.convertScheduleToAppointmentSchedule(
+        schedule,
+        availability
+      );
+    } catch (error) {
+      // NB: This should only be triggered by a malformed schedule
       throw new Error(
-        `Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`
+        `BScheduler Error: Was unable to convert schedule to appointment schedule, as the bookings do not fit in the schedule`
       );
     }
-
-    return this.bTimeFactory.convertScheduleToAppointmentSchedule(
-      schedule,
-      availability
-    );
   }
 
   /**
@@ -99,9 +99,10 @@ export class Scheduler {
    *
    *  @param {Schedule} schedule
    *
-   *  @returns {string[] | false} string[] | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {string[]} string[]
    */
-  public getCurrentAvailability(schedule: Schedule): string[] | false {
+  public getCurrentAvailability(schedule: Schedule): string[] {
     const totalRemainingAvailability: string[] = [];
     for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
@@ -113,18 +114,17 @@ export class Scheduler {
       for (let j = 0; j < splitBookings.length; j++) {
         const flippedBAvailabiltyInterval: number = ~this.bTimeFactory.parseBString(splitAvailability[j]);
         const bBookingInterval: number = this.bTimeFactory.parseBString(splitBookings[j]);
-        const remainingAvailabilityMask: number | false = this.bTimeFactory.testViabilityAndCompute(
-          flippedBAvailabiltyInterval,
-          bBookingInterval
-        );
+        try {
+          const remainingAvailabilityMask: number = this.bTimeFactory.testViabilityAndCompute(
+            flippedBAvailabiltyInterval,
+            bBookingInterval
+          );
+          const remainingAvailability: number = ~remainingAvailabilityMask;
 
-        if (!remainingAvailabilityMask) {
-          return false;
+          calculatedAvailability.push(this.bTimeFactory.decimalToBString(remainingAvailability));
+        } catch (error) {
+          throw new Error(`BSchedule Error: Time intervals overlap on hour: ${j} of day: ${i} of the week starting on ${schedule.weekStart.toUTCString()}`);
         }
-
-        const remainingAvailability: number = ~remainingAvailabilityMask;
-
-        calculatedAvailability.push(this.bTimeFactory.decimalToBString(remainingAvailability));
       }
 
       totalRemainingAvailability.push(calculatedAvailability.join(''));
@@ -160,12 +160,12 @@ export class Scheduler {
       bookings: schedule.bookings,
       weekStart: schedule.weekStart
     };
-    const updatedSchedule: Schedule | false = this.updateSchedule(proposedSchedule, schedule);
+    const updatedSchedule: Schedule = this.updateSchedule(proposedSchedule, schedule);
 
     if (!updatedSchedule) {
       return false;
     }
-    const availability: string[] | false = this.getCurrentAvailability(schedule);
+    const availability: string[] = this.getCurrentAvailability(schedule);
 
     // NB: This is an additional safe guard
     if (!availability) {
@@ -182,9 +182,9 @@ export class Scheduler {
    *  @param {Schedule} proposedSchedule proposed schedule
    *  @param {Schedule} schedule current schedule
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @returns {Schedule} Schedule
    */
-  public updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule | false {
+  public updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule {
     for (let i = 0; i < daysInWeek; i++) {
       // We test that no bookings fall outside of the scheduled availability
       const proposed: string = proposedSchedule.schedule[i];
@@ -195,13 +195,13 @@ export class Scheduler {
         const bBookingInterval: number = this.bTimeFactory.parseBString(splitBookings[j]);
         const flippedProposedInterval: number = ~this.bTimeFactory.parseBString(splitProposed[j]);
 
-        const viabile: number | false = this.bTimeFactory.testViabilityAndCompute(
-          flippedProposedInterval,
-          bBookingInterval
-        );
-
-        if (!viabile) {
-          return false;
+        try {
+          this.bTimeFactory.testViabilityAndCompute(
+            flippedProposedInterval,
+            bBookingInterval
+          );
+        } catch (error) {
+          throw error;
         }
       }
 
@@ -293,13 +293,13 @@ export class Scheduler {
    *  @param {Appointment?} firstAppt — optional additional appointment to
    *  process if Appointment crosses date boundary
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @returns {Schedule} Schedule
    */
   public handleBookingUpdate(
     appointment: Appointment,
     schedule: Schedule,
     firstAppt?: Appointment
-  ): Schedule | false {
+  ): Schedule {
     let startDay = appointment.startTime.getUTCDay();
     const endDay = appointment.endTime.getUTCDay();
 
@@ -307,32 +307,32 @@ export class Scheduler {
       startDay = firstAppt.startTime.getUTCDay();
       const firstApptBString: string = this.bTimeFactory.generateBString(firstAppt);
 
-      const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
-        schedule.bookings[startDay],
-        schedule.schedule[startDay],
-        firstApptBString
-      );
+      try {
+        const tempBookings: string = this.bTimeFactory.modifyScheduleAndBooking(
+          schedule.bookings[startDay],
+          schedule.schedule[startDay],
+          firstApptBString
+        );
 
-      if (!tempBookings) {
-        return false;
+        schedule.bookings[startDay] = tempBookings;
+      } catch (error) {
+        throw new Error(`BSchedule Error: Time intervals overlap on ${firstAppt.startTime.toUTCString()} for schedule starting on ${schedule.weekStart.toUTCString()}`);
       }
-
-      schedule.bookings[startDay] = tempBookings;
     }
 
     const apptBString: string = this.bTimeFactory.generateBString(appointment);
 
-    const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
-      schedule.bookings[endDay],
-      schedule.schedule[endDay],
-      apptBString
-    );
+    try {
+      const tempBookings: string = this.bTimeFactory.modifyScheduleAndBooking(
+        schedule.bookings[endDay],
+        schedule.schedule[endDay],
+        apptBString
+      );
 
-    if (!tempBookings) {
-      return false;
+      schedule.bookings[endDay] = tempBookings;
+    } catch (error) {
+      throw new Error(`BSchedule Error: Time intervals overlap on ${appointment.startTime.toUTCString()} for schedule starting on ${schedule.weekStart.toUTCString()}`);
     }
-
-    schedule.bookings[endDay] = tempBookings;
 
     return schedule;
   }
@@ -344,26 +344,27 @@ export class Scheduler {
    *  @param {string[]} appointments appointments to test
    *  @param {Schedule} schedule schedule to test against
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @throws {Error} time intervals overlap
+   *  @returns {Schedule} Schedule
    */
   public handleBookingUpdateBString(
     appointmentsBStrings: string[],
     schedule: Schedule
-  ): Schedule | false {
+  ): Schedule {
     const bookings: string[] = [];
 
     for (let i = 0; i < daysInWeek; i++) {
-      const tempBookings: string | false = this.bTimeFactory.modifyScheduleAndBooking(
-        schedule.bookings[i],
-        schedule.schedule[i],
-        appointmentsBStrings[i]
-      );
+      try {
+        const tempBookings: string = this.bTimeFactory.modifyScheduleAndBooking(
+          schedule.bookings[i],
+          schedule.schedule[i],
+          appointmentsBStrings[i]
+        );
 
-      if (!tempBookings) {
-        return false;
+        bookings.push(tempBookings);
+      } catch {
+        throw new Error(`BSchedule Error: time intervals overlap on day ${i} of the week starting on ${schedule.weekStart.toUTCString()}`);
       }
-
-      bookings.push(tempBookings);
     }
 
     schedule.bookings = bookings;
@@ -398,7 +399,7 @@ export class Scheduler {
 
         schedule.bookings[startDay] = firstApptCaluculated;
       } catch (error) {
-        throw new Error(`BScheduler Error: Unable to delete appointment starting at ${firstAppt.startTime.toUTCString()} and ending at ${firstAppt.endTime.toUTCString()}, occurs outside of schedule`);
+        throw new Error(`BScheduler Error: Unable to delete appointment starting at ${firstAppt.startTime.toUTCString()} and ending at ${firstAppt.endTime.toUTCString()}, occurs outside of schedule starting on ${schedule.weekStart.toUTCString()}`);
       }
     }
 
@@ -439,7 +440,7 @@ export class Scheduler {
 
         bookings.push(calculatedSchedule);
       } catch (error) {
-        throw error;
+        throw new Error(`BSchedule Error: interval to delete occurs outside of schedule on day ${i} of the week starting on ${schedule.weekStart.toUTCString()}`);
       }
     }
 
