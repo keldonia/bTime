@@ -14,15 +14,15 @@ describe("bScheduleUtil", () => {
       { args: [ "000011110000", "000000000000" ], expected: "000011110000" },
       { args: [ "011000000000", "000000011000" ], expected: "011000011000" },
       { args: [ "100000000000", "000000011111" ], expected: "100000011111" },
-      { args: [ "011110000000", "000011110000" ], expected: false },
-      { args: [ "110000000000", "111100000000" ], expected: false },
-      { args: [ "000000000111", "000000111110" ], expected: false }
+      { args: [ "011110000000", "000011110000" ], expected: 'BScheduleUtil Error: Schedules conflict and overlap' },
+      { args: [ "110000000000", "111100000000" ], expected: 'BScheduleUtil Error: Schedules conflict and overlap' },
+      { args: [ "000000000111", "000000111110" ], expected: 'BScheduleUtil Error: Schedules conflict and overlap' }
     ];
 
     tests.forEach(test => {
       const appt1: string = test.args[0];
       const appt2: string = test.args[1];
-      const expected: string | boolean = test.expected;
+      const expected: string = test.expected;
       const testName: string = "should expect binary appts of " +
         appt1 +
         " & " +
@@ -31,9 +31,13 @@ describe("bScheduleUtil", () => {
         expected;
 
       it(testName, () => {
-        const mergedBStrings: string | false = bScheduleUtil.mergeScheduleBStringWithTest(appt1, appt2);
+        if (typeof expected === 'string' && expected.startsWith('B')) {
+          expect(() => bScheduleUtil.mergeScheduleBStringWithTest(appt1, appt2)).toThrow(expected);
+        } else {
+          const mergedBStrings: string = bScheduleUtil.mergeScheduleBStringWithTest(appt1, appt2);
 
-        expect(mergedBStrings).toEqual(expected);
+          expect(mergedBStrings).toEqual(expected);
+        }
       });
     });
   });
@@ -43,10 +47,10 @@ describe("bScheduleUtil", () => {
     const tests = [
       { args: [1, 0, 1, 24, 0, 12, 0, 24], expected: "001110000000111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
       { args: [1, 0, 1, 24, 4, 12, 5, 24], expected: "000000000000111110000000000000000000000000000000001111111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" },
-      { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: false },
-      { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: false },
+      { args: [0, 20, 0, 40, 0, 12, 0, 24], expected: 'BScheduleUtil Error: Schedules conflict and overlap' },
+      { args: [12, 20, 13, 40, 13, 12, 15, 24], expected: 'BScheduleUtil Error: Schedules conflict and overlap' },
       { args: [13, 20, 12, 40, 13, 12, 15, 24], expected: `BSchedule Error: Invalid timeslot passed to merge schedule BString: start: 13:20 on 0 :: end: 12:40 on 0` },
-      { args: [0, 20, 0, 20, 0, 20, 0, 24], expected: false },
+      { args: [0, 20, 0, 20, 0, 20, 0, 24], expected: 'BScheduleUtil Error: Schedules conflict and overlap' },
     ];
 
     tests.forEach(test => {
@@ -58,10 +62,10 @@ describe("bScheduleUtil", () => {
         args[4], args[5], args[6], args[7]
       );
       const appt2Str: string = bStringUtil.generateBString(appt2) as string;
-      const expected: string | boolean = test.expected;
-      const testName: string = !!expected ?
+      const expected: string = test.expected;
+      const testName: string = expected.startsWith('B') ?
         "should return schedule binary if appointments do not overlap" :
-        "should return boolean false if appointments do overlap";
+        "should throw an error if appointments do overlap";
 
       it(testName, () => {
         if (typeof expected === 'string' && expected.startsWith('B')) {

@@ -29,34 +29,40 @@ export class BScheduleUtil {
   /**
    *  @description Tests that an appointment does not overlap with another
    *  appointment, if it does not overlap, the appointment is added to the
-   *  bookings, else return throw an error
+   *  bookings, else throws an error
    *
    *  @param {Appointment} timeSlot timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
    *
    *  @throws {Error} Invalid Appointment
-   *  @returns {string | false} string | false
+   *  @throws {Error} schedules conflict and overlap
+   *  @returns {string} string
    */
-  public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string | false {
+  public mergeScheduleBStringsWithTest(timeSlot: Appointment, schedule: string): string {
     if (timeSlot.endTime < timeSlot.startTime) {
       throw new Error(`BSchedule Error: Invalid timeslot passed to merge schedule BString: ${timeSlot.toString()}`);
     }
     const apptBString: string = this.bStringUtil.generateBString(timeSlot);
 
-    return this.mergeScheduleBStringsWithTestBase(apptBString, schedule);
+    try {
+      return this.mergeScheduleBStringsWithTestBase(apptBString, schedule);
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
    *  @description Tests that an appointment does not overlap with another
    *  appointment, if it does not overlap, the appointment is added to the
-   *  bookings, else return false
+   *  bookings, else throws an error
    *
    *  @param {string} apptBString timeSlot bString to modify schedule
    *  @param {string} schedule schedule to modify
    *
-   *  @returns {string | false} string | false
+   *  @throws {Error} schedules conflict and overlap
+   *  @returns {string} string
    */
-  public mergeScheduleBStringsWithTestBase(apptBString: string, schedule: string): string | false {
+  public mergeScheduleBStringsWithTestBase(apptBString: string, schedule: string): string {
     const apptMask: string[] = this.bStringUtil.timeStringSplit(
       apptBString
     );
@@ -69,15 +75,16 @@ export class BScheduleUtil {
     *  schedule and appt BStrings conflict
     */
     for (let i: number = 0; i < splitSchedule.length; i++) {
-      const mergeReturn: string | false = this.mergeScheduleBStringWithTest(
-        splitSchedule[i],
-        apptMask[i]
-      );
+      try {
+        const mergeReturn: string = this.mergeScheduleBStringWithTest(
+          splitSchedule[i],
+          apptMask[i]
+        );
 
-      if (!mergeReturn) {
-        return false;
+        mergedSchedule.push(mergeReturn);
+      } catch (error) {
+        throw error;
       }
-      mergedSchedule.push(mergeReturn);
     }
 
     return mergedSchedule.join("");
@@ -85,14 +92,16 @@ export class BScheduleUtil {
 
   /**
    *  @description Tests that an timeSlot does not overlap with another timeSlot,
-   *  if it does not overlap, the timeSlot is added to the bookings, else return false
+   *  if it does not overlap, the timeSlot is added to the bookings, else throws an
+   *  error
    *
    *  @param {string} timeSlotBString timeSlot to modify schedule
    *  @param {string} schedule schedule to modify
    *
-   *  @returns {string | false} string | false
+   *  @throws {Error} schedules conflict and overlap
+   *  @returns {string} string
    */
-  public mergeScheduleBStringWithTest(timeSlotBString: string, schedule: string): string | false {
+  public mergeScheduleBStringWithTest(timeSlotBString: string, schedule: string): string {
     const parsedSchedule: number = this.bStringUtil.parseBString(schedule);
     const parsedApptBString: number = this.bStringUtil.parseBString(timeSlotBString);
     // Performs a XOR on the schedule and the proposed schedule
@@ -105,7 +114,7 @@ export class BScheduleUtil {
       return this.bStringUtil.decimalToBString(modified);
     }
 
-    return false;
+    throw new Error('BScheduleUtil Error: Schedules conflict and overlap');
   }
 
   /**
