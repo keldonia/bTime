@@ -23,8 +23,8 @@ should have the same time interval
 ## `#getCurrentAvailability`
 
 The `#getCurrentAvailability` Takes a valid schedule and computes the remaining
-availability based on the total availability and current bookings, returns false
-if an invalid scehdule is passed.
+availability based on the total availability and current bookings, throws an
+error if an invalid scehdule is passed.
 
 ```typescript
   // If using the scheduler
@@ -32,7 +32,7 @@ if an invalid scehdule is passed.
   const scheduler: Scheduler = new Scheduler(5); 
 
   // To get remaining availabiltiy in a schedule
-  const remainingAvailability: Schedule | false = scheduler.getCurrentAvailability(schedule);
+  const remainingAvailability: Schedule = scheduler.getCurrentAvailability(schedule);
 ```
 
 ## `#updateSchedule`
@@ -41,7 +41,8 @@ The `#updateSchedule` method takes two arguments, the proposed schedule and the
 current schedule.  These schedules must adhere to the Schedule interface.
 It will compare the proposed schedule against the bookings of the current schedule
 and will either return the updated schedule complete with the current bookings,
-in the case that current bookings work with the updated schedule or false if they do not.
+in the case that current bookings work with the updated schedule or throws an
+error if they do not.
 
 ```typescript
   // If using the scheduler
@@ -49,7 +50,7 @@ in the case that current bookings work with the updated schedule or false if the
   const scheduler: Scheduler = new Scheduler(5); 
 
   // To update a schedule
-  const updatedSchedule: Schedule | false = scheduler.updateSchedule(
+  const updatedSchedule: Schedule = scheduler.updateSchedule(
     proposedSchedule,
     currentSchedule
   );
@@ -61,8 +62,8 @@ The `#processAppointment` method takes three agruments, the proposed appointment
 the schedule, and the type of action \- a booking update or appointment delete.
 The method will then check if there is availability for the proposed appointment
 in the schedule in the case of a booking update, returning with the updated schedule
-if the appointment is compatible with the schedule, or false if not.  If the an
-appointment is to be deleted the time interval of the appointment is freed.
+if the appointment is compatible with the schedule, or throws an error if not.
+If the an appointment is to be deleted the time interval of the appointment is freed.
 
 ```typescript
   // If using the scheduler
@@ -70,7 +71,7 @@ appointment is to be deleted the time interval of the appointment is freed.
   const scheduler: Scheduler = new Scheduler(5); 
 
   // To process an appointment
-  const processedSchedule: Schedule | false = scheduler.processAppointment(
+  const processedSchedule: Schedule = scheduler.processAppointment(
     appointment,
     schedule,
     ScheduleActions.BOOKING_UPDATE
@@ -83,8 +84,9 @@ The `#processAppointments` method takes three agruments, the proposed appointmen
 \- in the form of an array, the schedule, and the type of action \- a booking update
 or appointment delete.  The method will then check if there is availability for the
 proposed appointments in the schedule in the case of a booking update, returning with
-the updated schedule if the appointments are compatible with the schedule, or false if not.
-If the appointments are to be deleted the time intervals of the appointments are freed.
+the updated schedule if the appointments are compatible with the schedule, or throws an 
+error if not. If the appointments are to be deleted the time intervals of the appointments
+are freed.
 
 ```typescript
   // If using the scheduler
@@ -92,7 +94,7 @@ If the appointments are to be deleted the time intervals of the appointments are
   const scheduler: Scheduler = new Scheduler(5); 
 
   // To process an appointment
-  const processedSchedule: Schedule | false = scheduler.processAppointments(
+  const processedSchedule: Schedule = scheduler.processAppointments(
     appointments, 
     schedule, 
     ScheduleActions.BOOKING_UPDATE

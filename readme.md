@@ -35,13 +35,13 @@ can also be instantiated separately if one desires to directly make use of the b
   const remainingAvailabiltiy: string[] = scheduler.getCurrentAvailability(schedule);
 
   // To update a schedule
-  const updatedSchedule: Schedule | false = scheduler.updateSchedule(proposedSchedule, currentSchedule);
+  const updatedSchedule: Schedule = scheduler.updateSchedule(proposedSchedule, currentSchedule);
 
   // To process an appointment
-  const processedSchedule: Schedule | false = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE);
+  const processedSchedule: Schedule = scheduler.processAppointment(appointment, schedule, ScheduleActions.BOOKING_UPDATE);
 
   // To process an array of appointments
-  const processedSchedule: Schedule | false = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
+  const processedSchedule: Schedule = scheduler.processAppointments(appointments, schedule, ScheduleActions.BOOKING_UPDATE);
 
   // To convert a schedule to an appointment schedule
   const processedSchedule: AppointmentSchedule = scheduler.convertScheduleToAppointmentSchedule(schedule);
@@ -58,7 +58,6 @@ Further information on bTime can be found below:
 
 ## Coming Features
 
-1. Throw Exceptions for clean stack tracing & surround with catches
 1. Improve documentation
 1. Add an example use case
 1. Bit Array mode (don't store as strings), optional parameter
