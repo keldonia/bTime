@@ -94,7 +94,7 @@ export class Scheduler {
 
   /**
    *  @description Takes a valid schedule and computes the remaining availability
-   *  based on the total availability and current bookings, returns false if an
+   *  based on the total availability and current bookings, throws an error if an
    *  invalid scehdule is passed
    *
    *  @param {Schedule} schedule
@@ -134,18 +134,19 @@ export class Scheduler {
   }
 
   /**
-   *  @description Tests a propsoed appointment schedule update and updates the
-   *  schedule, if theupdate is valid or returns false if the update is not valid
+   *  @description Tests a proposed appointment schedule update and updates the
+   *  schedule, if theupdate is valid or throws an error if the update is not valid
    *
    *  @param {AppointmentSchedule} proposedAppointmentSchedule proposed schedule
    *  @param {Schedule} schedule current schedule
    *
-   *  @returns {AppointmentSchedule | false} AppointmentSchedule | false
+   *  @throws {Error} Time intervals overlap
+   *  @returns {AppointmentSchedule} AppointmentSchedule
    */
   public updateScheduleWithAppointmentSchedule(
     proposedAppointmentSchedule: AppointmentSchedule,
     schedule: Schedule
-  ): AppointmentSchedule | false {
+  ): AppointmentSchedule {
     const scheduleAppointments: Appointment[] = [];
     proposedAppointmentSchedule.schedule.forEach(appointments  => {
       appointments.forEach(appointment => {
@@ -162,26 +163,19 @@ export class Scheduler {
     };
     const updatedSchedule: Schedule = this.updateSchedule(proposedSchedule, schedule);
 
-    if (!updatedSchedule) {
-      return false;
-    }
     const availability: string[] = this.getCurrentAvailability(schedule);
-
-    // NB: This is an additional safe guard
-    if (!availability) {
-      return false;
-    }
 
     return this.bTimeFactory.convertScheduleToAppointmentSchedule(updatedSchedule, availability);
   }
 
   /**
    *  @description Tests a propsoed schedule update and updates the schedule,
-   *  if the update is valid or returns false if the update is not valid
+   *  if the update is valid or throws an error if the update is not valid
    *
    *  @param {Schedule} proposedSchedule proposed schedule
    *  @param {Schedule} schedule current schedule
    *
+   *  @throws {Error} Time intervals overlap
    *  @returns {Schedule} Schedule
    */
   public updateSchedule(proposedSchedule: Schedule, schedule: Schedule): Schedule {
@@ -216,20 +210,21 @@ export class Scheduler {
 
   /**
    *  @description Takes an array of appointments and update type and tests if
-   *  the appointment updates are valid, if not it returns false, if they are
+   *  the appointment updates are valid, if not it throws an error, if they are
    *  the schedule is updated
    *
    *  @param {Appointment[]} appointments appointments to process
    *  @param {Schedule} schedule schedule for appointments to be applied
    *  @param {ScheduleActions} actionType determines how to process appointment
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @throws {Error} invalid action type
+   *  @returns {Schedule} Schedule
    */
   public processAppointments(
     appointments: Appointment[],
     schedule: Schedule,
     actionType: ScheduleActions
-  ): Schedule | false {
+  ): Schedule {
     const appointmentsBStrings: string[] = this.bTimeFactory.generateBStringFromAppointments(appointments);
 
     if (actionType === ScheduleActions.DELETE_APPT) {
@@ -240,25 +235,26 @@ export class Scheduler {
       return this.handleBookingUpdateBString(appointmentsBStrings, schedule);
     }
 
-    return false;
+    throw new Error(`BScheduler Error: Recieved invalid action type: ${ScheduleActions[actionType]}, raw type: ${actionType}`);
   }
 
   /**
    *  @description Takes an appointment and update type and tests if the
-   *  appointment update is valid, if not it returns false, if it is the
+   *  appointment update is valid, if not it throws an error, if it is the
    *  schedule is updated
    *
    *  @param {Appointment} appointment appointment to process
    *  @param {Schedule} schedule schedule for appointments to be applied
    *  @param {ScheduleActions} actionType determines how to process appointment
    *
-   *  @returns {Schedule | false} Schedule | false
+   *  @throws {Error} invalid action type
+   *  @returns {Schedule} Schedule
    */
   public processAppointment(
     appointment: Appointment,
     schedule: Schedule,
     actionType: ScheduleActions
-  ): Schedule | false {
+  ): Schedule {
     const crosssesDayBoundary: boolean = DateUtil.getInstance().crosssesDayBoundary(appointment);
     let firstAppt: Appointment;
 
@@ -281,18 +277,19 @@ export class Scheduler {
       );
     }
 
-    return false;
+    throw new Error(`BScheduler Error: Recieved invalid action type: ${ScheduleActions[actionType]}, raw type: ${actionType}`);
   }
 
   /**
    *  @description Takes an appointment and tests if the appointment update
-   *  is valid, if not it returns false, if it is the schedule is updated
+   *  is valid, if not it throws an error, if it is the schedule is updated
    *
    *  @param {Appointment} appointment appointment to test
    *  @param {Schedule} schedule schedule to test against
    *  @param {Appointment?} firstAppt — optional additional appointment to
    *  process if Appointment crosses date boundary
    *
+   *  @throws {Error} time intervals overlap
    *  @returns {Schedule} Schedule
    */
   public handleBookingUpdate(
@@ -339,7 +336,7 @@ export class Scheduler {
 
   /**
    *  @description Takes an array of appointments and tests if the appointment
-   *  update are valid, if not it returns false, if they are the schedule is updated
+   *  update are valid, if not it throws an error, if they are the schedule is updated
    *
    *  @param {string[]} appointments appointments to test
    *  @param {Schedule} schedule schedule to test against

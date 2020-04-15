@@ -287,29 +287,29 @@ describe('Test Scheduler', () => {
 
     it(`should return false if the proposed schedule won't contain current bookings`, () => {
       mockGenerateBStringFromAppointments.mockReturnValueOnce(true);
-      mockUpdateSchedule.mockReturnValueOnce(false);
+      const mockErrorMsg: string = 'Mock Error';
+      mockUpdateSchedule.mockImplementation(() => { throw new Error(mockErrorMsg) } );
 
-      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
-
+      expect(() => scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule))
+        .toThrow(mockErrorMsg);
       expect(mockGenerateBStringFromAppointments).toBeCalled();
       expect(mockUpdateSchedule).toBeCalled();
       expect(mockGetCurrentAvailability).not.toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
-      expect(updatedAppointmentSchedule).toBeFalsy();
     });
 
     it(`should return false if the proposed schedule won't contain current bookings, availabilty test`, () => {
       mockGenerateBStringFromAppointments.mockReturnValueOnce(true);
       mockUpdateSchedule.mockReturnValueOnce(true);
-      mockGetCurrentAvailability.mockReturnValueOnce(false);
+      const mockErrorMsg: string = 'Mock Error';
+      mockGetCurrentAvailability.mockImplementation(() => { throw new Error(mockErrorMsg) } );
 
-      const updatedAppointmentSchedule: AppointmentSchedule | false = scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule);
-
+      expect(() => scheduler.updateScheduleWithAppointmentSchedule(appointmentSchedule, schedule))
+        .toThrow(mockErrorMsg);
       expect(mockGenerateBStringFromAppointments).toBeCalled();
       expect(mockUpdateSchedule).toBeCalled();
       expect(mockGetCurrentAvailability).toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
-      expect(updatedAppointmentSchedule).toBeFalsy();
     });
 
 
@@ -713,9 +713,8 @@ describe('Test Scheduler', () => {
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
       const actionType: ScheduleActions = ScheduleActions.UNKOWN;
 
-      const computedSchedule: Schedule | false = scheduler.processAppointment(apptToBook, schedule, actionType);
-
-      expect(computedSchedule).toBeFalsy();
+      expect(() => scheduler.processAppointment(apptToBook, schedule, actionType))
+        .toThrow('BScheduler Error: Recieved invalid action type: UNKOWN, raw type: 2')
       expect(mockDeleteAppointment).not.toBeCalled();
       expect(mockHandleBookingUpdate).not.toBeCalled();
     });
@@ -781,10 +780,9 @@ describe('Test Scheduler', () => {
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
       const actionType: ScheduleActions = ScheduleActions.UNKOWN;
-
-      const computedSchedule: Schedule | false = scheduler.processAppointments([apptToBook], schedule, actionType);
-
-      expect(computedSchedule).toBeFalsy();
+      
+      expect(() => scheduler.processAppointments([apptToBook], schedule, actionType))
+        .toThrow('BScheduler Error: Recieved invalid action type: UNKOWN, raw type: 2')
       expect(mockDeleteAppointments).not.toBeCalled();
       expect(mockHandleBookingUpdateBString).not.toBeCalled();
     });
