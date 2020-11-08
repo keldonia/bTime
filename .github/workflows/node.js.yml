@@ -30,7 +30,7 @@ jobs:
     - run: STRYKER_DASHBOARD_API_KEY=${{ secrets.STRYKER_DASHBOARD_API_KEY }} npm run stryker
   publish:
     runs-on: ununtu-latest
-     steps:
+    steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
