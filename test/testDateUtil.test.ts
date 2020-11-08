@@ -1,6 +1,6 @@
 import * as TestUtils from './utils/testUtils';
 
-import { DateUtil } from './../src/utils/dateUtil'
+import { DateUtil } from '../src/utils/dateUtil'
 import { Appointment } from '../src/@types';
 
 describe('dateUtil', () => {

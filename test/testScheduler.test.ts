@@ -1,4 +1,4 @@
-import { Scheduler, BTimeFactory } from './../src';
+import { Scheduler, BTimeFactory } from '../src';
 import * as TestUtils from './utils/testUtils';
 import { Schedule, ScheduleActions, Appointment, AppointmentDuo, AppointmentSchedule } from '../src/@types';
 import { BStringUtil } from '../src/bTime/bStringUtil';
@@ -308,6 +308,7 @@ describe('Test Scheduler', () => {
         .toThrow(mockErrorMsg);
       expect(mockGenerateBStringFromAppointments).toBeCalled();
       expect(mockUpdateSchedule).toBeCalled();
+      expect(mockUpdateSchedule).toMatchSnapshot();
       expect(mockGetCurrentAvailability).toBeCalled();
       expect(mockConvertScheduleToAppointmentSchedule).not.toBeCalled();
     });
