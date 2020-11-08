@@ -1,6 +1,6 @@
 # bTime
 
-![Test Coverage](./coverage-badge.svg)
+![Test Coverage](./coverage-badge.svg) [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fkeldonia%2FbTime%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/keldonia/bTime/master)
 
 **bTime** is a small lightweight library, with no dependencies and 100% test
 and mutation test coverage, designed to help manage schedules using bit 
