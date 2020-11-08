@@ -7,8 +7,8 @@
     "progress"
   ],
   "dashboard": {
-    "project": "keldonia/bTime",
-    "version": "1.0.0"
+    "project": "github.com/keldonia/bTime",
+    "version": "master"
   },
   "htmlReporter": {
     "baseDir": "coverage/stryker"
