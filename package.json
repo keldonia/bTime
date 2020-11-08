@@ -6,8 +6,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "lint": "tslint -p .",
-    "lint:fix": "tslint -p . --fix",
+    "lint": "eslint -p .",
+    "lint:fix": "eslint -p . --fix",
     "stryker": "stryker run",
     "test": "npm audit && npm run lint && npm run build && jest --coverage",
     "test:noAudit": "npm run lint && npm run lint && npm run build && jest --coverage",
@@ -38,6 +38,7 @@
     "jest-date-mock": "^1.0.8",
     "stryker-cli": "^1.0.0",
     "ts-jest": "^26.4.3",
+    "tslint": "^6.1.3",
     "typescript": "^4.0.5"
   },
   "files": [
