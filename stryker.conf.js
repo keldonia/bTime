@@ -1,13 +1,15 @@
 module.exports = function(config) {
   config.set({
-    mutator: 'typescript',
     packageManager: 'npm',
-    reporters: ['html', 'clear-text', 'progress'],
+    reporters: [
+      'clear-text',
+      'html',
+      'progress'
+    ],
     htmlReporter: {
-      baseDir: 'output/coverage/stryker'
+      baseDir: 'coverage/stryker'
     },
     testRunner: 'jest',
-    transpilers: [],
     coverageAnalysis: 'off',
     tsconfigFile: 'tsconfig.json',
     mutate: [
