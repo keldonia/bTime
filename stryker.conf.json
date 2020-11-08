@@ -6,6 +6,10 @@
     "html",
     "progress"
   ],
+  "dashboard": {
+    "project": "keldonia/bTime",
+    "version": "1.0.0"
+  },
   "htmlReporter": {
     "baseDir": "coverage/stryker"
   },
