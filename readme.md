@@ -1,5 +1,8 @@
 # bTime
 
+![Branch Coverage](./badges/badge-branches.svg) ![Function Coverage](./badges/badge-functions.svg) ![Line Coverage](./badges/badge-lines.svg) ![Statement Coverage](./badges/badge-statements.svg)
+---
+
 **bTime** is a small lightweight library, with no dependencies and 100% test
 and mutation test coverage, designed to help manage schedules using bit 
 manipulation.  It is particularly suited to working with dense schedules with 
