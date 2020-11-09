@@ -1,13 +1,12 @@
 {
   "name": "btime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Includes structures to hold manage schedules using a binary representation of time",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "audit": "npm audit",
     "build": "tsc",
-    "prepublish": "tsc",
     "lint": "tslint -p .",
     "lint:fix": "tslint -p . --fix",
     "stryker": "stryker run",
@@ -15,9 +14,6 @@
     "test:badges": "npm audit && npm run test && make-coverage-badge --output-path \"./coverage-badge.svg\"",
     "test:noAudit": "npm run lint && npm run lint && npm run build && jest --coverage",
     "test:watch": "npm audit && npm run lint && npm run build && jest --coverage --watch"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",
@@ -48,7 +44,7 @@
     "typescript": "^4.0.5"
   },
   "files": [
-    "build"
+    "dist/**/*"
   ],
   "jest": {
     "collectCoverage": true,
