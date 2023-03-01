@@ -712,10 +712,10 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
-      const actionType: ScheduleActions = ScheduleActions.UNKOWN;
+      const actionType: ScheduleActions = ScheduleActions.UNKNOWN;
 
       expect(() => scheduler.processAppointment(apptToBook, schedule, actionType))
-        .toThrow('BScheduler Error: Recieved invalid action type: UNKOWN, raw type: 2')
+        .toThrow('BScheduler Error: Recieved invalid action type: UNKNOWN, raw type: 2')
       expect(mockDeleteAppointment).not.toBeCalled();
       expect(mockHandleBookingUpdate).not.toBeCalled();
     });
@@ -780,10 +780,10 @@ describe('Test Scheduler', () => {
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
       const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
-      const actionType: ScheduleActions = ScheduleActions.UNKOWN;
+      const actionType: ScheduleActions = ScheduleActions.UNKNOWN;
       
       expect(() => scheduler.processAppointments([apptToBook], schedule, actionType))
-        .toThrow('BScheduler Error: Recieved invalid action type: UNKOWN, raw type: 2')
+        .toThrow('BScheduler Error: Recieved invalid action type: UNKNOWN, raw type: 2')
       expect(mockDeleteAppointments).not.toBeCalled();
       expect(mockHandleBookingUpdateBString).not.toBeCalled();
     });

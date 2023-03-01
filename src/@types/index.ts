@@ -35,7 +35,7 @@ export interface AppointmentSchedule {
 export enum ScheduleActions {
   'DELETE_APPT',
   'BOOKING_UPDATE',
-  'UNKOWN'
+  'UNKNOWN'
 }
 
 export const validTimeIntervals: Set<number> = new Set([
