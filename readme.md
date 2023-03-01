@@ -60,8 +60,6 @@ Further information on bTime can be found below:
 
 ## Coming Features
 
-1. Improve documentation
-1. Add an example use case
 1. Bit Array mode (don't store as strings), optional parameter
 1. Allow compressed storage mode
 
