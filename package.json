@@ -1,6 +1,6 @@
 {
   "name": "btime",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Includes structures to hold manage schedules using a binary representation of time",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
