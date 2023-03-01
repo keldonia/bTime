@@ -21,7 +21,6 @@
   },
   "author": "Brian Lambert <keldoniaskylar@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
   "directories": {
     "test": "test"
   },
@@ -31,8 +30,8 @@
     "scheduling"
   ],
   "devDependencies": {
-    "@stryker-mutator/core": "^4.1.2",
-    "@stryker-mutator/jest-runner": "^4.1.2",
+    "@stryker-mutator/core": "^6.4.1",
+    "@stryker-mutator/jest-runner": "^6.4.1",
     "@types/jest": "^26.0.15",
     "eslint": "^7.13.0",
     "jest": "^26.6.3",
