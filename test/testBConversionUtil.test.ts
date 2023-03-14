@@ -84,8 +84,8 @@ describe('bConversionUtil', () => {
     it('should properly calculate a datetime that is at the beginning of the day, and is the end of an appointment', () => {
       const baseDate: Date = new Date('2019-12-29T00:00:00Z');
       const timePointer: number = 0;
-      const expectedDate: Date = new Date('2019-12-29T00:00:00Z');
-      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate);
+      const expectedDate: Date = new Date('2019-12-29T00:04:59Z');
+      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate, true);
       
       expect(computedDate).toEqual(expectedDate);
     });
@@ -100,8 +100,8 @@ describe('bConversionUtil', () => {
 
     it('should properly calculate a datetime that is at the end of the day, and is the end of an appointment', () => {
       const timePointer: number = 287;
-      const expectedDate: Date = new Date('2019-12-29T23:55:00Z');
-      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate);
+      const expectedDate: Date = new Date('2019-12-29T23:59:59Z');
+      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate, true);
       
       expect(computedDate).toEqual(expectedDate);
     });
@@ -116,8 +116,8 @@ describe('bConversionUtil', () => {
 
     it('should properly calculate a datetime that is at the middle of the day, and is the end of an appointment', () => {
       const timePointer: number = 144;
-      const expectedDate: Date = new Date('2019-12-29T12:00:00Z');
-      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate);
+      const expectedDate: Date = new Date('2019-12-29T12:04:59Z');
+      const computedDate: Date = bConversionUtil.calculateDate(timePointer, baseDate, true);
       
       expect(computedDate).toEqual(expectedDate);
     });

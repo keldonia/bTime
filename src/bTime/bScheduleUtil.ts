@@ -250,7 +250,7 @@ export class BScheduleUtil {
   }
 
   /**
-   *  @description Tests removal a give time slot from a given time interval
+   *  @description Tests removal a given time slot from a given time interval
    *  and if valid removes it
    *
    *  NB: This is also used for calculating remaining availability
@@ -286,7 +286,7 @@ export class BScheduleUtil {
   }
 
   /**
-   *  @description Tests removal a give time slot from a given time interval
+   *  @description Tests removal a given time slot from a given time interval
    *  and if valid removes it
    *
    *  NB: Deleted appts can restore availability not add new availability

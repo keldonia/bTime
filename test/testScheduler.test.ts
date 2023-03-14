@@ -575,7 +575,7 @@ describe('Test Scheduler', () => {
       jest.resetAllMocks();
     });
 
-    it('should call delete appointment with only one appointment if the appointment does not cross the day boundary', () => {
+    it('should call handleBookingUpdate with only one appointment if the appointment does not cross the day boundary', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -638,7 +638,7 @@ describe('Test Scheduler', () => {
       expect(mockHandleBookingUpdate).toBeCalledWith(expectedAppt, schedule, expectedSecondAppt);
     });
 
-    it('should call handleBookingUpdate with only one appointment if the appointment does not cross the day boundary', () => {
+    it('should call delete appointment with only one appointment if the appointment does not cross the day boundary', () => {
       const dayZeroSchedule: Appointment = TestUtils.generateMockDateAppointment(8, 0, 18, 0, 0, 0);
       const dayOneSchedule: Appointment = TestUtils.generateMockDateAppointment(9, 0, 17, 0, 1, 1);
       const scheduledAvailability: string[] = TestUtils.generateTimeSet(dayZeroSchedule, dayOneSchedule);
@@ -648,7 +648,7 @@ describe('Test Scheduler', () => {
       const bookings: string[] = TestUtils.generateTimeSet(dayZeroBookings, dayOneBookings);
 
       const schedule: Schedule = TestUtils.generateSchedule(scheduledAvailability, bookings);
-      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10,0, 11, 0, 1, 1);
+      const apptToBook: Appointment = TestUtils.generateMockDateAppointment(10, 0, 11, 0, 1, 1);
 
       const actionType: ScheduleActions = ScheduleActions.DELETE_APPT;
 
