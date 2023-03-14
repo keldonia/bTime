@@ -724,7 +724,8 @@ describe('Test Scheduler', () => {
 
   describe('#processAppointments', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const bStringUtil: BStringUtil = scheduler['bTimeFactory']['bStringUtil'];
+    // eslint-disable-next-line
+    const bStringUtil: BStringUtil = (scheduler['bTimeFactory'] as any as BTimeFactory)['bStringUtil'] as any as BStringUtil;
     const mockDeleteAppointments: jest.Mock = jest.fn();
     const mockHandleBookingUpdateBString: jest.Mock = jest.fn();
 
