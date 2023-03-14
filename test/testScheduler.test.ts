@@ -210,7 +210,8 @@ describe('Test Scheduler', () => {
 
   describe('#updateScheduleWithAppointmentSchedule', () => {
     const scheduler: Scheduler = new Scheduler(5);
-    const bTimeFactory: BTimeFactory = scheduler['bTimeFactory'];
+    // eslint-disable-next-line
+    const bTimeFactory: BTimeFactory = scheduler['bTimeFactory'] as any as BTimeFactory;
 
     const mockGenerateBStringFromAppointments: jest.Mock = jest.fn();
     const mockUpdateSchedule: jest.Mock = jest.fn();
